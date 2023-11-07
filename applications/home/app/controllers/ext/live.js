@@ -111,9 +111,6 @@ export default class ExtLiveController extends Controller {
 
     this.isConnected = true;
 
-    this.participants = this.room.participants;
-    this.participants = this.participants;
-
     this.btnText = 'Join iMandi Meet';
   }
 
@@ -147,11 +144,11 @@ export default class ExtLiveController extends Controller {
   	}
 
   	if (p.isSubscribed) {
-		return p.videoTrack.mediaStream;
-	}
-	else {
-		return null;
-	}
+		  return p.videoTrack.mediaStream;
+  	}
+  	else {
+  		return null;
+  	}
   }
 
   getScreenTrack = async (sid)=>{

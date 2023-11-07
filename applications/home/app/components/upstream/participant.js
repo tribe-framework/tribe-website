@@ -31,7 +31,7 @@ export default class UpstreamParticipantComponent extends Component {
 
   @action
   async activateAudioTrack() {
-  	document.querySelector('#'+this.args.id+'_audio_html5_api').srcObject = await this.args.videoTrack;
+  	//document.querySelector('#'+this.args.id+'_audio_html5_api').srcObject = await this.args.audioTrack;
   }
 
   @action
