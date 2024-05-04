@@ -1,9 +1,0 @@
-{{#if this.user.isLoggedIn}}
-	<div class="toast-container position-fixed {{@positionClass}}" {{did-insert this.initNotifications}}>
-
-		{{#each this.notifications as |notification|}}
-			<Ext::Notify::Toast @notification={{notification}} @class={{@notificationClass}} />
-		{{/each}}
-
-	</div>
-{{/if}}

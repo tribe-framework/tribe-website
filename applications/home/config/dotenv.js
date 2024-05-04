@@ -4,11 +4,11 @@
 
 const path = require('path');
 
-module.exports = function (/* env */) {
+module.exports = function(/* env */) {
   return {
-    clientAllowedKeys: ['PUSHER_API_KEY', 'PUSHER_CLUSTER'],
+    clientAllowedKeys: [],
     fastbootAllowedKeys: [],
     failOnMissingKey: false,
-    path: path.join(path.dirname(__dirname), '.env'),
-  };
+    path: path.join(path.dirname(__dirname), '.env')
+  }
 };

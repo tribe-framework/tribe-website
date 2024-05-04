@@ -2,8 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Home</title>
-    <meta name="description" content="">
+    <title>Tribe</title>
+    <meta name="description" content="A collaborative project management framework.">
+    <meta name="og:image" content="/assets/img/cover.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {{content-for "head"}}
@@ -14,14 +15,16 @@
     <link integrity="" rel="stylesheet" href="{{rootURL}}assets/vendor.css">
     <link integrity="" rel="stylesheet" href="{{rootURL}}assets/home.css">
 
+    <script defer data-domain="tribe-framework.org" src="https://plausible.io/js/script.js"></script>
+
+    <script src="https://kit.fontawesome.com/eafbba3323.js" crossorigin="anonymous"></script>
     {{content-for "head-footer"}}
   </head>
-  <body>
+  <body data-bs-theme="dark">
     {{content-for "body"}}
 
     <script src="{{rootURL}}assets/vendor.js"></script>
     <script src="{{rootURL}}assets/home.js"></script>
-    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 
     {{content-for "body-footer"}}
   </body>

@@ -1,4 +1,38 @@
+/* STYLE GUIDE */
+//$font-family-sans-serif: "Helvetica Neue", sans-serif !default;
+//$display-font-family: "Helvetica Neue", sans-serif !default;
+
+//$primary:       #0000ff !default;
+//$secondary:     #cccccc !default;
+//$success:       #00ff00 !default;
+//$info:          #00ffff !default;
+//$warning:       #ffff00 !default;
+//$danger:        #ff0000 !default;
+//$light:         #eeeeee !default;
+//$dark:          $333333 !default;
+/* /STYLE GUIDE */
+
+$enable-rounded: false !default;
+$enable-negative-margins:     true !default;
+$enable-cssgrid:              true !default;
+
+$spacer: 1rem !default;
+$spacers: (
+  0: 0,
+  1: $spacer * .25,
+  2: $spacer * .5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+  6: $spacer * 4.5,
+  7: $spacer * 6,
+  8: $spacer * 7.5,
+  9: $spacer * 9,
+  10: $spacer * 12,
+) !default;
+
 @import "node_modules/bootstrap/scss/bootstrap";
+@import "node_modules/animate.css/animate";
 
 .flame-bg {
 	background: linear-gradient(0deg, rgba(153,51,153,1) 0%, rgba(255,51,153,1) 100%);
@@ -15,5 +49,3 @@
 	width: 100vw;
 }
 @import "ember-power-select";
-
-@import "upstream";

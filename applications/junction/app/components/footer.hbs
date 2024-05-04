@@ -1,10 +1,11 @@
 <footer class="mt-auto bg-secondary border-top border-dark pt-5 pb-4 mb-0">
 
 	<div class="container">
+		{{#unless (eq this.hidePostcodeAttribution "true")}}
 		<div class="row">
 			<div class="col-md small">
 				<p class="text-black small text-center text-lg-start fw-light">
-					<span>This is <span class="fw-bold text-dark"><em>Junction</em></span>. Built and maintained with <span class="text-dark"><FaIcon @icon="heart" @prefix="fa-solid" /></span> at <span class="fw-bold"><em><a href="https://wildfiretech.co" class="text-dark" target="_blank" rel="noopener noreferrer">Postcode</a></em></span>.</span>
+					<span>This is <span class="fw-bold text-dark"><em>Junction</em></span>. Built and maintained with <span class="text-dark"><i class="fa-solid fa-heart"></i></span> at <span class="fw-bold"><em><a href="https://wildfiretech.co" class="text-dark" target="_blank" rel="noopener noreferrer">Postcode</a></em></span>.</span>
 					<br>
 					Postcode Solutions Private Limited is a digital tech consultancy based in Gurugram, India.
 					<br>
@@ -19,6 +20,7 @@
 				</ul>
 			</div>
 		</div>
+		{{/unless}}
 	</div>
 </footer>
 {{yield}}

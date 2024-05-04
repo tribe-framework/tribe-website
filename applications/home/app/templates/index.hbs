@@ -1,25 +1,34 @@
-{{#if this.user.isLoggedIn}}
-	{{#each @model as |user|}}
-		<div class="d-flex align-items-center flex-column my-5 pb-5 border-bottom border-1 border-dark">
-			<h5 class="fw-bold">{{user.modules.name}}</h5>
+<div class="container mt-5">
+  <div class="p-lg-6 p-md-5 p-4 text-center bg-body-tertiary rounded-3">
+    <img src="/assets/img/flame.png" width="72" class="my-3" />
+    <p class="col-lg-8 mx-auto fs-4 text-light my-3">
+      Tribe is a <em>collaborative</em> project management framework.
+    </p>
+    <div class="d-lg-inline-flex d-none gap-3 my-3">
+      <a href="https://github.com/new?template_name=flame&template_owner=tribe-framework" target="new" class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill">
+        Start new repository
+        <i class="fa-solid fa-arrow-right ms-2"></i>
+      </a>
+      <a href="https://github.com/tribe-framework/flame" target="new" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+        <i class="fa-brands fa-github me-1"></i>
+        Read the docs
+      </a>
+    </div>
+    <div class="d-flex flex-column d-lg-none gap-3 my-4">
+      <a href="https://github.com/new?template_name=flame&template_owner=tribe-framework" target="new" class="d-inline-flex align-items-center justify-content-center btn btn-primary btn-lg px-4 rounded-pill">
+        Start new repository
+        <i class="fa-solid fa-arrow-right ms-2"></i>
+      </a>
+      <a href="https://github.com/tribe-framework/flame" target="new" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+        <i class="fa-brands fa-github me-1"></i>
+        Read the docs
+      </a>
+    </div>
+  </div>
+</div>
 
-			<button class="btn btn-lg btn-primary my-1" type="button" {{on 'click' (fn this.pusher.send this.user.currentUser.slug "notify" "Notification with sender details" this.user.currentUser.modules.type user.id)}}>Notification with sender details from #{{user.modules.slug}}</button>
+<div class="container px-5 text-muted mt-3 small text-center">
+  &copy; 2024 &middot; <a class="text-muted text-decoration-none" href="https://wildfiretech.co" target="new">Wildfire</a>
+</div>
 
-			<button class="btn btn-lg btn-primary my-1" type="button" {{on 'click' (fn this.pusher.send this.user.currentUser.slug "notify" "Notification with action route" this.user.currentUser.modules.type user.id "ext.auth" "Do something!")}}>Notification with action route #{{user.modules.slug}}</button>
-		</div>
-	{{/each}}
-
-	<div class="d-flex align-items-center justify-content-center w-100">
-		<a href="#" class="text-center fw-bold mb-3 text-dark" {{on 'click' this.user.logout}}>Logout</a>
-	</div>
-
-	<Ext::Status />
-
-{{else}}
-
-	<div class="d-flex align-items-center justify-content-center w-100">
-		<LinkTo @route="ext.auth" class="text-center fw-bold mt-5 mb-3 text-dark">Auth</LinkTo>
-	</div>
-
-{{/if}}
 {{outlet}}
