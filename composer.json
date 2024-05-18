@@ -15,7 +15,8 @@
         "guzzlehttp/guzzle": "^7.7",
         "pusher/pusher-php-server": "^7.2",
         "firebase/php-jwt": "^6.9",
-        "agence104/livekit-server-sdk": "^1.1"
+        "agence104/livekit-server-sdk": "^1.1",
+        "graham-campbell/digitalocean": "^10.3"
     },
     "config": {
         "allow-plugins": {
