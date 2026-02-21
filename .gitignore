@@ -2,8 +2,11 @@
 /.env
 /uploads/*
 !/uploads/.gitkeep
+/logs/*
+!/logs/.gitkeep
 /node_modules
 /vendor
+/vendor/*
 /composer.phar
 *.code-workspace
 sftp-config.json

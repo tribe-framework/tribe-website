@@ -1,0 +1,33 @@
+# compiled output
+/declarations/
+
+# dependencies
+/node_modules/
+
+# misc
+/.env*
+/.pnp*
+/.eslintcache
+/coverage/
+/npm-debug.log*
+/testem.log
+/yarn-error.log
+
+# broccoli-debug
+/DEBUG/
+
+# others
+/.vscode
+*.code-workspace
+sftp-config.json
+/.DS_Store
+.DS_Store
+
+/.vscode
+/.env
+/uploads/*
+!/uploads/.gitkeep
+/logs/*
+/vendor
+/composer.phar
+/composer.lock

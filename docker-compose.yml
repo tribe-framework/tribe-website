@@ -1,0 +1,298 @@
+services:
+  # MySQL 9 Database - System-wide
+  mysql:
+    image: mysql:9
+    container_name: ${DB_HOST}
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./config/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - tribe_network
+
+  # config/setup.sh
+  setup:
+    image: alpine:3
+    container_name: ${PROJECT_NAME}_setup
+    volumes:
+      - ./config:/config
+      - ./applications:/applications
+      - ./uploads:/uploads
+      - .:/workdir
+      - /var/run/docker.sock:/var/run/docker.sock # Mount Docker socket
+    working_dir: /workdir
+    command: sh -c "apk add --no-cache curl unzip bash docker-cli && bash ./config/setup.sh && touch /tmp/setup_complete && tail -f /dev/null"
+    healthcheck:
+      test: ["CMD", "test", "-f", "/tmp/setup_complete"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - tribe_network
+
+  # PHP 8 with FPM for Tribe
+  php_tribe:
+    image: tribeframework/tribe-core:v1.0
+    platform: linux/amd64
+    container_name: ${PROJECT_NAME}_php_tribe
+    restart: unless-stopped
+    volumes:
+      - ./applications/tribe:/var/www/html
+      - ./uploads:/var/www/html/uploads
+      - ./.env:/var/www/html/.env
+      - ./logs:/var/log
+      - ./README.html:/var/www/html/index.php
+    command: >
+      sh -c "composer install --no-interaction --optimize-autoloader &&
+           php-fpm"
+    depends_on:
+      setup:
+        condition: service_healthy
+    networks:
+      - tribe_network
+
+  # PHP 8 with FPM for Junction
+  php_junction:
+    image: tribeframework/tribe-core:v1.0
+    platform: linux/amd64
+    container_name: ${PROJECT_NAME}_php_junction
+    restart: unless-stopped
+    volumes:
+      - ./applications/junction/dist:/var/www/html
+      - ./uploads:/var/www/html/uploads
+      - ./.env:/var/www/html/.env
+      - ./logs:/var/log
+    command: >
+      sh -c "composer install --no-interaction --optimize-autoloader &&
+           php-fpm"
+    depends_on:
+      setup:
+        condition: service_healthy
+    networks:
+      - tribe_network
+
+  # PHP 8 with FPM for Dist PHP
+  php_dist:
+    image: tribeframework/tribe-core:v1.0
+    platform: linux/amd64
+    container_name: ${PROJECT_NAME}_php_dist
+    restart: unless-stopped
+    volumes:
+      - ./uploads/sites/dist-php:/var/www/html
+      - ./uploads:/var/www/html/uploads
+      - ./.env:/var/www/html/.env
+      - ./logs:/var/log
+    command: >
+      sh -c "if [ -f composer.json ]; then composer install --no-interaction --optimize-autoloader; fi &&
+           php-fpm"
+    depends_on:
+      setup:
+        condition: service_healthy
+    networks:
+      - tribe_network
+
+  # MySQL Daily Backup Service
+  mysql_backup:
+    image: mysql:9
+    container_name: ${PROJECT_NAME}_mysql_backup
+    restart: unless-stopped
+    volumes:
+      - ./uploads/backups:/backups
+      - ./config/backup.sh:/backup.sh:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - MYSQL_PWD=${DB_ROOT_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - PROJECT_NAME=${PROJECT_NAME}
+    command: ["bash", "/backup.sh"]
+    depends_on:
+      setup:
+        condition: service_healthy
+    networks:
+      - tribe_network
+
+  # Caddy Web Server (Tribe) with SSL
+  caddy_tribe:
+    image: caddy:2-alpine
+    container_name: ${PROJECT_NAME}_caddy_tribe
+    restart: unless-stopped
+    ports:
+      - "${TRIBE_PORT:-12000}:80"
+    volumes:
+      - ./applications/tribe:/var/www/html
+      - ./uploads:/var/www/html/uploads
+      - ./.env:/var/www/html/.env
+      - ./README.html:/var/www/html/index.php
+      - ./config/tribe/Caddyfile:/etc/caddy/Caddyfile
+      - ./logs:/var/log/caddy
+      - tribe_caddy_data:/data
+      - tribe_caddy_config:/config
+    depends_on:
+      setup:
+        condition: service_healthy
+      php_tribe:
+        condition: service_started
+    networks:
+      - tribe_network
+
+  # phpMyAdmin for database management
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5
+    platform: linux/amd64
+    container_name: ${PROJECT_NAME}_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "${PHPMYADMIN_PORT:-12001}:80"
+    environment:
+      PMA_HOST: ${DB_HOST}
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 2G
+    depends_on:
+      setup:
+        condition: service_healthy
+    networks:
+      - tribe_network
+
+  # Caddy Web Server (Junction) with SSL
+  caddy_junction:
+    image: caddy:2-alpine
+    container_name: ${PROJECT_NAME}_caddy_junction
+    restart: unless-stopped
+    ports:
+      - "${JUNCTION_PORT:-12002}:80"
+    volumes:
+      - ./applications/junction/dist:/var/www/html
+      - ./uploads:/var/www/html/uploads
+      - ./.env:/var/www/html/.env
+      - ./config/junction/Caddyfile:/etc/caddy/Caddyfile
+      - ./logs:/var/log/caddy
+      - junction_caddy_data:/data
+      - junction_caddy_config:/config
+    depends_on:
+      setup:
+        condition: service_healthy
+      php_junction:
+        condition: service_started
+    networks:
+      - tribe_network
+
+  # Caddy Static Site Server - Single site from uploads/sites/dist
+  caddy_dist:
+    image: caddy:2-alpine
+    container_name: ${PROJECT_NAME}_caddy_dist
+    restart: unless-stopped
+    ports:
+      - "${DIST_PORT:-12003}:80"
+    volumes:
+      - ./uploads/sites/dist:/srv
+      - ./config/dist/Caddyfile:/etc/caddy/Caddyfile
+      - ./logs:/var/log/caddy
+    depends_on:
+      setup:
+        condition: service_healthy
+    networks:
+      - tribe_network
+
+  # Caddy Web Server (Dist PHP) with SSL
+  caddy_php_dist:
+    image: caddy:2-alpine
+    container_name: ${PROJECT_NAME}_caddy_php_dist
+    restart: unless-stopped
+    ports:
+      - "${DIST_PHP_PORT:-12004}:80"
+    volumes:
+      - ./uploads/sites/dist-php:/var/www/html
+      - ./uploads:/var/www/html/uploads
+      - ./.env:/var/www/html/.env
+      - ./config/dist-php/Caddyfile:/etc/caddy/Caddyfile
+      - ./logs:/var/log/caddy
+      - dist_php_caddy_data:/data
+      - dist_php_caddy_config:/config
+    depends_on:
+      setup:
+        condition: service_healthy
+      php_dist:
+        condition: service_started
+    networks:
+      - tribe_network
+
+  # FileBrowser for file management
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: ${PROJECT_NAME}_filebrowser
+    restart: unless-stopped
+    ports:
+      - "${FILEBROWSER_PORT:-12005}:80"
+    volumes:
+      - ./uploads:/srv
+      - ./uploads/filebrowser:/database
+    environment:
+      - FB_DATABASE=/database/filebrowser.db
+      - FB_ROOT=/srv
+      - FB_PORT=80
+      - FB_ADDRESS=0.0.0.0
+    depends_on:
+      setup:
+        condition: service_healthy
+    networks:
+      - tribe_network
+
+  # Typesense Search Engine
+  typesense:
+    image: typesense/typesense:29.0
+    container_name: ${PROJECT_NAME}_typesense
+    restart: unless-stopped
+    ports:
+      - "${TYPESENSE_PORT:-12006}:8108"
+    volumes:
+      - ./uploads/typesense:/data
+    environment:
+      - TYPESENSE_DATA_DIR=/data
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY:-xyz}
+      - TYPESENSE_ENABLE_CORS=true
+    command: >
+      sh -c "
+        mkdir -p /data &&
+        /opt/typesense-server --data-dir /data --api-key \$TYPESENSE_API_KEY --enable-cors
+      "
+    depends_on:
+      setup:
+        condition: service_healthy
+    networks:
+      - tribe_network
+
+# Tribe Network
+networks:
+  tribe_network:
+    driver: bridge
+    name: tribe_network
+    #external: true
+
+volumes:
+  junction_caddy_data:
+  junction_caddy_config:
+  tribe_caddy_data:
+  tribe_caddy_config:
+  dist_php_caddy_data:
+  dist_php_caddy_config:
+  filebrowser_data:
+  mysql_data:
+    driver: local
+  whisper_models:
+    driver: local
