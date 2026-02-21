@@ -55,7 +55,7 @@ services:
       - ./uploads:/var/www/html/uploads
       - ./.env:/var/www/html/.env
       - ./logs:/var/log
-      - ./README.html:/var/www/html/index.php
+      - ./applications/tribe/index.php:/var/www/html/index.php
     command: >
       sh -c "composer install --no-interaction --optimize-autoloader &&
            php-fpm"
@@ -138,7 +138,7 @@ services:
       - ./applications/tribe:/var/www/html
       - ./uploads:/var/www/html/uploads
       - ./.env:/var/www/html/.env
-      - ./README.html:/var/www/html/index.php
+      - ./applications/tribe/index.php:/var/www/html/index.php
       - ./config/tribe/Caddyfile:/etc/caddy/Caddyfile
       - ./logs:/var/log/caddy
       - tribe_caddy_data:/data
