@@ -1,0 +1,280 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+$font-family-sans-serif: "IBM Plex Mono", serif !default;
+$display-font-family: "IBM Plex Mono", serif !default;
+
+$primary:       #000000 !default;
+$secondary:     #cccccc !default;
+$success:       #00ff00 !default;
+$info:          #0000ff !default;
+$warning:       #ffff00 !default;
+$danger:        #ff0000 !default;
+$light:         #eeeeee !default;
+$dark:          #333333 !default;
+
+$enable-rounded: false !default;
+$enable-negative-margins:     true !default;
+$enable-cssgrid:              true !default;
+
+$spacer: 1rem !default;
+$spacers: (
+  0: 0,
+  1: $spacer * .25,
+  2: $spacer * .5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+  6: $spacer * 4.5,
+  7: $spacer * 6,
+  8: $spacer * 7.5,
+  9: $spacer * 9,
+  10: $spacer * 12,
+) !default;
+
+@import "node_modules/bootstrap/scss/bootstrap";
+@import "node_modules/animate.css/animate";
+
+.flame-bg {
+	background: linear-gradient(0deg, rgba(153,51,153,1) 0%, rgba(255,51,153,1) 100%);
+	background-color: rgba(0, 0, 0, 0);
+	background-position-x: 0%;
+	background-position-y: 0%;
+	background-repeat: repeat;
+	background-attachment: scroll;
+	background-image: linear-gradient(0deg, rgb(153, 51, 153) 0%, rgb(255, 51, 153) 100%);
+	background-size: auto;
+	background-origin: padding-box;
+	background-clip: border-box;
+	height: 100vh;
+	width: 100vw;
+}
+
+@import "ember-power-select";
+
+
+// ============================================================
+// Tribe Manual Styles
+// ============================================================
+
+.tribe-manual {
+  min-height: 100vh;
+  background: #fafafa;
+}
+
+.manual-header {
+  border-bottom: 4px solid $primary;
+
+  .lead {
+    color: #aaa !important;
+  }
+
+  .input-group-text {
+    border-color: #555;
+    color: #999;
+  }
+
+  .form-control {
+    border-color: #555;
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+// Section Dividers
+.section-divider {
+  border-top: 3px solid $primary;
+  margin: 40px 0 20px;
+  position: relative;
+}
+
+.section-label {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fafafa;
+  padding: 0 20px;
+  color: $primary;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+// Step Cards
+.step-card {
+  border: 1px solid #ddd;
+  margin-bottom: -1px;
+  background: #fff;
+  transition: box-shadow 0.15s ease;
+
+  &:first-child {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &.open {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    .step-body {
+      display: block;
+    }
+
+    .step-chevron {
+      transform: rotate(180deg);
+    }
+
+    .step-header {
+      border-bottom: 1px solid #eee;
+    }
+  }
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s ease;
+
+  &:hover {
+    background: #f8f8f8;
+  }
+}
+
+.step-badge {
+  background: $primary;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.step-title {
+  font-weight: 600;
+  flex-grow: 1;
+}
+
+.step-chevron {
+  color: #999;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.step-body {
+  display: none;
+  padding: 20px;
+}
+
+// Command Blocks
+.command-block {
+  background: #1a1a1a;
+  color: #d4d4d4;
+  padding: 16px 20px;
+  margin: 10px 0;
+  position: relative;
+  font-size: 0.875rem;
+  overflow-x: auto;
+
+  code {
+    background: transparent;
+    color: #d4d4d4;
+    padding: 0;
+    font-family: "IBM Plex Mono", monospace;
+  }
+
+  .comment {
+    color: #6a9955;
+    font-style: italic;
+  }
+}
+
+.copy-btn-block {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #444;
+  border-color: #555;
+  color: #ccc;
+  font-size: 0.75rem;
+  padding: 2px 10px;
+
+  &:hover {
+    background: #555;
+    border-color: #666;
+    color: #fff;
+  }
+
+  &.copied {
+    background: #198754 !important;
+    border-color: #198754 !important;
+    color: #fff !important;
+  }
+}
+
+// Method Items (platform-specific cards)
+.method-item {
+  border-left: 4px solid $primary;
+}
+
+// Service Link Cards
+.service-link-card {
+  border: 1px solid #dee2e6;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: $primary;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  h6 {
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  a {
+    text-decoration: none;
+    color: $primary;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Repository Cards
+.repo-card {
+  border: 1px solid #ddd;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: $dark;
+
+  &:hover {
+    border-color: $primary;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    color: $primary;
+  }
+
+  h6 {
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: $primary;
+  }
+}
