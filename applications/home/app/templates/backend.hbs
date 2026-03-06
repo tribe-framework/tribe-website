@@ -1,0 +1,223 @@
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="backend" />
+
+  <div class="container pb-5">
+
+    <div class="steps-container mb-5">
+
+      <div class="step-card" data-step-name="Check Docker Installation verify docker version">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">1</span>
+          <span class="step-title">Check Docker Installation</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Verify Docker and Docker Compose are installed before proceeding:</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div><strong>Docker:</strong><br><code>docker --version</code></div>
+                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('docker --version', this)">Copy</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div><strong>Docker Compose:</strong><br><code>docker compose version</code></div>
+                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('docker compose version', this)">Copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-warning mt-3 mb-0">
+            <strong>Not installed?</strong> Go back to the Prerequisites page to install Docker, or visit <a href="https://www.docker.com/get-started/" target="_blank">docker.com/get-started</a>.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" data-step-name="Navigate to Project Directory backend docker-compose.yml">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">2</span>
+          <span class="step-title">Navigate to Project Directory</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Open your terminal and navigate to the directory containing your <code>docker-compose.yml</code> file:</p>
+          <div class="command-block">
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('cd /path/to/your/project', this)">Copy</button>
+            <code><span class="comment"># Replace with your actual project path</span><br>cd /path/to/your/project</code>
+          </div>
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <div class="card method-item">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div><strong>Windows:</strong><br><code>cd C:\Users\YourName\Documents\MyProject</code></div>
+                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('cd C:\\Users\\YourName\\Documents\\MyProject', this)">Copy</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div><strong>macOS / Linux:</strong><br><code>cd ~/Documents/MyProject</code></div>
+                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('cd ~/Documents/MyProject', this)">Copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-warning mt-3 mb-0">
+            <strong>Important:</strong> Make sure you're in the directory that contains your <code>docker-compose.yml</code> file before running the next commands.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" data-step-name="Start Backend Junction Tribe API docker compose up build">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">3</span>
+          <span class="step-title">Start Backend (Junction + Tribe API)</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Start all backend services with Docker Compose:</p>
+          <div class="command-block">
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker compose up -d --build', this)">Copy</button>
+            <code>docker compose up -d --build</code>
+          </div>
+
+          <div class="alert alert-success mt-3">
+            <h6 class="alert-heading mb-1">What this command does:</h6>
+            <p class="mb-0"><code>up</code> starts the containers &bull; <code>-d</code> runs in background (detached) &bull; <code>--build</code> rebuilds images before starting</p>
+          </div>
+
+          <p class="mt-3 mb-1"><strong>For older Docker versions:</strong></p>
+          <div class="command-block">
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker-compose up -d --build', this)">Copy</button>
+            <code>docker-compose up -d --build</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" data-step-name="Access Backend Services URLs Junction Tribe phpMyAdmin API endpoints ports">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">4</span>
+          <span class="step-title">Access Backend Services</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Once your backend is running, access the following services in your browser:</p>
+
+          <h6 class="mt-3 mb-2">Main Services</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="service-link-card">
+                <h6>Junction (Backend Management)</h6>
+                <a href="http://junction.localhost:12002" target="_blank" class="d-block mb-1 font-monospace">http://junction.localhost:12002</a>
+                <small class="text-muted">No-code backend service</small>
+                <div class="mt-2"><strong>Credentials:</strong> Username: <code>junction</code> | Password: <code>password</code></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="service-link-card">
+                <h6>Tribe Framework</h6>
+                <a href="http://tribe.localhost:12000" target="_blank" class="d-block mb-1 font-monospace">http://tribe.localhost:12000</a>
+                <small class="text-muted">Main Tribe Framework interface</small>
+              </div>
+            </div>
+          </div>
+
+          <h6 class="mt-4 mb-2">Development Tools</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="service-link-card">
+                <h6>Tribe APIs</h6>
+                <a href="http://tribe.localhost:12000/api.php/webapp/0" target="_blank" class="d-block mb-1 font-monospace">http://tribe.localhost:12000/api.php/webapp/0</a>
+                <small class="text-muted">RESTful API endpoints</small>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="service-link-card">
+                <h6>phpMyAdmin</h6>
+                <a href="http://tribe.localhost:12000/phpmyadmin" target="_blank" class="d-block mb-1 font-monospace">http://tribe.localhost:12000/phpmyadmin</a>
+                <small class="text-muted">Web interface for MySQL database management</small>
+              </div>
+            </div>
+          </div>
+
+          <h6 class="mt-4 mb-2">Static Hosting &amp; Custom Code</h6>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="service-link-card">
+                <h6>Static / JAM Stack</h6>
+                <a href="http://dist.localhost:12003" target="_blank" class="d-block mb-1 font-monospace">dist.localhost:12003</a>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="service-link-card">
+                <h6>Static + PHP</h6>
+                <a href="http://dist-php.localhost:12004" target="_blank" class="d-block mb-1 font-monospace">dist-php.localhost:12004</a>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="service-link-card">
+                <h6>Custom PHP</h6>
+                <a href="http://tribe.localhost:12000/custom/" target="_blank" class="d-block mb-1 font-monospace">tribe.localhost:12000/custom/</a>
+              </div>
+            </div>
+          </div>
+
+          <h6 class="mt-4 mb-2">Database</h6>
+          <div class="service-link-card">
+            <h6>Direct MySQL Access</h6>
+            <span class="d-block mb-1 font-monospace text-muted">mysql.localhost:3306</span>
+            <small class="text-muted">Use a MySQL client (not a browser)</small>
+            <div class="mt-2"><strong>Connection:</strong> Host: <code>mysql.localhost</code> | Port: <code>3306</code> | Database: <code>tribe</code> | User: <code>root</code> | Password: <code>root</code></div>
+          </div>
+
+          <div class="alert alert-info mt-3 mb-0">
+            <strong>Tip:</strong> All services use subdomain routing. If you're having trouble accessing them, ensure your system can resolve <code>*.localhost</code> domains. Most modern systems handle this automatically.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" data-step-name="Stop Backend Services docker compose down restart logs">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">5</span>
+          <span class="step-title">Stop Backend Services</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>When you want to stop and remove the containers:</p>
+          <div class="command-block">
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker compose down', this)">Copy</button>
+            <code>docker compose down</code>
+          </div>
+
+          <p class="mt-3 mb-1"><strong>For older Docker versions:</strong></p>
+          <div class="command-block">
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker-compose down', this)">Copy</button>
+            <code>docker-compose down</code>
+          </div>
+
+          <div class="alert alert-success mt-3 mb-0">
+            <h6 class="alert-heading mb-1">Useful commands:</h6>
+            <p class="mb-0">
+              <code>docker-compose logs</code> &mdash; View logs &bull;
+              <code>docker-compose ps</code> &mdash; List running containers &bull;
+              <code>docker-compose restart</code> &mdash; Restart services
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <ManualFooter />
+
+  </div>
+</div>
+
+<ManualScripts />

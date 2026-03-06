@@ -1,0 +1,184 @@
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="frontend" />
+
+  <div class="container pb-5">
+
+    <div class="steps-container mb-5">
+
+      <div class="step-card" data-step-name="Install from Template tribe git template frontend">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">1</span>
+          <span class="step-title">Install from Template</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Use the tribe-framework Git template for your frontend application.</p>
+          <div class="text-center my-3">
+            <a href="https://github.com/new?template_name=tribe&template_owner=tribe-framework" target="_blank" class="btn btn-info btn-lg me-2">
+              Use the Git Template
+            </a>
+            <a href="https://github.com/tribe-framework/tribe" target="_blank" class="btn btn-outline-dark btn-lg">
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" data-step-name="Open Command Line navigate directory terminal cd">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">2</span>
+          <span class="step-title">Open Command Line (Tribe folder)</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Open your terminal and navigate to the directory that has been cloned from the template:</p>
+          <div class="command-block">
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('cd /path/to/frontend/directory', this)">Copy</button>
+            <code><span class="comment"># Navigate to your Tribe directory</span><br>cd /path/to/tribe/directory</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" data-step-name="Install EmberJS in project ember-init script setup">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">3</span>
+          <span class="step-title">Install EmberJS in Project</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Run the initialization script to set up EmberJS within your project. You'll be prompted to enter the name of your application directory.</p>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6><strong>Linux &amp; macOS:</strong></h6>
+                  <div class="command-block mb-0">
+                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('chmod +x ./config/ember/ember-init.sh; bash ./config/ember/ember-init.sh;', this)">Copy</button>
+                    <code>chmod +x ./config/ember/ember-init.sh; bash ./config/ember/ember-init.sh;</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6><strong>Windows:</strong></h6>
+                  <div class="command-block mb-0">
+                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('powershell -ExecutionPolicy Bypass -File .\\config\\ember\\ember-init.ps1', this)">Copy</button>
+                    <code>powershell -ExecutionPolicy Bypass -File .\config\ember\ember-init.ps1</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info mt-3 mb-0">
+            <strong>Note:</strong> When prompted, enter the name of your EmberJS application directory.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" data-step-name="Open Command Line navigate directory terminal cd">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">4</span>
+          <span class="step-title">Open Command Line (Ember application)</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Open your terminal and navigate to the Ember directory that got created:</p>
+          <div class="command-block">
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('cd applications/home', this)">Copy</button>
+            <code><span class="comment"># Navigate to your Ember application directory</span><br>cd /path/to/applications/ember/directory</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" data-step-name="Start Development Server ember serve localhost 4200 hot-reload">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">5</span>
+          <span class="step-title">Start Development (Serve)</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Serve the EmberJS application to start coding:</p>
+
+          <div class="command-block">
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('ember s', this)">Copy</button>
+            <code>ember s</code>
+          </div>
+
+          <div class="alert alert-success mt-3">
+            <h6 class="alert-heading mb-1">EmberJS Development Server:</h6>
+            <p class="mb-0">Your frontend will be available at: <a href="http://localhost:4200" target="_blank" class="fw-bold">localhost:4200</a></p>
+          </div>
+
+          <div class="alert alert-info mb-0">
+            <strong>Tip:</strong> The development server includes hot-reload functionality. Changes to your code will automatically refresh in the browser.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" data-step-name="Build for Production ember build dist deploy">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">6</span>
+          <span class="step-title">Build for Production</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>When you're ready to deploy, build your application for production:</p>
+          <div class="command-block">
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('ember build -prod', this)">Copy</button>
+            <code>ember build -prod</code>
+          </div>
+          <div class="alert alert-success mt-3 mb-0">
+            <h6 class="alert-heading mb-1">Build Output:</h6>
+            <p class="mb-0">The production-ready build will be generated in the <code>dist/</code> directory.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" data-step-name="Deploy to Production Netlify Cloudflare hosting">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">7</span>
+          <span class="step-title">Deploy to Production</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Deploy your built application to your preferred hosting platform:</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Netlify</h5>
+                  <p class="card-text small">Easy deployment with continuous integration</p>
+                  <a href="https://www.netlify.com" target="_blank" class="btn btn-outline-dark">Deploy to Netlify</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Cloudflare Pages</h5>
+                  <p class="card-text small">Fast, secure deployment with global CDN</p>
+                  <a href="https://pages.cloudflare.com" target="_blank" class="btn btn-outline-dark">Deploy to Cloudflare</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-info mt-3 mb-0">
+            <strong>Deployment tip:</strong> Both platforms support drag-and-drop deployment of your <code>dist/</code> folder or Git-based continuous deployment.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <ManualFooter />
+
+  </div>
+</div>
+
+<ManualScripts />

@@ -1,0 +1,53 @@
+{{!-- Shared Manual JavaScript --}}
+<script>
+  function toggleStep(header) {
+    var card = header.closest('.step-card');
+    card.classList.toggle('open');
+  }
+
+  function copyCmd(text, btn) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function() {
+        showCopied(btn);
+      });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showCopied(btn);
+    }
+  }
+
+  function showCopied(btn) {
+    var orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 2000);
+  }
+
+  function filterSteps(query) {
+    var q = query.toLowerCase().trim();
+    var cards = document.querySelectorAll('.step-card');
+    var visible = 0;
+    cards.forEach(function(card) {
+      var name = (card.getAttribute('data-step-name') || '').toLowerCase();
+      var title = card.querySelector('.step-title');
+      var titleText = title ? title.textContent.toLowerCase() : '';
+      var match = !q || name.indexOf(q) !== -1 || titleText.indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    var counter = document.getElementById('search-count');
+    if (q && counter) {
+      counter.textContent = visible + ' step' + (visible !== 1 ? 's' : '') + ' found';
+    } else if (counter) {
+      counter.textContent = '';
+    }
+  }
+</script>

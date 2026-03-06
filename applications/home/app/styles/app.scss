@@ -278,3 +278,40 @@ $spacers: (
     color: $primary;
   }
 }
+
+.manual-page-nav {
+  border-bottom: none;
+
+  .nav-tabs {
+    border-bottom: 3px solid $primary;
+  }
+
+  .nav-link {
+    color: #666;
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.03em;
+    border: 1px solid transparent;
+    border-bottom: none;
+    padding: 10px 20px;
+    transition: color 0.15s ease, background 0.15s ease;
+
+    &:hover {
+      color: $primary;
+      background: #f0f0f0;
+      border-color: #ddd #ddd transparent;
+    }
+
+    &.active {
+      color: $primary;
+      background: #fafafa;
+      border: 3px solid #000;
+      border-bottom: 3px solid #fafafa;
+      margin-bottom: -3px;
+    }
+
+    i {
+      font-size: 0.8rem;
+    }
+  }
+}
