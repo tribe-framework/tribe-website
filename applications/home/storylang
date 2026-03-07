@@ -109,7 +109,7 @@ function parseHbsFile(filePath) {
   const helpers = [...helpersSet];
 
   const modifiersSet = new Set(
-    [...src.matchAll(/\{\{([\w-]+-modifier|autofocus|tooltip|play-when|[\w-]+)\s/g)]
+    [...src.matchAll(/\{\{([\w-]+-modifier|tooltip|[\w-]+)\s/g)]
       .map(([, name]) => name)
       .filter((n) => !helpers.includes(n) && !builtinHelpers.has(n))
   );
@@ -199,6 +199,65 @@ function buildTypes(routes, components) {
   return [...typeMap.entries()].map(([slug, used_in]) => ({ slug, used_in }));
 }
 
+function compactJSON(value, indent = 2) {
+  function isLeafArray(arr) {
+    if (!Array.isArray(arr) || arr.length === 0) return false;
+    return arr.every((item) => {
+      if (typeof item === 'string') return true;
+      if (item && typeof item === 'object' && !Array.isArray(item)) {
+        const keys = Object.keys(item);
+        return keys.length === 1 && typeof item[keys[0]] === 'string';
+      }
+      return false;
+    });
+  }
+
+  function serialize(val, depth) {
+    const pad = ' '.repeat(indent * depth);
+    const childPad = ' '.repeat(indent * (depth + 1));
+
+    if (val === null) return 'null';
+    if (typeof val !== 'object') return JSON.stringify(val);
+
+    if (Array.isArray(val)) {
+      if (val.length === 0) return '[]';
+      if (isLeafArray(val)) {
+        const items = val.map((item) => {
+          if (typeof item === 'string') return JSON.stringify(item);
+          const k = Object.keys(item)[0];
+          return `{ ${JSON.stringify(k)}: ${JSON.stringify(item[k])} }`;
+        });
+        return '[' + items.join(', ') + ']';
+      }
+      const items = val.map((item) => childPad + serialize(item, depth + 1));
+      return '[\n' + items.join(',\n') + '\n' + pad + ']';
+    }
+
+    const keys = Object.keys(val);
+    if (keys.length === 0) return '{}';
+    const entries = keys.map((k) => childPad + JSON.stringify(k) + ': ' + serialize(val[k], depth + 1));
+    return '{\n' + entries.join(',\n') + '\n' + pad + '}';
+  }
+
+  return serialize(value, 0);
+}
+
+function stripEmpty(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(stripEmpty);
+  }
+  if (obj !== null && typeof obj === 'object') {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+      if (Array.isArray(v) && v.length === 0) continue;
+      if (v !== null && typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 0) continue;
+      out[k] = stripEmpty(v);
+    }
+    return out;
+  }
+  return obj;
+}
+
 function mergeByKey(existing, scanned, key) {
   const existingMap = new Map(existing.map((e) => [e[key], e]));
   const scannedMap = new Map(scanned.map((s) => [s[key], s]));
@@ -217,11 +276,11 @@ function mergeByKey(existing, scanned, key) {
   const outputFile = path.join(configDir, 'storylang.json');
 
   if (!fs.existsSync(appDir)) {
-    console.error(`Could not find app/ directory at ${appDir}. Make sure you are running from the root of your Ember project.`);
+    console.error(`Could not find app/ directory at ${appDir}. Make sure you are running from the folder of your Ember project.`);
     process.exit(1);
   }
 
-  console.log('📖  storylang — scanning project files…\n');
+  console.log('Storylang — scanning project files…\n');
 
   const components = buildComponents(appDir);
   const routes = buildRoutes(appDir);
@@ -245,7 +304,7 @@ function mergeByKey(existing, scanned, key) {
   };
 
   if (!fs.existsSync(configDir)) fs.mkdirSync(configDir, { recursive: true });
-  fs.writeFileSync(outputFile, JSON.stringify(merged, null, 2) + '\n', 'utf8');
+  fs.writeFileSync(outputFile, compactJSON(stripEmpty(merged)) + '\n', 'utf8');
 
   console.log(`✅  config/storylang.json updated`);
   console.log(`    routes:     ${routes.length}`);

@@ -1,177 +1,58 @@
 {
-  "types": [],
   "components": [
     {
-      "name": "manual-footer",
-      "tracked_vars": [],
-      "inherited_args": [],
-      "actions": [],
-      "helpers": [],
-      "modifiers": [],
-      "services": []
+      "name": "manual-footer"
     },
     {
-      "name": "manual-header",
-      "tracked_vars": [],
-      "inherited_args": [],
-      "actions": [],
-      "helpers": [],
-      "modifiers": [],
-      "services": []
+      "name": "manual-header"
     },
     {
       "name": "manual-page-nav",
-      "tracked_vars": [],
-      "inherited_args": [
-        {
-          "route": "var"
-        }
-      ],
-      "actions": [],
-      "helpers": [],
-      "modifiers": [],
-      "services": []
+      "inherited_args": [{ "route": "var" }]
     },
     {
-      "name": "manual-scripts",
-      "tracked_vars": [],
-      "inherited_args": [],
-      "actions": [],
-      "helpers": [],
-      "modifiers": [],
-      "services": []
+      "name": "manual-scripts"
     },
     {
-      "name": "welcome-flame",
-      "tracked_vars": [],
-      "inherited_args": [],
-      "actions": [],
-      "helpers": [],
-      "modifiers": [],
-      "services": []
+      "name": "welcome-flame"
     }
   ],
   "routes": [
     {
       "name": "application",
-      "tracked_vars": [],
-      "get_vars": [],
-      "actions": [
-        "did-transition",
-        "will-transition"
-      ],
-      "helpers": [],
-      "services": [
-        "types"
-      ],
-      "components": [
-        "basic-dropdown-wormhole"
-      ],
-      "types": []
+      "actions": ["did-transition", "will-transition"],
+      "services": ["types"],
+      "components": ["basic-dropdown-wormhole"]
     },
     {
       "name": "backend",
-      "tracked_vars": [],
-      "get_vars": [],
-      "actions": [],
-      "helpers": [],
-      "services": [],
-      "components": [
-        "manual-header",
-        "manual-page-nav",
-        "manual-footer",
-        "manual-scripts"
-      ],
-      "types": []
+      "components": ["manual-header", "manual-page-nav", "manual-footer", "manual-scripts"]
     },
     {
       "name": "frontend",
-      "tracked_vars": [],
-      "get_vars": [],
-      "actions": [],
-      "helpers": [],
-      "services": [],
-      "components": [
-        "manual-header",
-        "manual-page-nav",
-        "manual-footer",
-        "manual-scripts"
-      ],
-      "types": []
+      "components": ["manual-header", "manual-page-nav", "manual-footer", "manual-scripts"]
     },
     {
       "name": "index",
-      "tracked_vars": [],
-      "get_vars": [],
-      "actions": [],
-      "helpers": [],
-      "services": [],
-      "components": [
-        "manual-header",
-        "manual-page-nav",
-        "link-to",
-        "manual-footer",
-        "manual-scripts"
-      ],
-      "types": []
+      "components": ["manual-header", "manual-page-nav", "link-to", "manual-footer", "manual-scripts"]
     },
     {
       "name": "prerequisites",
-      "tracked_vars": [],
-      "get_vars": [],
-      "actions": [],
-      "helpers": [],
-      "services": [],
-      "components": [
-        "manual-header",
-        "manual-page-nav",
-        "manual-footer",
-        "manual-scripts"
-      ],
-      "types": []
+      "components": ["manual-header", "manual-page-nav", "manual-footer", "manual-scripts"]
     }
   ],
   "services": [
     {
       "name": "cookies",
-      "tracked_vars": [
-        {
-          "days": "int"
-        }
-      ],
-      "actions": [
-        "set-cookie",
-        "get-cookie",
-        "erase-cookie"
-      ],
-      "services": []
+      "tracked_vars": [{ "days": "int" }],
+      "actions": ["set-cookie", "get-cookie", "erase-cookie"]
     },
     {
       "name": "types",
-      "tracked_vars": [
-        {
-          "json": "string"
-        }
-      ],
-      "actions": [
-        "fetch-again"
-      ],
-      "services": [
-        "store"
-      ]
+      "tracked_vars": [{ "json": "string" }],
+      "actions": ["fetch-again"],
+      "services": ["store"]
     }
   ],
-  "helpers": [],
-  "modifiers": [
-    {
-      "name": "did-insert",
-      "args": [],
-      "services": []
-    },
-    {
-      "name": "ripple",
-      "args": [],
-      "services": []
-    }
-  ]
+  "modifiers": [{ "name": "did-insert" }, { "name": "ripple" }]
 }
