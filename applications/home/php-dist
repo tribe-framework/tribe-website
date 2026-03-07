@@ -1,0 +1,134 @@
+#!/usr/bin/env node
+'use strict';
+
+/**
+ * php-dist — single-file edition
+ *
+ * Usage: node php-dist
+ *
+ * Reads dist/index.html, injects PHP includes, strips <title> and
+ * <meta name="description">, prepends _init.php, and writes dist/index.php.
+ * Replicates the behaviour of `php sync-dist.php`.
+ */
+
+const fs   = require('fs');
+const path = require('path');
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Minimal colour helpers — same feel as the PHP tput calls */
+const green = (s) => `\x1b[32m${s}\x1b[0m`;
+const red   = (s) => `\x1b[31m${s}\x1b[0m`;
+const hr    = '~~~~~~~~~~';
+
+/**
+ * Remove every occurrence of a tag (and its contents) that matches a
+ * predicate.  We do this with a regex-free string walk so we never need
+ * a full DOM parser dependency.
+ *
+ * @param {string} html
+ * @param {string} tagName  — lower-case tag name, e.g. 'title' or 'meta'
+ * @param {(attrs: string) => boolean} predicate
+ * @returns {string}
+ */
+function removeTags(html, tagName, predicate) {
+  const result = [];
+  let i = 0;
+
+  while (i < html.length) {
+    // Look for the opening '<'
+    const openAngle = html.indexOf('<', i);
+    if (openAngle === -1) { result.push(html.slice(i)); break; }
+
+    // Collect everything up to this '<'
+    result.push(html.slice(i, openAngle));
+
+    // Find the end of this tag
+    const closeAngle = html.indexOf('>', openAngle);
+    if (closeAngle === -1) { result.push(html.slice(openAngle)); break; }
+
+    const rawTag   = html.slice(openAngle + 1, closeAngle); // e.g. 'meta name="description" ...'
+    const isSelfClosing = rawTag.endsWith('/');
+    const tagBody  = isSelfClosing ? rawTag.slice(0, -1).trim() : rawTag.trim();
+    const spaceIdx = tagBody.search(/[\s/]/);
+    const tag      = (spaceIdx === -1 ? tagBody : tagBody.slice(0, spaceIdx)).toLowerCase();
+    const attrs    = spaceIdx === -1 ? '' : tagBody.slice(spaceIdx);
+
+    if (tag === tagName && predicate(attrs)) {
+      // For void / self-closing elements (like <meta>) there is no closing tag.
+      const voidElements = new Set(['area','base','br','col','embed','hr','img','input',
+                                    'link','meta','param','source','track','wbr']);
+      if (voidElements.has(tagName) || isSelfClosing) {
+        // Just skip the tag entirely — move past '>'
+        i = closeAngle + 1;
+      } else {
+        // Skip tag + inner content + closing tag
+        const closing = `</${tagName}>`;
+        const closeIdx = html.toLowerCase().indexOf(closing, closeAngle + 1);
+        if (closeIdx === -1) {
+          // No closing tag found — skip just the opening tag
+          i = closeAngle + 1;
+        } else {
+          i = closeIdx + closing.length;
+        }
+      }
+    } else {
+      // Not a match — keep it
+      result.push(`<${rawTag}>`);
+      i = closeAngle + 1;
+    }
+  }
+
+  return result.join('');
+}
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+
+(function main() {
+  const cwd       = process.cwd();
+  const inputFile = path.join(cwd, 'dist', 'index.html');
+  const outputFile = path.join(cwd, 'dist', 'index.php');
+
+  if (!fs.existsSync(inputFile)) {
+    console.log(hr);
+    console.log(red('Run "ember build -prod" before syncing with PHP.'));
+    console.log(hr);
+    process.exit(1);
+  }
+
+  let html = fs.readFileSync(inputFile, 'utf8');
+
+  // Inject PHP includes ---------------------------------------------------
+
+  // Before <title>: _head.php
+  html = html.replace('<title>', '<?php include_once("_head.php");?><title>');
+
+  // Before </head>: _head_footer.php
+  html = html.replace('</head>', '<?php include_once("_head_footer.php");?></head>');
+
+  // Before </body>: _body_footer.php
+  html = html.replace('</body>', '<?php include_once("_body_footer.php");?></body>');
+
+  // Remove <meta name="description"> ------------------------------------
+  html = removeTags(html, 'meta', (attrs) => {
+    // Match name="description" or name='description'
+    return /name\s*=\s*["']description["']/i.test(attrs);
+  });
+
+  // Remove <title>…</title> --------------------------------------------
+  html = removeTags(html, 'title', () => true);
+
+  // Prepend _init.php ---------------------------------------------------
+  html = '<?php include_once("_init.php");?>' + html;
+
+  // Write output --------------------------------------------------------
+  fs.writeFileSync(outputFile, html, 'utf8');
+
+  console.log(hr);
+  console.log(green('Middleware successfully installed. Synced "/dist" folder with PHP.'));
+  console.log(hr);
+})();

@@ -1,0 +1,177 @@
+{
+  "types": [],
+  "components": [
+    {
+      "name": "manual-footer",
+      "tracked_vars": [],
+      "inherited_args": [],
+      "actions": [],
+      "helpers": [],
+      "modifiers": [],
+      "services": []
+    },
+    {
+      "name": "manual-header",
+      "tracked_vars": [],
+      "inherited_args": [],
+      "actions": [],
+      "helpers": [],
+      "modifiers": [],
+      "services": []
+    },
+    {
+      "name": "manual-page-nav",
+      "tracked_vars": [],
+      "inherited_args": [
+        {
+          "route": "var"
+        }
+      ],
+      "actions": [],
+      "helpers": [],
+      "modifiers": [],
+      "services": []
+    },
+    {
+      "name": "manual-scripts",
+      "tracked_vars": [],
+      "inherited_args": [],
+      "actions": [],
+      "helpers": [],
+      "modifiers": [],
+      "services": []
+    },
+    {
+      "name": "welcome-flame",
+      "tracked_vars": [],
+      "inherited_args": [],
+      "actions": [],
+      "helpers": [],
+      "modifiers": [],
+      "services": []
+    }
+  ],
+  "routes": [
+    {
+      "name": "application",
+      "tracked_vars": [],
+      "get_vars": [],
+      "actions": [
+        "did-transition",
+        "will-transition"
+      ],
+      "helpers": [],
+      "services": [
+        "types"
+      ],
+      "components": [
+        "basic-dropdown-wormhole"
+      ],
+      "types": []
+    },
+    {
+      "name": "backend",
+      "tracked_vars": [],
+      "get_vars": [],
+      "actions": [],
+      "helpers": [],
+      "services": [],
+      "components": [
+        "manual-header",
+        "manual-page-nav",
+        "manual-footer",
+        "manual-scripts"
+      ],
+      "types": []
+    },
+    {
+      "name": "frontend",
+      "tracked_vars": [],
+      "get_vars": [],
+      "actions": [],
+      "helpers": [],
+      "services": [],
+      "components": [
+        "manual-header",
+        "manual-page-nav",
+        "manual-footer",
+        "manual-scripts"
+      ],
+      "types": []
+    },
+    {
+      "name": "index",
+      "tracked_vars": [],
+      "get_vars": [],
+      "actions": [],
+      "helpers": [],
+      "services": [],
+      "components": [
+        "manual-header",
+        "manual-page-nav",
+        "link-to",
+        "manual-footer",
+        "manual-scripts"
+      ],
+      "types": []
+    },
+    {
+      "name": "prerequisites",
+      "tracked_vars": [],
+      "get_vars": [],
+      "actions": [],
+      "helpers": [],
+      "services": [],
+      "components": [
+        "manual-header",
+        "manual-page-nav",
+        "manual-footer",
+        "manual-scripts"
+      ],
+      "types": []
+    }
+  ],
+  "services": [
+    {
+      "name": "cookies",
+      "tracked_vars": [
+        {
+          "days": "int"
+        }
+      ],
+      "actions": [
+        "set-cookie",
+        "get-cookie",
+        "erase-cookie"
+      ],
+      "services": []
+    },
+    {
+      "name": "types",
+      "tracked_vars": [
+        {
+          "json": "string"
+        }
+      ],
+      "actions": [
+        "fetch-again"
+      ],
+      "services": [
+        "store"
+      ]
+    }
+  ],
+  "helpers": [],
+  "modifiers": [
+    {
+      "name": "did-insert",
+      "args": [],
+      "services": []
+    },
+    {
+      "name": "ripple",
+      "args": [],
+      "services": []
+    }
+  ]
+}

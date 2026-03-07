@@ -1,0 +1,257 @@
+#!/usr/bin/env node
+'use strict';
+
+/**
+ * storylang — single-file edition
+ *
+ * Usage: node tribe storylang
+ *
+ * Scans the current Ember project and writes/updates config/storylang.json
+ * from the actual files that exist in the app/ directory.
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function toCamelCase(str) {
+  return str.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+}
+
+function toKebabCase(str) {
+  return str
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2')
+    .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+    .toLowerCase();
+}
+
+function walkDir(dir, filterFn = () => true) {
+  if (!fs.existsSync(dir)) return [];
+  const results = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...walkDir(fullPath, filterFn));
+    } else if (filterFn(entry.name, fullPath)) {
+      results.push(fullPath);
+    }
+  }
+  return results;
+}
+
+function nameFromPath(filePath, appDir, category) {
+  const rel = path.relative(path.join(appDir, category), filePath);
+  return rel
+    .replace(/\.(js|ts|hbs|scss|css)$/, '')
+    .split(path.sep)
+    .join('/');
+}
+
+// ---------------------------------------------------------------------------
+// Parsers
+// ---------------------------------------------------------------------------
+
+function parseJsFile(filePath) {
+  const src = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+
+  const trackedVars = [...src.matchAll(/@tracked\s+(\w+)\s*(?:=\s*([^;]+))?/g)].map(
+    ([, name, val]) => ({ [toKebabCase(name)]: inferType(val) })
+  );
+
+  const actions = [...src.matchAll(/@action\s*\n?\s*(?:async\s+)?(\w+)\s*\(/g)].map(
+    ([, name]) => toKebabCase(name)
+  );
+
+  const services = [...src.matchAll(/@service\s+(\w+)/g)].map(([, name]) => toKebabCase(name));
+
+  const getVars = [...src.matchAll(/queryParams\s*=\s*\{([^}]+)\}/gs)].flatMap(([, block]) =>
+    [...block.matchAll(/(\w+)\s*:/g)].map(([, k]) => ({ [toKebabCase(k)]: 'string' }))
+  );
+
+  return { trackedVars, actions, services, getVars };
+}
+
+function inferType(val = '') {
+  val = (val || '').trim();
+  if (val === 'false' || val === 'true') return 'bool';
+  if (val.startsWith('[')) return 'array';
+  if (val.startsWith('{') || val.startsWith('new Map') || val.startsWith('new Set')) return 'object';
+  if (/^\d+$/.test(val)) return 'int';
+  if (val.startsWith("'") || val.startsWith('"') || val.startsWith('`')) return 'string';
+  return 'string';
+}
+
+function parseHbsFile(filePath) {
+  if (!fs.existsSync(filePath)) return { inheritedArgs: [], helpers: [], modifiers: [], components: [] };
+
+  const src = fs.readFileSync(filePath, 'utf8');
+
+  const inheritedArgsSet = new Set(
+    [...src.matchAll(/@(\w[\w.]*)/g)]
+      .map(([, name]) => name.split('.')[0])
+      .filter((n) => !['ember', 'glimmer'].includes(n))
+  );
+  const inheritedArgs = [...inheritedArgsSet].map((name) => ({ [toKebabCase(name)]: 'var' }));
+
+  const builtinHelpers = new Set([
+    'if', 'unless', 'each', 'let', 'with', 'yield', 'outlet', 'component',
+    'on', 'get', 'concat', 'array', 'hash', 'log', 'action', 'mut',
+    'page-title', 'link-to', 'BasicDropdownWormhole',
+  ]);
+  const helpersSet = new Set(
+    [...src.matchAll(/\{\{([\w-]+)/g)]
+      .map(([, name]) => name)
+      .filter((n) => n.includes('-') && !builtinHelpers.has(n))
+  );
+  const helpers = [...helpersSet];
+
+  const modifiersSet = new Set(
+    [...src.matchAll(/\{\{([\w-]+-modifier|autofocus|tooltip|play-when|[\w-]+)\s/g)]
+      .map(([, name]) => name)
+      .filter((n) => !helpers.includes(n) && !builtinHelpers.has(n))
+  );
+  const modifiers = [...modifiersSet];
+
+  const componentsSet = new Set(
+    [...src.matchAll(/<([A-Z][\w::/]*)/g)].map(([, name]) => toKebabCase(name))
+  );
+  const components = [...componentsSet];
+
+  return { inheritedArgs, helpers, modifiers, components };
+}
+
+// ---------------------------------------------------------------------------
+// Section builders
+// ---------------------------------------------------------------------------
+
+function buildComponents(appDir) {
+  const componentDir = path.join(appDir, 'components');
+  const jsFiles = walkDir(componentDir, (n) => /\.(js|ts)$/.test(n));
+  const hbsFiles = walkDir(componentDir, (n) => /\.hbs$/.test(n));
+
+  const componentMap = new Map();
+  for (const jsFile of jsFiles) {
+    const name = nameFromPath(jsFile, appDir, 'components');
+    componentMap.set(name, { ...componentMap.get(name), jsFile });
+  }
+  for (const hbsFile of hbsFiles) {
+    const name = nameFromPath(hbsFile, appDir, 'components');
+    componentMap.set(name, { ...componentMap.get(name), hbsFile });
+  }
+
+  return [...componentMap.entries()].map(([name, { jsFile, hbsFile }]) => {
+    const { trackedVars, actions, services } = parseJsFile(jsFile);
+    const { inheritedArgs, helpers, modifiers } = parseHbsFile(hbsFile);
+    return { name, tracked_vars: trackedVars, inherited_args: inheritedArgs, actions, helpers, modifiers, services };
+  });
+}
+
+function buildRoutes(appDir) {
+  return walkDir(path.join(appDir, 'routes'), (n) => /\.(js|ts)$/.test(n)).map((jsFile) => {
+    const name = nameFromPath(jsFile, appDir, 'routes');
+    const hbsFile = path.join(appDir, 'templates', name.replace(/\/$/, '') + '.hbs');
+    const { trackedVars, actions, services, getVars } = parseJsFile(jsFile);
+    const { helpers, components } = parseHbsFile(hbsFile);
+    return { name, tracked_vars: trackedVars, get_vars: getVars, actions, helpers, services, components, types: [] };
+  });
+}
+
+function buildServices(appDir) {
+  return walkDir(path.join(appDir, 'services'), (n) => /\.(js|ts)$/.test(n)).map((jsFile) => {
+    const name = nameFromPath(jsFile, appDir, 'services');
+    const { trackedVars, actions, services } = parseJsFile(jsFile);
+    return { name, tracked_vars: trackedVars, actions, services };
+  });
+}
+
+function buildHelpers(appDir) {
+  return walkDir(path.join(appDir, 'helpers'), (n) => /\.(js|ts)$/.test(n)).map((jsFile) => {
+    const name = nameFromPath(jsFile, appDir, 'helpers');
+    const src = fs.readFileSync(jsFile, 'utf8');
+    const sig = src.match(/function\s+\w*\s*\(\[([^\]]*)\](?:,\s*\{([^}]*)\})?\)/);
+    const posArgs = sig ? sig[1].split(',').map((s) => s.trim()).filter(Boolean).map((a) => ({ [toKebabCase(a)]: 'string' })) : [];
+    const namedArgs = sig && sig[2]
+      ? sig[2].split(',').map((s) => s.trim().split(/\s*=\s*/)[0]).filter(Boolean).map((a) => ({ [toKebabCase(a)]: 'string' }))
+      : [];
+    return { name, args: [...posArgs, ...namedArgs], return: 'string' };
+  });
+}
+
+function buildModifiers(appDir) {
+  return walkDir(path.join(appDir, 'modifiers'), (n) => /\.(js|ts)$/.test(n)).map((jsFile) => {
+    const name = nameFromPath(jsFile, appDir, 'modifiers');
+    const { services } = parseJsFile(jsFile);
+    return { name, args: [], services };
+  });
+}
+
+function buildTypes(routes, components) {
+  const typeMap = new Map();
+  const register = (typeSlug, category, name) => {
+    if (!typeMap.has(typeSlug)) typeMap.set(typeSlug, { routes: [], components: [], services: [], helpers: [], modifiers: [] });
+    typeMap.get(typeSlug)[category].push(name);
+  };
+  for (const r of routes) for (const t of r.types || []) register(t, 'routes', r.name);
+  for (const c of components) for (const t of c.types || []) register(t, 'components', c.name);
+  return [...typeMap.entries()].map(([slug, used_in]) => ({ slug, used_in }));
+}
+
+function mergeByKey(existing, scanned, key) {
+  const existingMap = new Map(existing.map((e) => [e[key], e]));
+  const scannedMap = new Map(scanned.map((s) => [s[key], s]));
+  const allKeys = new Set([...existingMap.keys(), ...scannedMap.keys()]);
+  return [...allKeys].map((k) => ({ ...(scannedMap.get(k) || {}) }));
+}
+
+// ---------------------------------------------------------------------------
+// Run
+// ---------------------------------------------------------------------------
+
+(async () => {
+  const cwd = process.cwd();
+  const appDir = path.join(cwd, 'app');
+  const configDir = path.join(cwd, 'config');
+  const outputFile = path.join(configDir, 'storylang.json');
+
+  if (!fs.existsSync(appDir)) {
+    console.error(`Could not find app/ directory at ${appDir}. Make sure you are running from the root of your Ember project.`);
+    process.exit(1);
+  }
+
+  console.log('📖  storylang — scanning project files…\n');
+
+  const components = buildComponents(appDir);
+  const routes = buildRoutes(appDir);
+  const services = buildServices(appDir);
+  const helpers = buildHelpers(appDir);
+  const modifiers = buildModifiers(appDir);
+  const types = buildTypes(routes, components);
+
+  let existing = {};
+  if (fs.existsSync(outputFile)) {
+    try { existing = JSON.parse(fs.readFileSync(outputFile, 'utf8')); } catch (_) {}
+  }
+
+  const merged = {
+    types:      mergeByKey(existing.types      || [], types,      'slug'),
+    components: mergeByKey(existing.components || [], components, 'name'),
+    routes:     mergeByKey(existing.routes     || [], routes,     'name'),
+    services:   mergeByKey(existing.services   || [], services,   'name'),
+    helpers:    mergeByKey(existing.helpers    || [], helpers,    'name'),
+    modifiers:  mergeByKey(existing.modifiers  || [], modifiers,  'name'),
+  };
+
+  if (!fs.existsSync(configDir)) fs.mkdirSync(configDir, { recursive: true });
+  fs.writeFileSync(outputFile, JSON.stringify(merged, null, 2) + '\n', 'utf8');
+
+  console.log(`✅  config/storylang.json updated`);
+  console.log(`    routes:     ${routes.length}`);
+  console.log(`    components: ${components.length}`);
+  console.log(`    services:   ${services.length}`);
+  console.log(`    helpers:    ${helpers.length}`);
+  console.log(`    modifiers:  ${modifiers.length}`);
+  console.log(`    types:      ${types.length}`);
+})();
