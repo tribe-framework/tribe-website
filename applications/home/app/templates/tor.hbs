@@ -1,0 +1,432 @@
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="tor" />
+
+  <div class="container pb-5">
+
+    <div class="alert alert-dark mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h5 class="mb-1"><i class="fa-solid fa-shield-halved me-2"></i>Tor:
+            Onion Network</h5>
+          <p class="mb-0 small text-muted">All services accessible only via
+            <code>.onion</code>
+            addresses. No ports exposed on the host. Built on v3 hidden services
+            (ed25519). For privacy-critical deployments.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+          <span class="badge bg-dark me-1">v3 Hidden Services</span>
+          <span class="badge bg-dark">Docker overlay</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-warning mb-4">
+      <strong><i class="fa-solid fa-triangle-exclamation me-1"></i>Never run Tor
+        and clearnet modes simultaneously</strong>
+      on the same project — it defeats the purpose entirely. Always
+      <code>docker compose down</code>
+      before switching.
+    </div>
+
+    <div class="steps-container mb-5">
+
+      <div
+        class="step-card open"
+        data-step-name="Tor how it works overlay docker compose hidden services onion"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i
+              class="fa-solid fa-diagram-project"
+            ></i></span>
+          <span class="step-title">How It Works</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p><code>docker-compose.tor.yml</code>
+            layers on top of the standard
+            <code>docker-compose.yml</code>. It makes two changes:</p>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6><strong>Adds</strong></h6>
+                  <p class="small text-muted mb-0">A
+                    <code>tor</code>
+                    daemon container that creates 6 hidden services — one per
+                    Tribe service. Keys are generated on first boot and stored
+                    in
+                    <code>uploads/tor/</code>.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6><strong>Removes</strong></h6>
+                  <p class="small text-muted mb-0">All
+                    <code>ports:</code>
+                    bindings from every service. Nothing is reachable on the
+                    host — only through Tor. Admin tools (phpMyAdmin,
+                    FileBrowser) become Tor-only.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Clearnet</strong></h6>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('docker compose up -d', this)" type="button"
+                    >Copy</button>
+                    <code>docker compose up -d</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Tor mode</strong></h6>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('docker compose -f docker-compose.yml -f docker-compose.tor.yml up -d', this)" type="button"
+                    >Copy</button>
+                    <code>docker compose -f docker-compose.yml -f
+                      docker-compose.tor.yml up -d</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Tor prepare files move config root docker-compose env"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">1</span>
+          <span class="step-title">Prepare Files</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Tor files live in
+            <code>config/tor/</code>. Move them to the project root before use:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('mv config/tor/docker-compose.tor.yml .\nmv config/tor/.env.tor.sample .', this)" type="button"
+            >Copy</button>
+            <code>
+              mv config/tor/docker-compose.tor.yml .<br />
+              mv config/tor/.env.tor.sample .
+            </code>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Tor configure env environment file passwords project name"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">2</span>
+          <span class="step-title">Configure Environment</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('cp .env.tor.sample .env', this)" type="button"
+            >Copy</button>
+            <code>cp .env.tor.sample .env</code>
+          </div>
+          <p class="mt-3 mb-2">Set your passwords and
+            <code>PROJECT_NAME</code>. Leave
+            <code>BARE_URL</code>
+            as
+            <code>localhost</code>
+            for now — you'll update it after first boot once your
+            <code>.onion</code>
+            address is known.</p>
+          <div class="alert alert-danger mt-3 mb-0">
+            <strong><i class="fa-solid fa-ban me-1"></i>Analytics warning:</strong>
+            Do
+            <strong>not</strong>
+            configure Plausible or any clearnet analytics service — it
+            deanonymises visitors. Leave
+            <code>PLAUSIBLE_AUTH</code>
+            and
+            <code>PLAUSIBLE_DOMAIN</code>
+            blank.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Tor start docker compose up first boot generate keys onion"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">3</span>
+          <span class="step-title">Start in Tor Mode</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('docker compose -f docker-compose.yml -f docker-compose.tor.yml up -d', this)" type="button"
+            >Copy</button>
+            <code>docker compose -f docker-compose.yml -f docker-compose.tor.yml
+              up -d</code>
+          </div>
+          <p class="mt-3 mb-2">Wait ~30 seconds for the Tor daemon to generate
+            your hidden service keys, then read your addresses:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('bash config/tor/tor-addresses.sh --wait', this)" type="button"
+            >Copy</button>
+            <code>bash config/tor/tor-addresses.sh --wait</code>
+          </div>
+          <div class="alert alert-success mt-3 mb-0">
+            <h6 class="alert-heading mb-2">Example output:</h6>
+            <code class="d-block small">
+              tribe
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://abc123...onion<br
+              />
+              junction &nbsp;&nbsp;&nbsp;&nbsp;http://def456...onion<br />
+              dist
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://ghi789...onion<br
+              />
+              dist-php &nbsp;&nbsp;&nbsp;&nbsp;http://jkl012...onion<br />
+              phpmyadmin &nbsp;&nbsp;http://mno345...onion<br />
+              filebrowser &nbsp;http://pqr678...onion
+            </code>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Tor set BARE_URL onion address tribe hostname env restart"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">4</span>
+          <span class="step-title">Set Your .onion Address</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Update
+            <code>BARE_URL</code>
+            in
+            <code>.env</code>
+            with your Tribe
+            <code>.onion</code>
+            address, then restart:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('BARE_URL=$(cat uploads/tor/tribe/hostname)', this)" type="button"
+            >Copy</button>
+            <code><span class="comment"># Read address from generated key file</span><br
+              />BARE_URL=$(cat uploads/tor/tribe/hostname)</code>
+          </div>
+          <p class="mt-3 mb-1">Or set it manually in <code>.env</code>:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('BARE_URL=youraddress.onion', this)" type="button"
+            >Copy</button>
+            <code>BARE_URL=youraddress.onion</code>
+          </div>
+          <div class="command-block mt-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('docker compose -f docker-compose.yml -f docker-compose.tor.yml restart php_tribe', this)" type="button"
+            >Copy</button>
+            <code><span class="comment"># Restart to pick up the change</span><br
+              />docker compose -f docker-compose.yml -f docker-compose.tor.yml
+              restart php_tribe</code>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Tor backup keys onion address private key restore tar"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">5</span>
+          <span class="step-title">Back Up Your Keys</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="alert alert-danger mb-3">
+            <strong><i class="fa-solid fa-key me-1"></i>Critical:</strong>
+            Your
+            <code>.onion</code>
+            addresses are derived from private keys in
+            <code>uploads/tor/</code>. If you lose these keys, your addresses
+            change permanently.
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Backup</strong></h6>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('tar -czf tor-keys-backup.tar.gz uploads/tor/', this)" type="button"
+                    >Copy</button>
+                    <code>tar -czf tor-keys-backup.tar.gz uploads/tor/</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Restore</strong></h6>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('tar -xzf tor-keys-backup.tar.gz', this)" type="button"
+                    >Copy</button>
+                    <code><span class="comment"># Before docker compose up</span><br
+                      />tar -xzf tor-keys-backup.tar.gz</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Tor switch modes clearnet toggle down restart docker compose"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">6</span>
+          <span class="step-title">Switching Modes</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Always bring the stack fully down before switching:</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Clearnet → Tor</strong></h6>
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('docker compose down', this)" type="button"
+                    >Copy</button>
+                    <code>docker compose down</code>
+                  </div>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('docker compose -f docker-compose.yml -f docker-compose.tor.yml up -d', this)" type="button"
+                    >Copy</button>
+                    <code>docker compose -f docker-compose.yml -f
+                      docker-compose.tor.yml up -d</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Tor → Clearnet</strong></h6>
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('docker compose -f docker-compose.yml -f docker-compose.tor.yml down', this)" type="button"
+                    >Copy</button>
+                    <code>docker compose -f docker-compose.yml -f
+                      docker-compose.tor.yml down</code>
+                  </div>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('docker compose up -d', this)" type="button"
+                    >Copy</button>
+                    <code>docker compose up -d</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Tor security checklist hidden service v3 ed25519 admin ports"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-lock"></i></span>
+          <span class="step-title">Security Checklist</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <ul class="list-unstyled mb-0">
+                <li class="mb-2"><i
+                    class="fa-solid fa-circle-check text-success me-2"
+                  ></i>v3 hidden services (ed25519, 56-char addresses)</li>
+                <li class="mb-2"><i
+                    class="fa-solid fa-circle-check text-success me-2"
+                  ></i>Keys persisted in
+                  <code>uploads/tor/</code></li>
+                <li class="mb-2"><i
+                    class="fa-solid fa-circle-check text-success me-2"
+                  ></i>Tor daemon:
+                  <code>ExitPolicy reject *:*</code>,
+                  <code>SocksPort 0</code>
+                  — no relay, no exit</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <ul class="list-unstyled mb-0">
+                <li class="mb-2"><i
+                    class="fa-solid fa-circle-xmark text-danger me-2"
+                  ></i>Admin ports (phpMyAdmin, FileBrowser) never exposed on
+                  clearnet</li>
+                <li class="mb-2"><i
+                    class="fa-solid fa-circle-xmark text-danger me-2"
+                  ></i>No host port bindings — all
+                  <code>ports: []</code>
+                  in overlay</li>
+                <li class="mb-2"><i
+                    class="fa-solid fa-circle-xmark text-danger me-2"
+                  ></i>No clearnet analytics (deanonymises visitors)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <ManualFooter />
+
+  </div>
+</div>
+
+<ManualScripts />

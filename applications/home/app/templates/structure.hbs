@@ -1,0 +1,346 @@
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="structure" />
+
+  <div class="container pb-5">
+
+    {{! ============================================================ }}
+    {{! GLOSSARY }}
+    {{! ============================================================ }}
+    <div class="section-divider mb-4">
+      <span class="section-label">GLOSSARY</span>
+    </div>
+
+    <div class="row g-3 mb-5">
+      <div class="col-md-6">
+        <div class="card method-item h-100">
+          <div class="card-body">
+            <h6 class="mb-3"><strong>Core</strong></h6>
+            <dl class="mb-0">
+              <dt>Tribe</dt>
+              <dd class="text-muted small mb-2">PHP content/app framework — the
+                core backend and UI engine. Serves content, handles APIs, and
+                runs the application layer.</dd>
+              <dt>Junction</dt>
+              <dd class="text-muted small mb-2">No-code CMS layer that connects
+                to Tribe via API. Manages content, schemas, and users through a
+                browser UI.</dd>
+              <dt>Docker</dt>
+              <dd class="text-muted small mb-2">Containerisation platform.
+                <code>docker-compose.yml</code>
+                defines all services, networks, and volumes.</dd>
+              <dt>.env</dt>
+              <dd class="text-muted small mb-0">Environment file holding secrets
+                and config — DB passwords, ports, project name. Never committed
+                to Git.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card method-item h-100">
+          <div class="card-body">
+            <h6 class="mb-3"><strong>Services</strong></h6>
+            <dl class="mb-0">
+              <dt>Caddy</dt>
+              <dd class="text-muted small mb-2">Web server and reverse proxy.
+                Handles HTTP/HTTPS routing, SSL certificates, and forwards
+                requests to PHP-FPM.</dd>
+              <dt>MySQL</dt>
+              <dd class="text-muted small mb-2">Relational database storing all
+                Tribe content and application data.</dd>
+              <dt>Typesense</dt>
+              <dd class="text-muted small mb-2">Fast search engine by
+                <a
+                  href="https://typesense.org"
+                  target="_blank"
+                >typesense.org</a>. Indexes Tribe content for full-text search.</dd>
+              <dt>phpMyAdmin</dt>
+              <dd class="text-muted small mb-2">Web UI for browsing and managing
+                MySQL databases.</dd>
+              <dt>FileBrowser</dt>
+              <dd class="text-muted small mb-0">Web UI for browsing and managing
+                uploaded files by
+                <a
+                  href="https://filebrowser.org"
+                  target="_blank"
+                >filebrowser.org</a>.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card method-item h-100">
+          <div class="card-body">
+            <h6 class="mb-3"><strong>Loom (Multi Tribe)</strong></h6>
+            <dl class="mb-0">
+              <dt>Loom</dt>
+              <dd class="text-muted small mb-2">Multi Tribe hosting mode. One
+                shared set of services (MySQL, Typesense, Caddy) supports many
+                isolated Threads.</dd>
+              <dt>Thread</dt>
+              <dd class="text-muted small mb-0">A single Tribe + Junction
+                instance within a Loom setup. Has its own database, uploads
+                folder, and port pair. App code is shared read-only.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card method-item h-100">
+          <div class="card-body">
+            <h6 class="mb-3"><strong>Tor (Onion Services)</strong></h6>
+            <dl class="mb-0">
+              <dt>Tor</dt>
+              <dd class="text-muted small mb-2">Overlay mode that routes all
+                traffic through
+                <code>.onion</code>
+                services. No host ports are exposed. Works with single-project
+                Tribe only.</dd>
+              <dt>.onion address</dt>
+              <dd class="text-muted small mb-0">A v3 hidden service address (56
+                chars, ed25519). Derived from a private key stored in
+                <code>uploads/tor/</code>. Permanent as long as the key is
+                preserved.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{! ============================================================ }}
+    {{! FOLDER STRUCTURE }}
+    {{! ============================================================ }}
+    <div class="section-divider mb-4">
+      <span class="section-label">FOLDER STRUCTURE</span>
+    </div>
+
+    <div class="row g-3 mb-5">
+
+      <div class="col-md-6">
+        <div class="card method-item h-100">
+          <div class="card-body">
+            <h6 class="mb-3"><strong>Root</strong></h6>
+            <table class="table table-sm table-borderless mb-0 small">
+              <tbody>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >docker-compose.yml</td><td class="text-muted">Standard
+                    single-project setup</td></tr>
+                <tr><td class="font-monospace text-nowrap pe-3">.env</td><td
+                    class="text-muted"
+                  >Active environment (copy from
+                    <code>.env.sample</code>)</td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >.env.sample</td><td class="text-muted">Standard env template</td></tr>
+              </tbody>
+            </table>
+            <p class="small text-muted mt-3 mb-2"><strong>After enabling Loom or
+                Tor</strong>, their compose and env files are moved here too.
+              See the Advanced guides.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card method-item h-100">
+          <div class="card-body">
+            <h6 class="mb-3"><strong>applications/</strong></h6>
+            <table class="table table-sm table-borderless mb-0 small">
+              <tbody>
+                <tr><td class="font-monospace text-nowrap pe-3">tribe/</td><td
+                    class="text-muted"
+                  >Tribe PHP application</td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >junction/</td><td class="text-muted">Junction frontend build
+                    (<code>dist/</code>)</td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >tribe-base/</td><td class="text-muted">Shared Tribe code for
+                    Loom (mounted
+                    <code>:ro</code>
+                    across all Threads)</td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >threads/&lt;n&gt;/junction/</td><td
+                    class="text-muted"
+                  >Per-thread Junction builds (Loom)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card method-item">
+          <div class="card-body">
+            <h6 class="mb-3"><strong>config/</strong></h6>
+            <div class="row">
+              <div class="col-md-4">
+                <p class="small fw-semibold mb-1">Standard</p>
+                <table class="table table-sm table-borderless mb-3 small">
+                  <tbody>
+                    <tr><td
+                        class="font-monospace text-nowrap pe-3"
+                      >mysql/</td><td class="text-muted"><code>my.cnf</code>,
+                        <code>install.sql</code></td></tr>
+                    <tr><td
+                        class="font-monospace text-nowrap pe-3"
+                      >tribe/</td><td class="text-muted">Caddyfile, supervisord,
+                        watcher, indexers</td></tr>
+                    <tr><td
+                        class="font-monospace text-nowrap pe-3"
+                      >junction/</td><td class="text-muted">Caddyfile</td></tr>
+                    <tr><td
+                        class="font-monospace text-nowrap pe-3"
+                      >dist/</td><td class="text-muted">Caddyfile (static site)</td></tr>
+                    <tr><td
+                        class="font-monospace text-nowrap pe-3"
+                      >dist-php/</td><td class="text-muted">Caddyfile (PHP site)</td></tr>
+                    <tr><td
+                        class="font-monospace text-nowrap pe-3"
+                      >backup.sh</td><td class="text-muted">MySQL backup script</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-md-4">
+                <p class="small fw-semibold mb-1">Loom</p>
+                <table class="table table-sm table-borderless mb-3 small">
+                  <tbody>
+                    <tr><td
+                        class="font-monospace text-nowrap pe-3"
+                      >loom/</td><td class="text-muted">Compose files,
+                        <code>loom.sh</code>,
+                        <code>.env.loom.sample</code>,
+                        <code>setup.sh</code>,
+                        <code>index_db.php</code></td></tr>
+                  </tbody>
+                </table>
+                <p class="small fw-semibold mb-1">Tor</p>
+                <table class="table table-sm table-borderless mb-0 small">
+                  <tbody>
+                    <tr><td class="font-monospace text-nowrap pe-3">tor/</td><td
+                        class="text-muted"
+                      >Compose overlay,
+                        <code>.env.tor.sample</code>,
+                        <code>torrc</code>,
+                        <code>tor-addresses.sh</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-md-4">
+                <div class="alert alert-light small mb-0 mt-3 mt-md-0">
+                  Loom and Tor config files stay in
+                  <code>config/loom/</code>
+                  and
+                  <code>config/tor/</code>
+                  until you activate those modes. The setup guides walk you
+                  through moving them to root.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card method-item h-100">
+          <div class="card-body">
+            <h6 class="mb-3"><strong>uploads/</strong>
+              <span class="text-muted fw-normal small">(gitignored, runtime
+                data)</span></h6>
+            <table class="table table-sm table-borderless mb-0 small">
+              <tbody>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >sites/dist/</td><td class="text-muted">Static site files</td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >sites/dist-php/</td><td class="text-muted">PHP site files</td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >threads/&lt;n&gt;/</td><td class="text-muted">Per-thread
+                    uploads (Loom) — preserved on
+                    <code>destroy</code></td></tr>
+                <tr><td class="font-monospace text-nowrap pe-3">backups/</td><td
+                    class="text-muted"
+                  >Automated MySQL dumps</td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >typesense/</td><td class="text-muted">Typesense data
+                    directory</td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >filebrowser/</td><td class="text-muted">FileBrowser database</td></tr>
+                <tr><td class="font-monospace text-nowrap pe-3">tor/</td><td
+                    class="text-muted"
+                  >Hidden service private keys and
+                    <code>hostname</code>
+                    files</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card method-item h-100">
+          <div class="card-body">
+            <h6 class="mb-3"><strong>threads/</strong>
+              <span class="text-muted fw-normal small">(Loom only)</span></h6>
+            <table class="table table-sm table-borderless mb-0 small">
+              <tbody>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >.registry.json</td><td class="text-muted">Port + DB registry,
+                    managed by
+                    <code>loom.sh</code></td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >&lt;n&gt;/docker-compose.yml</td><td
+                    class="text-muted"
+                  >Generated by <code>loom.sh create</code></td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >&lt;n&gt;/.env</td><td class="text-muted">Generated once,
+                    never overwritten</td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >&lt;n&gt;/config/tribe/</td><td class="text-muted">Per-thread
+                    Caddyfile</td></tr>
+                <tr><td
+                    class="font-monospace text-nowrap pe-3"
+                  >&lt;n&gt;/config/junction/</td><td
+                    class="text-muted"
+                  >Per-thread Caddyfile</td></tr>
+              </tbody>
+            </table>
+            <div class="mt-3">
+              <h6 class="mb-3"><strong>logs/</strong>
+                <span
+                  class="text-muted fw-normal small"
+                >(gitignored)</span></h6>
+              <table class="table table-sm table-borderless mb-0 small">
+                <tbody>
+                  <tr><td
+                      class="font-monospace text-nowrap pe-3"
+                    >threads/&lt;n&gt;/</td><td class="text-muted">Per-thread
+                      runtime logs (Loom)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <ManualFooter />
+
+  </div>
+</div>
+
+<ManualScripts />

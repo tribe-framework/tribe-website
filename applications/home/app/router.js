@@ -10,4 +10,7 @@ Router.map(function () {
   this.route('prerequisites');
   this.route('frontend');
   this.route('backend');
+  this.route('loom');
+  this.route('tor');
+  this.route('structure');
 });

@@ -7,8 +7,11 @@
 
     <div class="steps-container mb-5">
 
-      {{!-- Install from Template --}}
-      <div class="step-card open" data-step-name="Install from Template tribe git template frontend">
+      {{! Install from Template }}
+      <div
+        class="step-card open"
+        data-step-name="Install from Template tribe git template frontend"
+      >
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">1</span>
           <span class="step-title">Install from Template</span>
@@ -17,32 +20,48 @@
         <div class="step-body">
           <p>Use the tribe-framework Git template for your application.</p>
           <div class="text-center my-3">
-            <a href="https://github.com/new?template_name=tribe&template_owner=tribe-framework" target="_blank" class="btn btn-info btn-lg me-2">
+            <a
+              href="https://github.com/new?template_name=tribe&template_owner=tribe-framework"
+              target="_blank"
+              class="btn btn-dark bg-black btn-lg m-2" rel="noopener noreferrer"
+            >
               Use the Git Template
             </a>
-            <a href="https://github.com/tribe-framework/tribe" target="_blank" class="btn btn-outline-dark btn-lg">
+            <a
+              href="https://github.com/tribe-framework/tribe"
+              target="_blank"
+              class="btn btn-outline-dark btn-lg m-2" rel="noopener noreferrer"
+            >
               View on GitHub
             </a>
           </div>
         </div>
       </div>
 
-      {{!-- What's Next --}}
-      <div class="step-card open" data-step-name="next steps prerequisites frontend backend setup">
+      {{! What's Next }}
+      <div
+        class="step-card open"
+        data-step-name="next steps prerequisites frontend backend setup"
+      >
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">2</span>
           <span class="step-title">What's Next</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
-          <p>Once you've created your repository from the template, follow the guides in order:</p>
-          <div class="row g-3">
+          <p>Once you've created your repository from the template, follow the
+            guides in order:</p>
+          <div class="row g-3 mb-4">
             <div class="col-md-4">
               <LinkTo @route="prerequisites" class="text-decoration-none">
                 <div class="card method-item h-100">
                   <div class="card-body">
-                    <h6><strong><i class="fa-solid fa-list-check me-2"></i>Prerequisites</strong></h6>
-                    <p class="small text-muted mb-0">Install Git, Docker, Node.js, NVM, and Ember CLI. Configure your credentials and environment.</p>
+                    <h6><strong><i
+                          class="fa-solid fa-list-check me-2"
+                        ></i>Prerequisites</strong></h6>
+                    <p class="small text-muted mb-0">Install Git, Docker,
+                      Node.js, NVM, and Ember CLI. Configure your credentials
+                      and environment.</p>
                   </div>
                 </div>
               </LinkTo>
@@ -51,8 +70,12 @@
               <LinkTo @route="frontend" class="text-decoration-none">
                 <div class="card method-item h-100">
                   <div class="card-body">
-                    <h6><strong><i class="fa-solid fa-desktop me-2"></i>Frontend</strong></h6>
-                    <p class="small text-muted mb-0">Clone your repo, initialise EmberJS, and start the development server at localhost:4200.</p>
+                    <h6><strong><i
+                          class="fa-solid fa-desktop me-2"
+                        ></i>Frontend</strong></h6>
+                    <p class="small text-muted mb-0">Clone your repo, initialise
+                      EmberJS, and start the development server at
+                      localhost:4200.</p>
                   </div>
                 </div>
               </LinkTo>
@@ -61,8 +84,12 @@
               <LinkTo @route="backend" class="text-decoration-none">
                 <div class="card method-item h-100">
                   <div class="card-body">
-                    <h6><strong><i class="fa-solid fa-server me-2"></i>Backend</strong></h6>
-                    <p class="small text-muted mb-0">Start Junction and the Tribe API with Docker Compose and access all backend services.</p>
+                    <h6><strong><i
+                          class="fa-solid fa-server me-2"
+                        ></i>Backend</strong></h6>
+                    <p class="small text-muted mb-0">Start Junction and the
+                      Tribe API with Docker Compose and access all backend
+                      services.</p>
                   </div>
                 </div>
               </LinkTo>
@@ -73,21 +100,27 @@
 
     </div>
 
-    {{!-- ============================================================ --}}
-    {{!-- QUICK REFERENCE --}}
-    {{!-- ============================================================ --}}
+    {{! ============================================================ }}
+    {{! QUICK REFERENCE }}
+    {{! ============================================================ }}
     <div class="section-divider mb-4">
       <span class="section-label">QUICK REFERENCE</span>
     </div>
 
-    <div class="row g-3 mb-5">
+    <div class="row g-3 mb-4">
       <div class="col-md-6">
         <div class="alert alert-dark mb-0">
           <h5 class="mb-2">Frontend (EmberJS)</h5>
           <p class="mb-0">
-            <strong>Serve:</strong> <code>ember s</code><br>
-            <strong>Access:</strong> <a href="http://localhost:4200" target="_blank">localhost:4200</a><br>
-            <strong>Build:</strong> <code>ember build -prod</code>
+            <strong>Serve:</strong>
+            <code>ember s</code><br />
+            <strong>Access:</strong>
+            <a
+              href="http://localhost:4200"
+              target="_blank" rel="noopener noreferrer"
+            >localhost:4200</a><br />
+            <strong>Build:</strong>
+            <code>ember build -prod</code>
           </p>
         </div>
       </div>
@@ -95,38 +128,16 @@
         <div class="alert alert-dark mb-0">
           <h5 class="mb-2">Backend Services</h5>
           <p class="mb-0">
-            <strong>Start:</strong> <code>docker compose up -d --build</code><br>
-            <strong>Access:</strong> <a href="http://localhost:12000" target="_blank">localhost:12000</a><br>
-            <strong>Stop:</strong> <code>docker compose down</code>
+            <strong>Start:</strong>
+            <code>docker compose up -d --build</code><br />
+            <strong>Access:</strong>
+            <a
+              href="http://localhost:12000"
+              target="_blank" rel="noopener noreferrer"
+            >localhost:12000</a><br />
+            <strong>Stop:</strong>
+            <code>docker compose down</code>
           </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="row g-3 mb-5">
-      <div class="col-12">
-        <div class="alert alert-light mb-0">
-          <h5 class="mb-2">All Service URLs</h5>
-          <div class="row">
-            <div class="col-md-6">
-              <strong>Core:</strong>
-              <p class="mb-0 small">
-                <a href="http://junction.localhost:12002" target="_blank">Junction</a> :12002 &bull;
-                <a href="http://tribe.localhost:12000" target="_blank">Tribe Framework</a> :12000 &bull;
-                <a href="http://tribe.localhost:12000/api.php/webapp/0" target="_blank">Tribe APIs</a> &bull;
-                <a href="http://tribe.localhost:12000/phpmyadmin" target="_blank">phpMyAdmin</a>
-              </p>
-            </div>
-            <div class="col-md-6">
-              <strong>Static &amp; Custom:</strong>
-              <p class="mb-0 small">
-                <a href="http://dist.localhost:12003" target="_blank">JAM Stack</a> :12003 &bull;
-                <a href="http://dist-php.localhost:12004" target="_blank">Static + PHP</a> :12004 &bull;
-                <a href="http://tribe.localhost:12000/custom/" target="_blank">Custom PHP</a> &bull;
-                MySQL :3306
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

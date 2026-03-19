@@ -24,7 +24,7 @@
                   <h6><strong>macOS</strong></h6>
                   <p class="small text-muted mb-2">Install via Homebrew or Xcode Command Line Tools:</p>
                   <div class="command-block">
-                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('brew install git', this)">Copy</button>
+                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('brew install git', this)" type="button">Copy</button>
                     <code>brew install git</code>
                   </div>
                   <p class="small text-muted mt-2 mb-0">Or run <code>xcode-select --install</code> which includes Git.</p>
@@ -36,7 +36,7 @@
                 <div class="card-body">
                   <h6><strong>Windows</strong></h6>
                   <p class="small text-muted mb-2">Download the official installer:</p>
-                  <a href="https://git-scm.com/download/win" target="_blank" class="btn btn-sm btn-outline-dark">Download Git for Windows</a>
+                  <a href="https://git-scm.com/download/win" target="_blank" class="btn btn-sm btn-outline-dark" rel="noopener noreferrer">Download Git for Windows</a>
                 </div>
               </div>
             </div>
@@ -45,7 +45,7 @@
                 <div class="card-body">
                   <h6><strong>Linux (Ubuntu/Debian)</strong></h6>
                   <div class="command-block">
-                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('sudo apt update &amp;&amp; sudo apt install git', this)">Copy</button>
+                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('sudo apt update &amp;&amp; sudo apt install git', this)" type="button">Copy</button>
                     <code>sudo apt update &amp;&amp; sudo apt install git</code>
                   </div>
                 </div>
@@ -55,7 +55,7 @@
 
           <p class="mt-3 mb-1">Verify installation:</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('git --version', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('git --version', this)" type="button">Copy</button>
             <code>git --version</code>
           </div>
         </div>
@@ -71,7 +71,7 @@
         <div class="step-body">
           <p>Sublime Text is a fast, lightweight code editor recommended for editing Tribe project files.</p>
           <div class="text-center my-3">
-            <a href="https://www.sublimetext.com/" target="_blank" class="btn btn-dark btn-lg">
+            <a href="https://www.sublimetext.com/" target="_blank" class="btn btn-dark btn-lg" rel="noopener noreferrer">
               <i class="fa-solid fa-download me-2"></i>Download Sublime Text
             </a>
           </div>
@@ -89,7 +89,7 @@
         <div class="step-body">
           <p>Sublime Merge is a Git client by the same team behind Sublime Text. It provides a clean visual interface for Git operations like commits, merges, and diffs.</p>
           <div class="text-center my-3">
-            <a href="https://www.sublimemerge.com/" target="_blank" class="btn btn-dark btn-lg">
+            <a href="https://www.sublimemerge.com/" target="_blank" class="btn btn-dark btn-lg" rel="noopener noreferrer">
               <i class="fa-solid fa-download me-2"></i>Download Sublime Merge
             </a>
           </div>
@@ -110,27 +110,27 @@
           <h6 class="mt-3 mb-2">Show hidden files in Finder (macOS)</h6>
           <p class="small text-muted">This makes files like <code>.env</code>, <code>.gitignore</code>, etc. visible in Finder.</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder', this)" type="button">Copy</button>
             <code>defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder</code>
           </div>
 
           <h6 class="mt-4 mb-2">Increase Git HTTP buffer size</h6>
           <p class="small text-muted">Prevents errors when pushing/pulling large repositories.</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('git config --global http.postBuffer 524288000', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('git config --global http.postBuffer 524288000', this)" type="button">Copy</button>
             <code>git config --global http.postBuffer 524288000</code>
           </div>
 
           <h6 class="mt-4 mb-2">Install Git Credential Manager (macOS via Homebrew)</h6>
           <p class="small text-muted">Securely stores your Git credentials so you don't have to re-enter them.</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('brew install --cask git-credential-manager', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('brew install --cask git-credential-manager', this)" type="button">Copy</button>
             <code>brew install --cask git-credential-manager</code>
           </div>
 
           <h6 class="mt-4 mb-2">Set Git to use Credential Manager</h6>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('git config --global credential.helper manager', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('git config --global credential.helper manager', this)" type="button">Copy</button>
             <code>git config --global credential.helper manager</code>
           </div>
         </div>
@@ -148,7 +148,7 @@
 
           <h6 class="mt-3 mb-2">How to generate a Personal Access Token:</h6>
           <ol>
-            <li>Go to <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a></li>
+            <li>Go to <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">github.com/settings/tokens</a></li>
             <li>Click <strong>Generate new token</strong> &rarr; <strong>Generate new token (classic)</strong></li>
             <li>Give it a descriptive name (e.g., "Tribe Development")</li>
             <li>Set an expiration (or choose "No expiration" for convenience)</li>
@@ -174,7 +174,7 @@
           <p>Docker is required to run the Tribe backend (Junction + Tribe API). Install Docker Desktop for your operating system.</p>
 
           <div class="text-center my-3">
-            <a href="https://www.docker.com/get-started/" target="_blank" class="btn btn-info btn-lg">
+            <a href="https://www.docker.com/get-started/" target="_blank" class="btn btn-info btn-lg" rel="noopener noreferrer">
               <i class="fa-brands fa-docker me-2"></i>Download Docker Desktop
             </a>
           </div>
@@ -183,20 +183,20 @@
           <div class="row g-3">
             <div class="col-md-6">
               <div class="command-block">
-                <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker --version', this)">Copy</button>
+                <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker --version', this)" type="button">Copy</button>
                 <code>docker --version</code>
               </div>
             </div>
             <div class="col-md-6">
               <div class="command-block">
-                <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker compose version', this)">Copy</button>
+                <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker compose version', this)" type="button">Copy</button>
                 <code>docker compose version</code>
               </div>
             </div>
           </div>
 
           <div class="alert alert-info mt-3 mb-0">
-            <strong>Note:</strong> Docker Desktop for Windows and macOS includes Docker Compose by default. On Linux, you may need to install Docker Compose separately via <a href="https://docs.docker.com/compose/install/" target="_blank">docs.docker.com/compose/install</a>.
+            <strong>Note:</strong> Docker Desktop for Windows and macOS includes Docker Compose by default. On Linux, you may need to install Docker Compose separately via <a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener noreferrer">docs.docker.com/compose/install</a>.
           </div>
         </div>
       </div>
@@ -213,20 +213,20 @@
 
           <h6 class="mt-3 mb-2">Install NVM (macOS / Linux)</h6>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash', this)" type="button">Copy</button>
             <code><span class="comment"># Install NVM</span><br>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash</code>
           </div>
-          <p class="small text-muted">For Windows, use <a href="https://github.com/coreybutler/nvm-windows" target="_blank">nvm-windows</a> instead.</p>
+          <p class="small text-muted">For Windows, use <a href="https://github.com/coreybutler/nvm-windows" target="_blank" rel="noopener noreferrer">nvm-windows</a> instead.</p>
 
           <h6 class="mt-4 mb-2">Restart your terminal, then install Node.js</h6>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('nvm install --lts\nnvm use --lts', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('nvm install --lts\nnvm use --lts', this)" type="button">Copy</button>
             <code><span class="comment"># Install latest LTS version of Node.js</span><br>nvm install --lts<br>nvm use --lts</code>
           </div>
 
           <h6 class="mt-4 mb-2">Verify installation</h6>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('node --version\nnpm --version', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('node --version\nnpm --version', this)" type="button">Copy</button>
             <code>node --version<br>npm --version</code>
           </div>
         </div>
@@ -243,18 +243,18 @@
           <p>Ember.js is the frontend framework used by Tribe. Install the Ember CLI globally so you can create and serve Ember applications.</p>
 
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('npm install -g ember-cli', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('npm install -g ember-cli', this)" type="button">Copy</button>
             <code>npm install -g ember-cli</code>
           </div>
 
           <h6 class="mt-4 mb-2">Verify installation</h6>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('ember --version', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('ember --version', this)" type="button">Copy</button>
             <code>ember --version</code>
           </div>
 
           <div class="alert alert-info mt-3 mb-0">
-            <strong>Compatibility:</strong> Tribe requires Ember.js v6.0 or above and Ember CLI v6.0 or above. To learn more about EmberJS visit <a href="https://emberjs.com" target="_blank">emberjs.com</a>.
+            <strong>Compatibility:</strong> Tribe requires Ember.js v6.0 or above and Ember CLI v6.0 or above. To learn more about EmberJS visit <a href="https://emberjs.com" target="_blank" rel="noopener noreferrer">emberjs.com</a>.
           </div>
         </div>
       </div>

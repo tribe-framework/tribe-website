@@ -1,0 +1,396 @@
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="loom" />
+
+  <div class="container pb-5">
+
+    <div class="alert alert-dark mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h5 class="mb-1"><i class="fa-solid fa-layer-group me-2"></i>Loom:
+            Multi Tribe Hosting</h5>
+          <p class="mb-0 small text-muted">One shared infrastructure. Hundreds
+            of isolated Threads. Each Thread is a full Tribe + Junction instance
+            with its own database, uploads, and ports.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+          <span class="badge bg-dark me-1">MySQL</span>
+          <span class="badge bg-dark me-1">Typesense</span>
+          <span class="badge bg-dark me-1">Caddy</span>
+          <span class="badge bg-dark">Docker</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps-container mb-5">
+
+      <div
+        class="step-card open"
+        data-step-name="Loom concept architecture threads shared infrastructure"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i
+              class="fa-solid fa-diagram-project"
+            ></i></span>
+          <span class="step-title">Architecture Overview</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Loom separates
+            <strong>shared services</strong>
+            (run once) from
+            <strong>Threads</strong>
+            (one per tenant):</p>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Shared (Loom)</strong></h6>
+                  <p class="small text-muted mb-1">Started once with
+                    <code>docker-compose.loom.yml</code>:</p>
+                  <ul class="small mb-0">
+                    <li><code>loom_mysql</code>
+                      — single MySQL instance, all thread DBs</li>
+                    <li><code>loom_typesense</code>
+                      — shared search, namespaced by thread</li>
+                    <li><code>loom_phpmyadmin</code>
+                      — sees all thread databases</li>
+                    <li><code>loom_filebrowser</code>
+                      — sees all thread uploads</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Per Thread</strong></h6>
+                  <p class="small text-muted mb-1">Created by
+                    <code>./loom.sh create &lt;name&gt;</code>:</p>
+                  <ul class="small mb-0">
+                    <li>Dedicated MySQL DB + least-privilege user</li>
+                    <li>Typesense collections prefixed
+                      <code>&lt;name&gt;_</code></li>
+                    <li>Isolated uploads at
+                      <code>uploads/threads/&lt;name&gt;/</code></li>
+                    <li>Two allocated ports (Tribe + Junction)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-light mb-0">
+            <strong>Port allocation:</strong>
+            Threads get sequential pairs starting from
+            <code>THREAD_BASE_PORT</code>
+            (default
+            <code>13000</code>). Thread 1 →
+            <code>13000</code>/<code>13001</code>, Thread 2 →
+            <code>13002</code>/<code>13003</code>, and so on.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Loom move files prepare root docker-compose env loom.sh"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">1</span>
+          <span class="step-title">Prepare Files</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Loom files live in
+            <code>config/loom/</code>. Move them to the project root before use:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('mv config/loom/docker-compose.loom.yml .\nmv config/loom/docker-compose.thread.yml .\nmv config/loom/loom.sh .\nmv config/loom/.env.loom.sample .', this)" type="button"
+            >Copy</button>
+            <code>
+              mv config/loom/docker-compose.loom.yml .<br />
+              mv config/loom/docker-compose.thread.yml .<br />
+              mv config/loom/loom.sh .<br />
+              mv config/loom/.env.loom.sample .
+            </code>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Loom configure env.loom passwords typesense filebrowser"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">2</span>
+          <span class="step-title">Configure Environment</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('cp .env.loom.sample .env.loom', this)" type="button"
+            >Copy</button>
+            <code>cp .env.loom.sample .env.loom</code>
+          </div>
+          <p class="mt-3 mb-2">Open
+            <code>.env.loom</code>
+            and set at minimum:</p>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="card method-item">
+                <div class="card-body">
+                  <code>DB_ROOT_PASSWORD</code>
+                  <p class="small text-muted mb-0 mt-1">MySQL root password for
+                    the shared container</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card method-item">
+                <div class="card-body">
+                  <code>TYPESENSE_API_KEY</code>
+                  <p class="small text-muted mb-0 mt-1">Strong random string —
+                    <code>openssl rand -hex 32</code></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card method-item">
+                <div class="card-body">
+                  <code>FILEBROWSER_PASSWORD</code>
+                  <p class="small text-muted mb-0 mt-1">Admin password for
+                    FileBrowser UI</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Loom start shared services docker compose loom up"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">3</span>
+          <span class="step-title">Start Shared Services</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Place your Tribe app code in
+            <code>applications/tribe-base/</code>, then start the shared
+            infrastructure:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('docker compose -f docker-compose.loom.yml --env-file .env.loom up -d', this)" type="button"
+            >Copy</button>
+            <code>docker compose -f docker-compose.loom.yml --env-file .env.loom
+              up -d</code>
+          </div>
+          <div class="command-block mt-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('chmod +x loom.sh', this)" type="button"
+            >Copy</button>
+            <code><span class="comment"># Make the CLI executable</span><br
+              />chmod +x loom.sh</code>
+          </div>
+          <div class="alert alert-info mt-3 mb-0">
+            <strong>Note:</strong>
+            <code>composer install</code>
+            runs once during
+            <code>loom_setup</code>
+            — no per-thread overhead.
+            <code>applications/tribe-base/vendor/</code>
+            is shared read-only across all threads.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Loom create thread provision new tenant loom.sh create"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">4</span>
+          <span class="step-title">Create a Thread</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('./loom.sh create acme', this)" type="button"
+            >Copy</button>
+            <code><span class="comment"># Replace "acme" with your tenant name</span><br
+              />./loom.sh create acme</code>
+          </div>
+          <div class="alert alert-success mt-3 mb-0">
+            <h6 class="alert-heading mb-1">What
+              <code>create</code>
+              does automatically:</h6>
+            <p class="mb-0 small">
+              Allocates two ports &bull; Generates
+              <code>threads/acme/docker-compose.yml</code>,
+              <code>.env</code>, Caddyfiles &bull; Creates MySQL DB + user,
+              imports schema &bull; Registers in
+              <code>threads/.registry.json</code>
+              &bull; Runs
+              <code>docker compose up -d</code>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Loom CLI commands list start stop destroy logs status recreate"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">5</span>
+          <span class="step-title">Managing Threads</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-3"><strong>Thread Lifecycle</strong></h6>
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('./loom.sh list', this)" type="button"
+                    >Copy</button>
+                    <code><span class="comment"># All threads, ports, status</span><br
+                      />./loom.sh list</code>
+                  </div>
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('./loom.sh start acme', this)" type="button"
+                    >Copy</button>
+                    <code>./loom.sh start &lt;name&gt;</code>
+                  </div>
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('./loom.sh stop acme', this)" type="button"
+                    >Copy</button>
+                    <code>./loom.sh stop &lt;name&gt;</code>
+                  </div>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('./loom.sh destroy acme', this)" type="button"
+                    >Copy</button>
+                    <code>./loom.sh destroy &lt;name&gt;</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-3"><strong>Diagnostics</strong></h6>
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('./loom.sh logs acme', this)" type="button"
+                    >Copy</button>
+                    <code><span class="comment"># Tail logs for a thread</span><br
+                      />./loom.sh logs &lt;name&gt;</code>
+                  </div>
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('./loom.sh logs acme php_tribe', this)" type="button"
+                    >Copy</button>
+                    <code><span class="comment"># Specific service</span><br
+                      />./loom.sh logs &lt;name&gt; php_tribe</code>
+                  </div>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('./loom.sh status acme', this)" type="button"
+                    >Copy</button>
+                    <code>./loom.sh status &lt;name&gt;</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-warning mt-3 mb-0">
+            <strong>destroy</strong>
+            drops the DB and removes
+            <code>threads/&lt;name&gt;/</code>
+            but
+            <strong>preserves</strong>
+            <code>uploads/threads/&lt;name&gt;/</code>. Thread
+            <code>.env</code>
+            is
+            <strong>never overwritten</strong>
+            after initial creation.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Loom shared services access URLs phpmyadmin filebrowser ports"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">6</span>
+          <span class="step-title">Access Shared Services</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="service-link-card">
+                <h6>phpMyAdmin</h6>
+                <a
+                  href="http://localhost:12001"
+                  target="_blank"
+                  class="d-block mb-1 font-monospace" rel="noopener noreferrer"
+                >localhost:12001</a>
+                <small class="text-muted">Sees all thread databases</small>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="service-link-card">
+                <h6>FileBrowser</h6>
+                <a
+                  href="http://localhost:12005"
+                  target="_blank"
+                  class="d-block mb-1 font-monospace" rel="noopener noreferrer"
+                >localhost:12005</a>
+                <small class="text-muted">Root is
+                  <code>uploads/threads/</code>
+                  — sees all thread files</small>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-light mt-3 mb-0">
+            <strong>MySQL and Typesense</strong>
+            are internal only — not exposed to the host. Thread instances
+            connect via the
+            <code>loom_network</code>
+            Docker network.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <ManualFooter />
+
+  </div>
+</div>
+
+<ManualScripts />

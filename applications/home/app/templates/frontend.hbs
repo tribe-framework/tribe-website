@@ -16,10 +16,10 @@
         <div class="step-body">
           <p>Use the tribe-framework Git template for your frontend application.</p>
           <div class="text-center my-3">
-            <a href="https://github.com/new?template_name=tribe&template_owner=tribe-framework" target="_blank" class="btn btn-info btn-lg me-2">
+            <a href="https://github.com/new?template_name=tribe&template_owner=tribe-framework" target="_blank" class="btn btn-info btn-lg me-2" rel="noopener noreferrer">
               Use the Git Template
             </a>
-            <a href="https://github.com/tribe-framework/tribe" target="_blank" class="btn btn-outline-dark btn-lg">
+            <a href="https://github.com/tribe-framework/tribe" target="_blank" class="btn btn-outline-dark btn-lg" rel="noopener noreferrer">
               View on GitHub
             </a>
           </div>
@@ -35,7 +35,7 @@
         <div class="step-body">
           <p>Open your terminal and navigate to the directory that has been cloned from the template:</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('cd /path/to/frontend/directory', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('cd /path/to/frontend/directory', this)" type="button">Copy</button>
             <code><span class="comment"># Navigate to your Tribe directory</span><br>cd /path/to/tribe/directory</code>
           </div>
         </div>
@@ -56,7 +56,7 @@
                 <div class="card-body">
                   <h6><strong>Linux &amp; macOS:</strong></h6>
                   <div class="command-block mb-0">
-                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('chmod +x ./config/ember/ember-init.sh; bash ./config/ember/ember-init.sh;', this)">Copy</button>
+                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('chmod +x ./config/ember/ember-init.sh; bash ./config/ember/ember-init.sh;', this)" type="button">Copy</button>
                     <code>chmod +x ./config/ember/ember-init.sh; bash ./config/ember/ember-init.sh;</code>
                   </div>
                 </div>
@@ -67,7 +67,7 @@
                 <div class="card-body">
                   <h6><strong>Windows:</strong></h6>
                   <div class="command-block mb-0">
-                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('powershell -ExecutionPolicy Bypass -File .\\config\\ember\\ember-init.ps1', this)">Copy</button>
+                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('powershell -ExecutionPolicy Bypass -File .\\config\\ember\\ember-init.ps1', this)" type="button">Copy</button>
                     <code>powershell -ExecutionPolicy Bypass -File .\config\ember\ember-init.ps1</code>
                   </div>
                 </div>
@@ -90,7 +90,7 @@
         <div class="step-body">
           <p>Open your terminal and navigate to the Ember directory that got created:</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('cd applications/home', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('cd applications/home', this)" type="button">Copy</button>
             <code><span class="comment"># Navigate to your Ember application directory</span><br>cd /path/to/applications/ember/directory</code>
           </div>
         </div>
@@ -106,13 +106,13 @@
           <p>Serve the EmberJS application to start coding:</p>
 
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('ember s', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('ember s', this)" type="button">Copy</button>
             <code>ember s</code>
           </div>
 
           <div class="alert alert-success mt-3">
             <h6 class="alert-heading mb-1">EmberJS Development Server:</h6>
-            <p class="mb-0">Your frontend will be available at: <a href="http://localhost:4200" target="_blank" class="fw-bold">localhost:4200</a></p>
+            <p class="mb-0">Your frontend will be available at: <a href="http://localhost:4200" target="_blank" class="fw-bold" rel="noopener noreferrer">localhost:4200</a></p>
           </div>
 
           <div class="alert alert-info mb-0">
@@ -130,7 +130,7 @@
         <div class="step-body">
           <p>When you're ready to deploy, build your application for production:</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('ember build -prod', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('ember build -prod', this)" type="button">Copy</button>
             <code>ember build -prod</code>
           </div>
           <div class="alert alert-success mt-3 mb-0">
@@ -154,7 +154,7 @@
                 <div class="card-body text-center">
                   <h5 class="card-title">Netlify</h5>
                   <p class="card-text small">Easy deployment with continuous integration</p>
-                  <a href="https://www.netlify.com" target="_blank" class="btn btn-outline-dark">Deploy to Netlify</a>
+                  <a href="https://www.netlify.com" target="_blank" class="btn btn-outline-dark" rel="noopener noreferrer">Deploy to Netlify</a>
                 </div>
               </div>
             </div>
@@ -163,7 +163,7 @@
                 <div class="card-body text-center">
                   <h5 class="card-title">Cloudflare Pages</h5>
                   <p class="card-text small">Fast, secure deployment with global CDN</p>
-                  <a href="https://pages.cloudflare.com" target="_blank" class="btn btn-outline-dark">Deploy to Cloudflare</a>
+                  <a href="https://pages.cloudflare.com" target="_blank" class="btn btn-outline-dark" rel="noopener noreferrer">Deploy to Cloudflare</a>
                 </div>
               </div>
             </div>

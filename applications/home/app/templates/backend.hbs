@@ -20,7 +20,7 @@
               <div class="card method-item">
                 <div class="card-body d-flex justify-content-between align-items-center">
                   <div><strong>Docker:</strong><br><code>docker --version</code></div>
-                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('docker --version', this)">Copy</button>
+                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('docker --version', this)" type="button">Copy</button>
                 </div>
               </div>
             </div>
@@ -28,13 +28,13 @@
               <div class="card method-item">
                 <div class="card-body d-flex justify-content-between align-items-center">
                   <div><strong>Docker Compose:</strong><br><code>docker compose version</code></div>
-                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('docker compose version', this)">Copy</button>
+                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('docker compose version', this)" type="button">Copy</button>
                 </div>
               </div>
             </div>
           </div>
           <div class="alert alert-warning mt-3 mb-0">
-            <strong>Not installed?</strong> Go back to the Prerequisites page to install Docker, or visit <a href="https://www.docker.com/get-started/" target="_blank">docker.com/get-started</a>.
+            <strong>Not installed?</strong> Go back to the Prerequisites page to install Docker, or visit <a href="https://www.docker.com/get-started/" target="_blank" rel="noopener noreferrer">docker.com/get-started</a>.
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@
         <div class="step-body">
           <p>Open your terminal and navigate to the directory containing your <code>docker-compose.yml</code> file:</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('cd /path/to/your/project', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('cd /path/to/your/project', this)" type="button">Copy</button>
             <code><span class="comment"># Replace with your actual project path</span><br>cd /path/to/your/project</code>
           </div>
           <div class="row g-3 mt-2">
@@ -56,7 +56,7 @@
               <div class="card method-item">
                 <div class="card-body d-flex justify-content-between align-items-center">
                   <div><strong>Windows:</strong><br><code>cd C:\Users\YourName\Documents\MyProject</code></div>
-                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('cd C:\\Users\\YourName\\Documents\\MyProject', this)">Copy</button>
+                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('cd C:\\Users\\YourName\\Documents\\MyProject', this)" type="button">Copy</button>
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@
               <div class="card method-item">
                 <div class="card-body d-flex justify-content-between align-items-center">
                   <div><strong>macOS / Linux:</strong><br><code>cd ~/Documents/MyProject</code></div>
-                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('cd ~/Documents/MyProject', this)">Copy</button>
+                  <button class="btn btn-sm btn-outline-dark" onclick="copyCmd('cd ~/Documents/MyProject', this)" type="button">Copy</button>
                 </div>
               </div>
             </div>
@@ -84,7 +84,7 @@
         <div class="step-body">
           <p>Start all backend services with Docker Compose:</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker compose up -d --build', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker compose up -d --build', this)" type="button">Copy</button>
             <code>docker compose up -d --build</code>
           </div>
 
@@ -95,7 +95,7 @@
 
           <p class="mt-3 mb-1"><strong>For older Docker versions:</strong></p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker-compose up -d --build', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker-compose up -d --build', this)" type="button">Copy</button>
             <code>docker-compose up -d --build</code>
           </div>
         </div>
@@ -115,7 +115,7 @@
             <div class="col-md-6">
               <div class="service-link-card">
                 <h6>Junction (Backend Management)</h6>
-                <a href="http://junction.localhost:12002" target="_blank" class="d-block mb-1 font-monospace">http://junction.localhost:12002</a>
+                <a href="http://junction.localhost:12002" target="_blank" class="d-block mb-1 font-monospace" rel="noopener noreferrer">http://junction.localhost:12002</a>
                 <small class="text-muted">No-code backend service</small>
                 <div class="mt-2"><strong>Credentials:</strong> Username: <code>junction</code> | Password: <code>password</code></div>
               </div>
@@ -123,7 +123,7 @@
             <div class="col-md-6">
               <div class="service-link-card">
                 <h6>Tribe Framework</h6>
-                <a href="http://tribe.localhost:12000" target="_blank" class="d-block mb-1 font-monospace">http://tribe.localhost:12000</a>
+                <a href="http://tribe.localhost:12000" target="_blank" class="d-block mb-1 font-monospace" rel="noopener noreferrer">http://tribe.localhost:12000</a>
                 <small class="text-muted">Main Tribe Framework interface</small>
               </div>
             </div>
@@ -134,14 +134,14 @@
             <div class="col-md-6">
               <div class="service-link-card">
                 <h6>Tribe APIs</h6>
-                <a href="http://tribe.localhost:12000/api.php/webapp/0" target="_blank" class="d-block mb-1 font-monospace">http://tribe.localhost:12000/api.php/webapp/0</a>
+                <a href="http://tribe.localhost:12000/api.php/webapp/0" target="_blank" class="d-block mb-1 font-monospace" rel="noopener noreferrer">http://tribe.localhost:12000/api.php/webapp/0</a>
                 <small class="text-muted">RESTful API endpoints</small>
               </div>
             </div>
             <div class="col-md-6">
               <div class="service-link-card">
                 <h6>phpMyAdmin</h6>
-                <a href="http://tribe.localhost:12000/phpmyadmin" target="_blank" class="d-block mb-1 font-monospace">http://tribe.localhost:12000/phpmyadmin</a>
+                <a href="http://tribe.localhost:12000/phpmyadmin" target="_blank" class="d-block mb-1 font-monospace" rel="noopener noreferrer">http://tribe.localhost:12000/phpmyadmin</a>
                 <small class="text-muted">Web interface for MySQL database management</small>
               </div>
             </div>
@@ -152,19 +152,19 @@
             <div class="col-md-4">
               <div class="service-link-card">
                 <h6>Static / JAM Stack</h6>
-                <a href="http://dist.localhost:12003" target="_blank" class="d-block mb-1 font-monospace">dist.localhost:12003</a>
+                <a href="http://dist.localhost:12003" target="_blank" class="d-block mb-1 font-monospace" rel="noopener noreferrer">dist.localhost:12003</a>
               </div>
             </div>
             <div class="col-md-4">
               <div class="service-link-card">
                 <h6>Static + PHP</h6>
-                <a href="http://dist-php.localhost:12004" target="_blank" class="d-block mb-1 font-monospace">dist-php.localhost:12004</a>
+                <a href="http://dist-php.localhost:12004" target="_blank" class="d-block mb-1 font-monospace" rel="noopener noreferrer">dist-php.localhost:12004</a>
               </div>
             </div>
             <div class="col-md-4">
               <div class="service-link-card">
                 <h6>Custom PHP</h6>
-                <a href="http://tribe.localhost:12000/custom/" target="_blank" class="d-block mb-1 font-monospace">tribe.localhost:12000/custom/</a>
+                <a href="http://tribe.localhost:12000/custom/" target="_blank" class="d-block mb-1 font-monospace" rel="noopener noreferrer">tribe.localhost:12000/custom/</a>
               </div>
             </div>
           </div>
@@ -192,13 +192,13 @@
         <div class="step-body">
           <p>When you want to stop and remove the containers:</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker compose down', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker compose down', this)" type="button">Copy</button>
             <code>docker compose down</code>
           </div>
 
           <p class="mt-3 mb-1"><strong>For older Docker versions:</strong></p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker-compose down', this)">Copy</button>
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker-compose down', this)" type="button">Copy</button>
             <code>docker-compose down</code>
           </div>
 

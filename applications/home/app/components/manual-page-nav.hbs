@@ -1,4 +1,4 @@
-{{!-- Page Navigation Tabs --}}
+{{! Page Navigation Tabs }}
 <div class="container">
   <nav class="manual-page-nav mb-4">
     <ul class="nav nav-tabs nav-fill">
@@ -13,6 +13,45 @@
       </li>
       <li class="nav-item">
         <LinkTo @route="backend" class="nav-link">Backend</LinkTo>
+      </li>
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle
+            {{if (or (eq @activePage 'loom') (eq @activePage 'tor')) 'active'}}"
+          href="#"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Advanced
+        </a>
+        <ul class="dropdown-menu">
+          <li>
+            <LinkTo
+              @route="structure"
+              class="dropdown-item {{if (eq @activePage 'structure') 'active'}}"
+            >
+              <i class="fa-solid fa-folder-tree me-2"></i>Glossary and Folder
+              Structure
+            </LinkTo>
+          </li>
+          <li>
+            <LinkTo
+              @route="loom"
+              class="dropdown-item {{if (eq @activePage 'loom') 'active'}}"
+            >
+              <i class="fa-solid fa-layer-group me-2"></i>Loom: Multi Tribe
+            </LinkTo>
+          </li>
+          <li>
+            <LinkTo
+              @route="tor"
+              class="dropdown-item {{if (eq @activePage 'tor') 'active'}}"
+            >
+              <i class="fa-solid fa-shield-halved me-2"></i>Tor: Onion Network
+            </LinkTo>
+          </li>
+        </ul>
       </li>
     </ul>
   </nav>
