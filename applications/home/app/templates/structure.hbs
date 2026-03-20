@@ -421,7 +421,7 @@
             that ships inside
             <code>ember-tribe</code>, and a
             <strong>JSON specification file</strong>
-            (<code>config/storylang.json</code>) that defines the complete
+            (<code>public/storylang.json</code>) that defines the complete
             structure of a frontend application. Think of it as
             <code>types.json</code>'s counterpart — where
             <code>types.json</code>
@@ -565,11 +565,83 @@
 
       <div
         class="step-card"
-        data-step-name="HLS HTTP Live Streaming video adaptive upload tribe-core"
+        data-step-name="image sizes variants xs sm md lg xl tribe-core uploads"
       >
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">7</span>
-          <span class="step-title">HLS (HTTP Live Streaming)</span>
+          <span class="step-title">Image Size Variants</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>
+            When an image is uploaded via
+            <code>uploads.php</code>,
+            <code>tribe-core</code>
+            automatically generates five resized variants using the same size
+            labels used for HLS video quality levels. These variants are stored
+            alongside the original in the date-organised upload folder (<code
+            >uploads/YYYY/MM/DD/</code>) and are immediately available via the
+            API.
+          </p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Variants generated</strong></h6>
+                  <table class="table table-sm table-borderless mb-0 small">
+                    <tbody>
+                      <tr><td class="font-monospace text-nowrap pe-2">xs</td><td
+                          class="text-muted"
+                        >Extra small — thumbnail / icon use</td></tr>
+                      <tr><td class="font-monospace text-nowrap pe-2">sm</td><td
+                          class="text-muted"
+                        >Small — card previews and list views</td></tr>
+                      <tr><td class="font-monospace text-nowrap pe-2">md</td><td
+                          class="text-muted"
+                        >Medium — standard content images</td></tr>
+                      <tr><td class="font-monospace text-nowrap pe-2">lg</td><td
+                          class="text-muted"
+                        >Large — hero images and full-width layouts</td></tr>
+                      <tr><td class="font-monospace text-nowrap pe-2">xl</td><td
+                          class="text-muted"
+                        >Extra large — high-DPI / retina displays</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Accessing variants in the frontend</strong></h6>
+                  <p class="small text-muted mb-2">
+                    After a successful image upload, the API response includes a
+                    <code>sizes</code>
+                    object on the file. Each key maps to a URL for that variant.
+                    Use the appropriate size to avoid serving oversized images
+                    to smaller screens.
+                  </p>
+                  <code class="small d-block bg-light p-2 rounded">
+                    data.file.sizes.xs &nbsp;// thumbnail<br />
+                    data.file.sizes.sm &nbsp;// small<br />
+                    data.file.sizes.md &nbsp;// medium<br />
+                    data.file.sizes.lg &nbsp;// large<br />
+                    data.file.sizes.xl &nbsp;// extra large
+                  </code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="HLS HTTP Live Streaming video adaptive upload tribe-core"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">8</span>
+          <span class="step-title">HLS (M3U8 Video Streaming)</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
@@ -695,7 +767,7 @@
                 reads this to generate the database, admin UI and API.</dd>
               <dt>storylang.json</dt>
               <dd class="text-muted small mb-2">Frontend specification file at
-                <code>config/storylang.json</code>. Defines routes, components,
+                <code>public/storylang.json</code>. Defines routes, components,
                 services, helpers and modifiers. Synced via the
                 <code>node storylang</code>
                 CLI.</dd>

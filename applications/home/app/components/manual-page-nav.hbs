@@ -16,8 +16,16 @@
       </li>
       <li class="nav-item dropdown">
         <a
-          class="nav-link dropdown-toggle
-            {{if (or (eq @activePage 'loom') (eq @activePage 'tor')) 'active'}}"
+          class="nav-link dropdown-toggle justify-content-center
+            {{if
+              (or
+                (eq @activePage 'loom')
+                (eq @activePage 'tor')
+                (eq @activePage 'ai')
+                (eq @activePage 'structure')
+              )
+              'active'
+            }}"
           href="#"
           role="button"
           data-bs-toggle="dropdown"
@@ -31,7 +39,7 @@
               @route="structure"
               class="dropdown-item {{if (eq @activePage 'structure') 'active'}}"
             >
-              <i class="fa-solid fa-folder-tree me-2"></i>Project Structure
+              Project Structure
             </LinkTo>
           </li>
           <li>
@@ -39,8 +47,7 @@
               @route="ai"
               class="dropdown-item {{if (eq @activePage 'ai') 'active'}}"
             >
-              <i class="fa-solid fa-wand-sparkles me-2"></i>Structured Approach
-              to AI
+              Structured Approach to AI
             </LinkTo>
           </li>
           <li>
@@ -48,7 +55,7 @@
               @route="loom"
               class="dropdown-item {{if (eq @activePage 'loom') 'active'}}"
             >
-              <i class="fa-solid fa-layer-group me-2"></i>Loom: Multi Tribe
+              Loom: Multi Tribe
             </LinkTo>
           </li>
           <li>
@@ -56,7 +63,7 @@
               @route="tor"
               class="dropdown-item {{if (eq @activePage 'tor') 'active'}}"
             >
-              <i class="fa-solid fa-shield-halved me-2"></i>Tor: Onion Network
+              Tor: Onion Network
             </LinkTo>
           </li>
         </ul>
