@@ -6,337 +6,1125 @@
   <div class="container pb-5">
 
     {{! ============================================================ }}
-    {{! GLOSSARY }}
+    {{! INNER TABS }}
     {{! ============================================================ }}
-    <div class="section-divider mb-4">
-      <span class="section-label">GLOSSARY</span>
-    </div>
+    <ul class="nav nav-tabs mb-4" id="structurePageTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="ecosystem-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#ecosystem-pane"
+          type="button"
+          role="tab"
+          aria-controls="ecosystem-pane"
+          aria-selected="true"
+        >
+          <i class="fa-solid fa-layer-group me-2"></i>Ecosystem &amp; Structure
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="ai-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#ai-pane"
+          type="button"
+          role="tab"
+          aria-controls="ai-pane"
+          aria-selected="false"
+        >
+          <i class="fa-solid fa-robot me-2"></i>Structured Thinking for AI Prompting
+        </button>
+      </li>
+    </ul>
 
-    <div class="row g-3 mb-5">
-      <div class="col-md-6">
-        <div class="card method-item h-100">
-          <div class="card-body">
-            <h6 class="mb-3"><strong>Core</strong></h6>
-            <dl class="mb-0">
-              <dt>Tribe</dt>
-              <dd class="text-muted small mb-2">PHP content/app framework — the
-                core backend and UI engine. Serves content, handles APIs, and
-                runs the application layer.</dd>
-              <dt>Junction</dt>
-              <dd class="text-muted small mb-2">No-code CMS layer that connects
-                to Tribe via API. Manages content, schemas, and users through a
-                browser UI.</dd>
-              <dt>Docker</dt>
-              <dd class="text-muted small mb-2">Containerisation platform.
-                <code>docker-compose.yml</code>
-                defines all services, networks, and volumes.</dd>
-              <dt>.env</dt>
-              <dd class="text-muted small mb-0">Environment file holding secrets
-                and config — DB passwords, ports, project name. Never committed
-                to Git.</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card method-item h-100">
-          <div class="card-body">
-            <h6 class="mb-3"><strong>Services</strong></h6>
-            <dl class="mb-0">
-              <dt>Caddy</dt>
-              <dd class="text-muted small mb-2">Web server and reverse proxy.
-                Handles HTTP/HTTPS routing, SSL certificates, and forwards
-                requests to PHP-FPM.</dd>
-              <dt>MySQL</dt>
-              <dd class="text-muted small mb-2">Relational database storing all
-                Tribe content and application data.</dd>
-              <dt>Typesense</dt>
-              <dd class="text-muted small mb-2">Fast search engine by
-                <a
-                  href="https://typesense.org"
-                  target="_blank"
-                >typesense.org</a>. Indexes Tribe content for full-text search.</dd>
-              <dt>phpMyAdmin</dt>
-              <dd class="text-muted small mb-2">Web UI for browsing and managing
-                MySQL databases.</dd>
-              <dt>FileBrowser</dt>
-              <dd class="text-muted small mb-0">Web UI for browsing and managing
-                uploaded files by
-                <a
-                  href="https://filebrowser.org"
-                  target="_blank"
-                >filebrowser.org</a>.</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card method-item h-100">
-          <div class="card-body">
-            <h6 class="mb-3"><strong>Loom (Multi Tribe)</strong></h6>
-            <dl class="mb-0">
-              <dt>Loom</dt>
-              <dd class="text-muted small mb-2">Multi Tribe hosting mode. One
-                shared set of services (MySQL, Typesense, Caddy) supports many
-                isolated Threads.</dd>
-              <dt>Thread</dt>
-              <dd class="text-muted small mb-0">A single Tribe + Junction
-                instance within a Loom setup. Has its own database, uploads
-                folder, and port pair. App code is shared read-only.</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card method-item h-100">
-          <div class="card-body">
-            <h6 class="mb-3"><strong>Tor (Onion Services)</strong></h6>
-            <dl class="mb-0">
-              <dt>Tor</dt>
-              <dd class="text-muted small mb-2">Overlay mode that routes all
-                traffic through
-                <code>.onion</code>
-                services. No host ports are exposed. Works with single-project
-                Tribe only.</dd>
-              <dt>.onion address</dt>
-              <dd class="text-muted small mb-0">A v3 hidden service address (56
-                chars, ed25519). Derived from a private key stored in
-                <code>uploads/tor/</code>. Permanent as long as the key is
-                preserved.</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="tab-content" id="structurePageTabsContent">
 
-    {{! ============================================================ }}
-    {{! FOLDER STRUCTURE }}
-    {{! ============================================================ }}
-    <div class="section-divider mb-4">
-      <span class="section-label">FOLDER STRUCTURE</span>
-    </div>
+      {{! ============================================================ }}
+      {{! TAB 1: ECOSYSTEM & STRUCTURE }}
+      {{! ============================================================ }}
+      <div
+        class="tab-pane fade show active"
+        id="ecosystem-pane"
+        role="tabpanel"
+        aria-labelledby="ecosystem-tab"
+      >
 
-    <div class="row g-3 mb-5">
-
-      <div class="col-md-6">
-        <div class="card method-item h-100">
-          <div class="card-body">
-            <h6 class="mb-3"><strong>Root</strong></h6>
-            <table class="table table-sm table-borderless mb-0 small">
-              <tbody>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >docker-compose.yml</td><td class="text-muted">Standard
-                    single-project setup</td></tr>
-                <tr><td class="font-monospace text-nowrap pe-3">.env</td><td
-                    class="text-muted"
-                  >Active environment (copy from
-                    <code>.env.sample</code>)</td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >.env.sample</td><td class="text-muted">Standard env template</td></tr>
-              </tbody>
-            </table>
-            <p class="small text-muted mt-3 mb-2"><strong>After enabling Loom or
-                Tor</strong>, their compose and env files are moved here too.
-              See the Advanced guides.</p>
-          </div>
+        {{! ---- CORE TECHNOLOGIES ---- }}
+        <div class="section-divider mb-4">
+          <span class="section-label">CORE TECHNOLOGIES</span>
         </div>
-      </div>
 
-      <div class="col-md-6">
-        <div class="card method-item h-100">
-          <div class="card-body">
-            <h6 class="mb-3"><strong>applications/</strong></h6>
-            <table class="table table-sm table-borderless mb-0 small">
-              <tbody>
-                <tr><td class="font-monospace text-nowrap pe-3">tribe/</td><td
-                    class="text-muted"
-                  >Tribe PHP application</td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >junction/</td><td class="text-muted">Junction frontend build
-                    (<code>dist/</code>)</td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >tribe-base/</td><td class="text-muted">Shared Tribe code for
-                    Loom (mounted
-                    <code>:ro</code>
-                    across all Threads)</td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >threads/&lt;n&gt;/junction/</td><td
-                    class="text-muted"
-                  >Per-thread Junction builds (Loom)</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+        <div class="steps-container mb-5">
 
-      <div class="col-12">
-        <div class="card method-item">
-          <div class="card-body">
-            <h6 class="mb-3"><strong>config/</strong></h6>
-            <div class="row">
-              <div class="col-md-4">
-                <p class="small fw-semibold mb-1">Standard</p>
-                <table class="table table-sm table-borderless mb-3 small">
-                  <tbody>
-                    <tr><td
-                        class="font-monospace text-nowrap pe-3"
-                      >mysql/</td><td class="text-muted"><code>my.cnf</code>,
-                        <code>install.sql</code></td></tr>
-                    <tr><td
-                        class="font-monospace text-nowrap pe-3"
-                      >tribe/</td><td class="text-muted">Caddyfile, supervisord,
-                        watcher, indexers</td></tr>
-                    <tr><td
-                        class="font-monospace text-nowrap pe-3"
-                      >junction/</td><td class="text-muted">Caddyfile</td></tr>
-                    <tr><td
-                        class="font-monospace text-nowrap pe-3"
-                      >dist/</td><td class="text-muted">Caddyfile (static site)</td></tr>
-                    <tr><td
-                        class="font-monospace text-nowrap pe-3"
-                      >dist-php/</td><td class="text-muted">Caddyfile (PHP site)</td></tr>
-                    <tr><td
-                        class="font-monospace text-nowrap pe-3"
-                      >backup.sh</td><td class="text-muted">MySQL backup script</td></tr>
-                  </tbody>
-                </table>
+          <div class="step-card" data-step-name="Junction open-source CMS AI database blueprint">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">1</span>
+              <span class="step-title">Junction</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                Junction is an open-source, AI-powered tool that transforms your idea into a
+                structured database. It enables you to host all your files, data and APIs in one
+                secure location, ensuring complete control, ownership and privacy for your project.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>What it does</strong></h6>
+                      <ul class="small text-muted mb-0 ps-3">
+                        <li>Generates database tables, admin interfaces and API endpoints from a single <code>types.json</code> blueprint</li>
+                        <li>Provides a browser-based no-code UI for managing content, schemas and users</li>
+                        <li>Hosts files, data and API — all in one place</li>
+                        <li>Connects to any frontend via the Tribe JSON:API</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>How it fits in</strong></h6>
+                      <p class="small text-muted mb-2">
+                        Junction is the <em>no-code control layer</em> that sits on top of
+                        <code>tribe-core</code>. Developers define the data model in
+                        <code>types.json</code>; Junction reads that blueprint and generates
+                        everything else — database schema, admin UI, REST API.
+                      </p>
+                      <p class="small text-muted mb-0">
+                        Access it locally at
+                        <a href="http://junction.localhost:12002" target="_blank" rel="noopener noreferrer">junction.localhost:12002</a>
+                        or via the cloud at <a href="https://junction.express" target="_blank" rel="noopener noreferrer">junction.express</a>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="col-md-4">
-                <p class="small fw-semibold mb-1">Loom</p>
-                <table class="table table-sm table-borderless mb-3 small">
-                  <tbody>
-                    <tr><td
-                        class="font-monospace text-nowrap pe-3"
-                      >loom/</td><td class="text-muted">Compose files,
-                        <code>loom.sh</code>,
-                        <code>.env.loom.sample</code>,
-                        <code>setup.sh</code>,
-                        <code>index_db.php</code></td></tr>
-                  </tbody>
-                </table>
-                <p class="small fw-semibold mb-1">Tor</p>
-                <table class="table table-sm table-borderless mb-0 small">
-                  <tbody>
-                    <tr><td class="font-monospace text-nowrap pe-3">tor/</td><td
-                        class="text-muted"
-                      >Compose overlay,
-                        <code>.env.tor.sample</code>,
-                        <code>torrc</code>,
-                        <code>tor-addresses.sh</code></td></tr>
-                  </tbody>
-                </table>
+              <div class="alert alert-light mt-3 mb-0 small">
+                <i class="fa-brands fa-github me-1"></i>
+                <strong>Further reading:</strong>
+                <a href="https://github.com/tribe-framework/tribe" target="_blank" rel="noopener noreferrer">github.com/tribe-framework/tribe</a>
+                &mdash; the main Tribe repository that ships Junction together with all Docker services.
               </div>
-              <div class="col-md-4">
-                <div class="alert alert-light small mb-0 mt-3 mt-md-0">
-                  Loom and Tor config files stay in
-                  <code>config/loom/</code>
-                  and
-                  <code>config/tor/</code>
-                  until you activate those modes. The setup guides walk you
-                  through moving them to root.
+            </div>
+          </div>
+
+          <div class="step-card" data-step-name="tribe-core PHP headless CMS JSON API Composer">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">2</span>
+              <span class="step-title">tribe-core</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                <code>tribe-core</code> is the PHP package that powers the backend. It is a
+                headless CMS framework providing a JSON:API for dynamic content management with
+                flexible content types, authentication, and file handling. It is installed and
+                managed via <strong>Composer</strong>.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Core classes</strong></h6>
+                      <dl class="small mb-0">
+                        <dt><code>\Tribe\Core</code></dt>
+                        <dd class="text-muted mb-1">Object CRUD and search</dd>
+                        <dt><code>\Tribe\API</code></dt>
+                        <dd class="text-muted mb-1">RESTful JSON:API handler</dd>
+                        <dt><code>\Tribe\Config</code></dt>
+                        <dd class="text-muted mb-1">Content type definitions</dd>
+                        <dt><code>\Tribe\Uploads</code></dt>
+                        <dd class="text-muted mb-1">File upload &amp; image processing</dd>
+                        <dt><code>\Tribe\MySQL</code></dt>
+                        <dd class="text-muted mb-0">Database abstraction</dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Single-table design</strong></h6>
+                      <p class="small text-muted mb-2">
+                        All content lives in one <code>data</code> table. Every object has
+                        an <code>id</code>, a JSON <code>content</code> field, a <code>type</code>,
+                        a <code>slug</code>, and a <code>content_privacy</code> level
+                        (<code>public</code>, <code>private</code>, <code>draft</code>,
+                        <code>pending</code>, <code>sent</code>).
+                      </p>
+                      <p class="small text-muted mb-0">
+                        This flat structure makes it trivial to add new content types without
+                        database migrations.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Composer</strong></h6>
+                      <p class="small text-muted mb-2">
+                        Composer is PHP's dependency manager. <code>tribe-core</code> is
+                        installed into any PHP project with:
+                      </p>
+                      <div class="command-block mb-2">
+                        <button class="btn btn-sm copy-btn-block" onclick="copyCmd('composer require tribe-framework/tribe-core', this)" type="button">Copy</button>
+                        <code>composer require tribe-framework/tribe-core</code>
+                      </div>
+                      <p class="small text-muted mb-0">
+                        The Docker image runs <code>composer install</code> automatically on
+                        startup. In Loom mode, <code>composer install</code> runs once for the
+                        shared <code>tribe-base/</code> and is mounted read-only across all threads.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-light mt-3 mb-0 small">
+                <i class="fa-brands fa-github me-1"></i>
+                <strong>Further reading:</strong>
+                <a href="https://github.com/tribe-framework/tribe-core" target="_blank" rel="noopener noreferrer">github.com/tribe-framework/tribe-core</a>
+                &mdash; full PHP class documentation, API reference and authentication levels.
+              </div>
+            </div>
+          </div>
+
+          <div class="step-card" data-step-name="types.json blueprint content types modules fields Junction">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">3</span>
+              <span class="step-title">types.json</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                <code>types.json</code> is the core blueprint file for Junction. It defines every
+                data type (called <em>Tracks</em> in Junction's UI) and every field within each
+                type (called <em>Modules</em>). Junction reads this file to automatically generate
+                the database schema, admin interface and API endpoints.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Key concepts</strong></h6>
+                      <dl class="small mb-0">
+                        <dt>Type / Track</dt>
+                        <dd class="text-muted mb-1">A content entity (e.g. <code>post</code>, <code>user</code>, <code>product</code>). Defined by a <code>slug</code>, <code>name</code>, <code>plural</code>, and a <code>modules</code> array.</dd>
+                        <dt>Module / Field</dt>
+                        <dd class="text-muted mb-1">An individual field on a type. Defined by <code>input_slug</code>, <code>input_type</code>, <code>var_type</code>, and optional properties like <code>input_primary</code>, <code>input_unique</code>, <code>linked_type</code>.</dd>
+                        <dt>linked_type</dt>
+                        <dd class="text-muted mb-0">Creates a relationship between two types. The API automatically resolves and inlines the linked object with a <code>__linked</code> suffix on the field.</dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Where it lives</strong></h6>
+                      <table class="table table-sm table-borderless mb-0 small">
+                        <tbody>
+                          <tr>
+                            <td class="font-monospace text-nowrap pe-3">config/types.json</td>
+                            <td class="text-muted">Committed to the repo — the source of truth</td>
+                          </tr>
+                          <tr>
+                            <td class="font-monospace text-nowrap pe-3">uploads/types/*.json</td>
+                            <td class="text-muted">Overrides uploaded dynamically via Junction</td>
+                          </tr>
+                          <tr>
+                            <td class="font-monospace text-nowrap pe-3">Remote URL</td>
+                            <td class="text-muted">GitHub repository blueprint — loadable remotely</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p class="small text-muted mt-2 mb-0">
+                        The <code>webapp/0</code> API endpoint always returns the currently active types configuration.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-light mt-3 mb-0 small">
+                <i class="fa-brands fa-github me-1"></i>
+                <strong>Further reading:</strong>
+                <a href="https://github.com/tribe-framework/types.json" target="_blank" rel="noopener noreferrer">github.com/tribe-framework/types.json</a>
+                &mdash; full field reference, valid <code>input_type</code> values, relationship patterns, and SEO module conventions.
+              </div>
+            </div>
+          </div>
+
+          <div class="step-card" data-step-name="ember-tribe EmberJS addon npm node frontend">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">4</span>
+              <span class="step-title">ember-tribe &amp; the Frontend Stack</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                <code>ember-tribe</code> is an EmberJS addon that connects your frontend
+                application to the Tribe API. It bridges backend data structures and frontend
+                development, and helps you build an Ember app directly from your
+                <code>types.json</code> blueprint. It is installed and managed via
+                <strong>npm</strong>, which in turn requires <strong>Node.js</strong>.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Node.js &amp; npm</strong></h6>
+                      <p class="small text-muted mb-2">
+                        <strong>Node.js</strong> is the JavaScript runtime that powers all Ember
+                        tooling. <strong>npm</strong> is the Node Package Manager used to install
+                        frontend dependencies including <code>ember-tribe</code> itself.
+                      </p>
+                      <p class="small text-muted mb-0">
+                        Tribe requires Node.js (latest LTS). Use NVM to manage Node versions.
+                        See the Prerequisites page for installation steps.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>ember-tribe features</strong></h6>
+                      <ul class="small text-muted mb-0 ps-3">
+                        <li>Auto-generates EmberData models from backend type definitions via the <code>types</code> service</li>
+                        <li>Pre-installs Bootstrap 5, FontAwesome 6, animate.css, video.js, swiper, howler, sortablejs, papaparse</li>
+                        <li>Includes 30+ built-in layout and interactive components</li>
+                        <li>Ships with <code>storylang</code> CLI for spec management</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Data access pattern</strong></h6>
+                      <p class="small text-muted mb-2">
+                        All backend fields are accessed via a <code>modules</code> object.
+                        Only <code>.id</code> and <code>.slug</code> are direct properties.
+                      </p>
+                      <code class="small d-block bg-light p-2 rounded">
+                        post.modules.title<br>
+                        post.modules.content_privacy<br>
+                        post.id &nbsp;&nbsp;// direct<br>
+                        post.slug // direct
+                      </code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-light mt-3 mb-0 small">
+                <i class="fa-brands fa-github me-1"></i>
+                <strong>Further reading:</strong>
+                <a href="https://github.com/tribe-framework/ember-tribe" target="_blank" rel="noopener noreferrer">github.com/tribe-framework/ember-tribe</a>
+                &mdash; full development guide, EmberData integration, component architecture and deployment instructions.
+              </div>
+            </div>
+          </div>
+
+          <div class="step-card" data-step-name="storylang CLI JSON spec frontend blueprint routes components services">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">5</span>
+              <span class="step-title">storylang</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                <code>storylang</code> is two things in one: a <strong>CLI tool</strong> that ships
+                inside <code>ember-tribe</code>, and a <strong>JSON specification file</strong>
+                (<code>config/storylang.json</code>) that defines the complete structure of a
+                frontend application. Think of it as <code>types.json</code>'s counterpart — where
+                <code>types.json</code> describes the backend data model, <code>storylang.json</code>
+                describes the frontend implementation.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>storylang.json sections</strong></h6>
+                      <dl class="small mb-0">
+                        <dt><code>types</code></dt>
+                        <dd class="text-muted mb-1">Maps backend types to the routes, components and services that consume them</dd>
+                        <dt><code>routes</code></dt>
+                        <dd class="text-muted mb-1">Route definitions including tracked vars, query params, actions and component usage</dd>
+                        <dt><code>helpers</code></dt>
+                        <dd class="text-muted mb-1">Pure template functions — input/output defined, no side effects</dd>
+                        <dt><code>modifiers</code></dt>
+                        <dd class="text-muted mb-1">DOM manipulation and third-party library initialisations</dd>
+                        <dt><code>services</code></dt>
+                        <dd class="text-muted mb-1">App-wide business logic and shared state</dd>
+                        <dt><code>components</code></dt>
+                        <dd class="text-muted mb-0">Reusable UI components with tracked vars, args and actions</dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>storylang CLI</strong></h6>
+                      <p class="small text-muted mb-2">
+                        Run from inside your Ember app directory to scan the
+                        <code>app/</code> folder and sync <code>storylang.json</code> from
+                        the actual project files:
+                      </p>
+                      <div class="command-block mb-2">
+                        <button class="btn btn-sm copy-btn-block" onclick="copyCmd('node storylang', this)" type="button">Copy</button>
+                        <code>node storylang</code>
+                      </div>
+                      <p class="small text-muted mb-0">
+                        Run periodically to keep the spec in sync as the project evolves.
+                        <code>storylang.json</code> is the single source of truth for what
+                        a frontend does — ideal as AI context (see the AI tab).
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-info mt-3 mb-0 small">
+                <strong>Design principle:</strong> Understand
+                <em>Types → Routes → Controllers → Helpers → Modifiers → Services → Components</em>
+                — always begin with data, then define routes, then work outward to components.
+                <code>storylang.json</code> enforces this order explicitly.
+              </div>
+            </div>
+          </div>
+
+          <div class="step-card" data-step-name="EditorJS WYSIWYG rich text editor Junction input type">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">6</span>
+              <span class="step-title">EditorJS</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                EditorJS is the WYSIWYG block-based rich text editor used as one of Junction's
+                HTML5 Input Types. When a field in <code>types.json</code> is defined with
+                <code>"input_type": "editorjs"</code>, Junction renders a full block editor
+                for that field in its admin UI.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>How to declare it</strong></h6>
+                      <code class="small d-block bg-light p-2 rounded">
+                        {<br>
+                        &nbsp;&nbsp;"input_slug": "body",<br>
+                        &nbsp;&nbsp;"input_type": "editorjs",<br>
+                        &nbsp;&nbsp;"var_type": "array",<br>
+                        &nbsp;&nbsp;"input_placeholder": "Type content here"<br>
+                        }
+                      </code>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>How it stores data</strong></h6>
+                      <p class="small text-muted mb-2">
+                        EditorJS saves content as a JSON array of blocks — each block has a
+                        <code>type</code> (paragraph, header, image, list, etc.) and associated
+                        data. The <code>var_type</code> must be <code>array</code> to store
+                        this structure correctly.
+                      </p>
+                      <p class="small text-muted mb-0">
+                        Every <code>types.json</code> blueprint must include at least one type
+                        with an <code>editorjs</code> module per Junction's blueprint rules.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="col-md-6">
-        <div class="card method-item h-100">
-          <div class="card-body">
-            <h6 class="mb-3"><strong>uploads/</strong>
-              <span class="text-muted fw-normal small">(gitignored, runtime
-                data)</span></h6>
-            <table class="table table-sm table-borderless mb-0 small">
-              <tbody>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >sites/dist/</td><td class="text-muted">Static site files</td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >sites/dist-php/</td><td class="text-muted">PHP site files</td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >threads/&lt;n&gt;/</td><td class="text-muted">Per-thread
-                    uploads (Loom) — preserved on
-                    <code>destroy</code></td></tr>
-                <tr><td class="font-monospace text-nowrap pe-3">backups/</td><td
-                    class="text-muted"
-                  >Automated MySQL dumps</td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >typesense/</td><td class="text-muted">Typesense data
-                    directory</td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >filebrowser/</td><td class="text-muted">FileBrowser database</td></tr>
-                <tr><td class="font-monospace text-nowrap pe-3">tor/</td><td
-                    class="text-muted"
-                  >Hidden service private keys and
-                    <code>hostname</code>
-                    files</td></tr>
-              </tbody>
-            </table>
+          <div class="step-card" data-step-name="HLS HTTP Live Streaming video adaptive upload tribe-core">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">7</span>
+              <span class="step-title">HLS (HTTP Live Streaming)</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                When a video file is uploaded via <code>uploads.php</code>, <code>tribe-core</code>
+                automatically converts it to HLS (HTTP Live Streaming) format using FFmpeg. HLS
+                splits the video into small segments and generates playlists at multiple quality
+                levels, enabling adaptive bitrate streaming — the player switches quality in
+                real time based on the viewer's connection speed.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Quality levels generated</strong></h6>
+                      <table class="table table-sm table-borderless mb-0 small">
+                        <tbody>
+                          <tr><td class="font-monospace text-nowrap pe-2">xl</td><td class="text-muted">3840×2160 — 4K (15 Mbps)</td></tr>
+                          <tr><td class="font-monospace text-nowrap pe-2">lg</td><td class="text-muted">1920×1080 — Full HD (8 Mbps)</td></tr>
+                          <tr><td class="font-monospace text-nowrap pe-2">md</td><td class="text-muted">1280×720 — HD (4 Mbps)</td></tr>
+                          <tr><td class="font-monospace text-nowrap pe-2">sm</td><td class="text-muted">960×540 — (2 Mbps)</td></tr>
+                          <tr><td class="font-monospace text-nowrap pe-2">xs</td><td class="text-muted">640×360 — (1 Mbps)</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Accessing HLS in the frontend</strong></h6>
+                      <p class="small text-muted mb-2">
+                        After a successful video upload, the response includes an
+                        <code>hls</code> object with a <code>.m3u8</code> master playlist URL.
+                        Use the pre-installed <code>video.js</code> player in
+                        <code>ember-tribe</code> to play it.
+                      </p>
+                      <code class="small d-block bg-light p-2 rounded">
+                        data.file.hls.url &nbsp;// master playlist<br>
+                        data.file.hls.qualities // ['xl','lg','md','sm','xs']
+                      </code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div class="col-md-6">
-        <div class="card method-item h-100">
-          <div class="card-body">
-            <h6 class="mb-3"><strong>threads/</strong>
-              <span class="text-muted fw-normal small">(Loom only)</span></h6>
-            <table class="table table-sm table-borderless mb-0 small">
-              <tbody>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >.registry.json</td><td class="text-muted">Port + DB registry,
-                    managed by
-                    <code>loom.sh</code></td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >&lt;n&gt;/docker-compose.yml</td><td
-                    class="text-muted"
-                  >Generated by <code>loom.sh create</code></td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >&lt;n&gt;/.env</td><td class="text-muted">Generated once,
-                    never overwritten</td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >&lt;n&gt;/config/tribe/</td><td class="text-muted">Per-thread
-                    Caddyfile</td></tr>
-                <tr><td
-                    class="font-monospace text-nowrap pe-3"
-                  >&lt;n&gt;/config/junction/</td><td
-                    class="text-muted"
-                  >Per-thread Caddyfile</td></tr>
-              </tbody>
-            </table>
-            <div class="mt-3">
-              <h6 class="mb-3"><strong>logs/</strong>
-                <span
-                  class="text-muted fw-normal small"
-                >(gitignored)</span></h6>
-              <table class="table table-sm table-borderless mb-0 small">
-                <tbody>
-                  <tr><td
-                      class="font-monospace text-nowrap pe-3"
-                    >threads/&lt;n&gt;/</td><td class="text-muted">Per-thread
-                      runtime logs (Loom)</td></tr>
-                </tbody>
-              </table>
+        </div>
+
+        {{! ---- GLOSSARY ---- }}
+        <div class="section-divider mb-4">
+          <span class="section-label">GLOSSARY</span>
+        </div>
+
+        <div class="row g-3 mb-5">
+          <div class="col-md-6">
+            <div class="card method-item h-100">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>Core</strong></h6>
+                <dl class="mb-0">
+                  <dt>Tribe</dt>
+                  <dd class="text-muted small mb-2">PHP content/app framework — the core backend and UI engine. Serves content, handles APIs, and runs the application layer.</dd>
+                  <dt>Junction</dt>
+                  <dd class="text-muted small mb-2">No-code CMS layer that connects to Tribe via API. Manages content, schemas and users through a browser UI.</dd>
+                  <dt>tribe-core</dt>
+                  <dd class="text-muted small mb-2">The Composer PHP package at the heart of Tribe. Provides <code>\Tribe\Core</code>, <code>\Tribe\API</code>, <code>\Tribe\Config</code>, <code>\Tribe\Uploads</code> and <code>\Tribe\MySQL</code> classes.</dd>
+                  <dt>ember-tribe</dt>
+                  <dd class="text-muted small mb-2">The npm EmberJS addon that connects a frontend app to the Tribe API. Auto-generates EmberData models from <code>types.json</code>.</dd>
+                  <dt>Docker</dt>
+                  <dd class="text-muted small mb-2">Containerisation platform. <code>docker-compose.yml</code> defines all services, networks and volumes.</dd>
+                  <dt>.env</dt>
+                  <dd class="text-muted small mb-0">Environment file holding secrets and config — DB passwords, ports, project name. Never committed to Git.</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card method-item h-100">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>Data &amp; Content</strong></h6>
+                <dl class="mb-0">
+                  <dt>types.json</dt>
+                  <dd class="text-muted small mb-2">The blueprint file. Defines every content type (Track) and its fields (Modules). Junction reads this to generate the database, admin UI and API.</dd>
+                  <dt>storylang.json</dt>
+                  <dd class="text-muted small mb-2">Frontend specification file at <code>config/storylang.json</code>. Defines routes, components, services, helpers and modifiers. Synced via the <code>node storylang</code> CLI.</dd>
+                  <dt>Track</dt>
+                  <dd class="text-muted small mb-2">Junction's UI name for a content type (e.g. Post, User, Product). Defined as a key in <code>types.json</code>.</dd>
+                  <dt>Module</dt>
+                  <dd class="text-muted small mb-2">Junction's UI name for an individual field on a Track. Corresponds to an entry in the <code>modules</code> array within <code>types.json</code>.</dd>
+                  <dt>EditorJS</dt>
+                  <dd class="text-muted small mb-2">WYSIWYG block editor used as Junction's <code>editorjs</code> input type for rich text fields.</dd>
+                  <dt>HLS</dt>
+                  <dd class="text-muted small mb-0">HTTP Live Streaming. Video uploads are auto-converted to HLS by <code>tribe-core</code>, producing adaptive multi-quality streams.</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card method-item h-100">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>Services</strong></h6>
+                <dl class="mb-0">
+                  <dt>Caddy</dt>
+                  <dd class="text-muted small mb-2">Web server and reverse proxy. Handles HTTP/HTTPS routing, SSL certificates, and forwards requests to PHP-FPM.</dd>
+                  <dt>MySQL</dt>
+                  <dd class="text-muted small mb-2">Relational database storing all Tribe content and application data.</dd>
+                  <dt>Typesense</dt>
+                  <dd class="text-muted small mb-2">Fast search engine by <a href="https://typesense.org" target="_blank">typesense.org</a>. Indexes Tribe content for full-text search.</dd>
+                  <dt>phpMyAdmin</dt>
+                  <dd class="text-muted small mb-2">Web UI for browsing and managing MySQL databases.</dd>
+                  <dt>FileBrowser</dt>
+                  <dd class="text-muted small mb-0">Web UI for browsing and managing uploaded files by <a href="https://filebrowser.org" target="_blank">filebrowser.org</a>.</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card method-item h-100">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>Developer Tools</strong></h6>
+                <dl class="mb-0">
+                  <dt>Composer</dt>
+                  <dd class="text-muted small mb-2">PHP dependency manager. Used to install <code>tribe-core</code> and any other PHP packages. Runs once per project (or once per Loom setup).</dd>
+                  <dt>npm</dt>
+                  <dd class="text-muted small mb-2">Node Package Manager. Used to install <code>ember-tribe</code> and all frontend JavaScript dependencies.</dd>
+                  <dt>Node.js</dt>
+                  <dd class="text-muted small mb-2">JavaScript runtime required for Ember CLI tooling. Install via NVM; Tribe requires the latest LTS version.</dd>
+                  <dt>Ember CLI</dt>
+                  <dd class="text-muted small mb-0">Command-line tool for creating, building and serving EmberJS applications. Install globally with <code>npm install -g ember-cli</code>.</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card method-item h-100">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>Loom (Multi Tribe)</strong></h6>
+                <dl class="mb-0">
+                  <dt>Loom</dt>
+                  <dd class="text-muted small mb-2">Multi Tribe hosting mode. One shared set of services (MySQL, Typesense, Caddy) supports many isolated Threads.</dd>
+                  <dt>Thread</dt>
+                  <dd class="text-muted small mb-0">A single Tribe + Junction instance within a Loom setup. Has its own database, uploads folder and port pair. App code is shared read-only.</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card method-item h-100">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>Tor (Onion Services)</strong></h6>
+                <dl class="mb-0">
+                  <dt>Tor</dt>
+                  <dd class="text-muted small mb-2">Overlay mode that routes all traffic through <code>.onion</code> services. No host ports are exposed. Works with single-project Tribe only.</dd>
+                  <dt>.onion address</dt>
+                  <dd class="text-muted small mb-0">A v3 hidden service address (56 chars, ed25519). Derived from a private key stored in <code>uploads/tor/</code>. Permanent as long as the key is preserved.</dd>
+                </dl>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-    </div>
+        {{! ---- FOLDER STRUCTURE ---- }}
+        <div class="section-divider mb-4">
+          <span class="section-label">FOLDER STRUCTURE</span>
+        </div>
+
+        <div class="row g-3 mb-5">
+
+          <div class="col-md-6">
+            <div class="card method-item h-100">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>Root</strong></h6>
+                <table class="table table-sm table-borderless mb-0 small">
+                  <tbody>
+                    <tr><td class="font-monospace text-nowrap pe-3">docker-compose.yml</td><td class="text-muted">Standard single-project setup</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">.env</td><td class="text-muted">Active environment (copy from <code>.env.sample</code>)</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">.env.sample</td><td class="text-muted">Standard env template</td></tr>
+                  </tbody>
+                </table>
+                <p class="small text-muted mt-3 mb-0"><strong>After enabling Loom or Tor</strong>, their compose and env files are moved here too. See the Advanced guides.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card method-item h-100">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>applications/</strong></h6>
+                <table class="table table-sm table-borderless mb-0 small">
+                  <tbody>
+                    <tr><td class="font-monospace text-nowrap pe-3">tribe/</td><td class="text-muted">Tribe PHP application (tribe-core + config)</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">junction/</td><td class="text-muted">Junction frontend build (<code>dist/</code>)</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">tribe-base/</td><td class="text-muted">Shared Tribe code for Loom (mounted <code>:ro</code> across all Threads)</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">threads/&lt;n&gt;/junction/</td><td class="text-muted">Per-thread Junction builds (Loom)</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">&lt;your-ember-app&gt;/</td><td class="text-muted">Your EmberJS application (ember-tribe + storylang)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card method-item">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>config/</strong></h6>
+                <div class="row">
+                  <div class="col-md-4">
+                    <p class="small fw-semibold mb-1">Standard</p>
+                    <table class="table table-sm table-borderless mb-3 small">
+                      <tbody>
+                        <tr><td class="font-monospace text-nowrap pe-3">types.json</td><td class="text-muted">Junction blueprint — tracks &amp; modules</td></tr>
+                        <tr><td class="font-monospace text-nowrap pe-3">mysql/</td><td class="text-muted"><code>my.cnf</code>, <code>install.sql</code></td></tr>
+                        <tr><td class="font-monospace text-nowrap pe-3">tribe/</td><td class="text-muted">Caddyfile, supervisord, watcher, indexers</td></tr>
+                        <tr><td class="font-monospace text-nowrap pe-3">junction/</td><td class="text-muted">Caddyfile</td></tr>
+                        <tr><td class="font-monospace text-nowrap pe-3">dist/</td><td class="text-muted">Caddyfile (static site)</td></tr>
+                        <tr><td class="font-monospace text-nowrap pe-3">dist-php/</td><td class="text-muted">Caddyfile (PHP site)</td></tr>
+                        <tr><td class="font-monospace text-nowrap pe-3">backup.sh</td><td class="text-muted">MySQL backup script</td></tr>
+                        <tr><td class="font-monospace text-nowrap pe-3">ember/</td><td class="text-muted">Ember init scripts (<code>ember-init.sh</code>, <code>.ps1</code>)</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-4">
+                    <p class="small fw-semibold mb-1">Loom</p>
+                    <table class="table table-sm table-borderless mb-3 small">
+                      <tbody>
+                        <tr><td class="font-monospace text-nowrap pe-3">loom/</td><td class="text-muted">Compose files, <code>loom.sh</code>, <code>.env.loom.sample</code>, <code>setup.sh</code>, <code>index_db.php</code></td></tr>
+                      </tbody>
+                    </table>
+                    <p class="small fw-semibold mb-1">Tor</p>
+                    <table class="table table-sm table-borderless mb-0 small">
+                      <tbody>
+                        <tr><td class="font-monospace text-nowrap pe-3">tor/</td><td class="text-muted">Compose overlay, <code>.env.tor.sample</code>, <code>torrc</code>, <code>tor-addresses.sh</code></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="alert alert-light small mb-0 mt-3 mt-md-0">
+                      Loom and Tor config files stay in <code>config/loom/</code> and
+                      <code>config/tor/</code> until you activate those modes. The setup
+                      guides walk you through moving them to root.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card method-item h-100">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>uploads/</strong>
+                  <span class="text-muted fw-normal small">(gitignored, runtime data)</span></h6>
+                <table class="table table-sm table-borderless mb-0 small">
+                  <tbody>
+                    <tr><td class="font-monospace text-nowrap pe-3">sites/dist/</td><td class="text-muted">Static site files</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">sites/dist-php/</td><td class="text-muted">PHP site files</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">types/*.json</td><td class="text-muted">Dynamic types.json overrides uploaded via Junction</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">YYYY/MM/DD/</td><td class="text-muted">Uploaded files, organised by date. Images generate xs/sm/md/lg/xl variants; videos generate HLS streams.</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">threads/&lt;n&gt;/</td><td class="text-muted">Per-thread uploads (Loom) — preserved on <code>destroy</code></td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">backups/</td><td class="text-muted">Automated MySQL dumps</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">typesense/</td><td class="text-muted">Typesense data directory</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">filebrowser/</td><td class="text-muted">FileBrowser database</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">tor/</td><td class="text-muted">Hidden service private keys and <code>hostname</code> files</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card method-item h-100">
+              <div class="card-body">
+                <h6 class="mb-3"><strong>threads/</strong>
+                  <span class="text-muted fw-normal small">(Loom only)</span></h6>
+                <table class="table table-sm table-borderless mb-0 small">
+                  <tbody>
+                    <tr><td class="font-monospace text-nowrap pe-3">.registry.json</td><td class="text-muted">Port + DB registry, managed by <code>loom.sh</code></td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">&lt;n&gt;/docker-compose.yml</td><td class="text-muted">Generated by <code>loom.sh create</code></td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">&lt;n&gt;/.env</td><td class="text-muted">Generated once, never overwritten</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">&lt;n&gt;/config/tribe/</td><td class="text-muted">Per-thread Caddyfile</td></tr>
+                    <tr><td class="font-monospace text-nowrap pe-3">&lt;n&gt;/config/junction/</td><td class="text-muted">Per-thread Caddyfile</td></tr>
+                  </tbody>
+                </table>
+                <div class="mt-3">
+                  <h6 class="mb-3"><strong>logs/</strong>
+                    <span class="text-muted fw-normal small">(gitignored)</span></h6>
+                  <table class="table table-sm table-borderless mb-0 small">
+                    <tbody>
+                      <tr><td class="font-monospace text-nowrap pe-3">threads/&lt;n&gt;/</td><td class="text-muted">Per-thread runtime logs (Loom)</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>{{! end tab-pane #ecosystem-pane }}
+
+      {{! ============================================================ }}
+      {{! TAB 2: STRUCTURED THINKING FOR AI PROMPTING }}
+      {{! ============================================================ }}
+      <div
+        class="tab-pane fade"
+        id="ai-pane"
+        role="tabpanel"
+        aria-labelledby="ai-tab"
+      >
+
+        <div class="alert alert-dark mb-4">
+          <h5 class="alert-heading mb-1">
+            <i class="fa-solid fa-robot me-2"></i>All README files in this ecosystem are optimised for AI
+          </h5>
+          <p class="mb-0 small">
+            Every repository in the Tribe framework ships a README that has been written with AI
+            consumption in mind — comprehensive API documentation, clear data models, code patterns
+            and architectural explanations. Attaching the right README as context before asking an
+            AI assistant to generate code dramatically improves the quality of the output.
+          </p>
+        </div>
+
+        <div class="steps-container mb-5">
+
+          <div class="step-card" data-step-name="Backend tribe-core README AI context PHP API">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">1</span>
+              <span class="step-title">Backend Projects — attach tribe-core's README</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                When working on anything backend — custom PHP endpoints, <code>pushObject</code>
+                calls, API integrations, upload handling, or content type queries — start every
+                AI session by attaching
+                <strong>tribe-core's README</strong> as context.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>What tribe-core's README covers</strong></h6>
+                      <ul class="small text-muted mb-0 ps-3">
+                        <li>All <code>\Tribe\Core</code> methods: <code>pushObject</code>, <code>getObject</code>, <code>getIDs</code>, <code>deleteObject</code>, <code>pushObjects</code> (batch)</li>
+                        <li>Full JSON:API endpoint structure and request/response formats</li>
+                        <li>Authentication levels (public, API key, domain whitelisting)</li>
+                        <li>File upload response shapes including image size variants and HLS video</li>
+                        <li>Search parameters, range queries, pagination patterns</li>
+                        <li>Environment variable requirements</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>How to use it</strong></h6>
+                      <ol class="small text-muted mb-0 ps-3">
+                        <li>Open the README at the link below</li>
+                        <li>Copy its full contents (or download the raw file)</li>
+                        <li>Paste it as the first message or attachment in your AI chat</li>
+                        <li>Then describe your task — the AI now has the full API contract</li>
+                      </ol>
+                      <div class="mt-3">
+                        <a
+                          href="https://raw.githubusercontent.com/tribe-framework/tribe-core/refs/heads/master/README.md"
+                          target="_blank"
+                          class="btn btn-sm btn-outline-dark"
+                          rel="noopener noreferrer"
+                        >
+                          <i class="fa-solid fa-file-lines me-1"></i>tribe-core README (raw)
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-card" data-step-name="Frontend ember-tribe README AI context EmberJS">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">2</span>
+              <span class="step-title">Frontend Projects — attach ember-tribe's README</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                When building or extending a Tribe frontend — routes, components, services, forms,
+                file upload UI, data querying — attach <strong>ember-tribe's README</strong>.
+                It contains everything an AI needs to generate valid, idiomatic Tribe frontend code.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>What ember-tribe's README covers</strong></h6>
+                      <ul class="small text-muted mb-0 ps-3">
+                        <li>The 20+ mandatory code rules (EmberJS 6.x, Bootstrap 5, field access via <code>modules</code>, etc.)</li>
+                        <li>EmberData query patterns: <code>modules</code> (AND) vs <code>filter</code> (OR), pagination, sorting</li>
+                        <li>Route, controller, helper, modifier, service and component patterns with real examples</li>
+                        <li>Input field conventions: <code>&lt;Input&gt;</code>, <code>&lt;Textarea&gt;</code>, <code>ember-power-select</code></li>
+                        <li>File upload JavaScript pattern and the response shape</li>
+                        <li><code>storylang.json</code> spec format and how to use the CLI</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Ideal prompt structure</strong></h6>
+                      <p class="small text-muted mb-2">After attaching the README, structure your prompt like this:</p>
+                      <div class="bg-light p-2 rounded small font-monospace">
+                        [Paste ember-tribe README]<br><br>
+                        Here is my types.json: [paste]<br>
+                        Here is my storylang.json: [paste]<br><br>
+                        Build me a route that lists all [type] records, with pagination and search.
+                      </div>
+                      <div class="mt-3">
+                        <a
+                          href="https://raw.githubusercontent.com/tribe-framework/ember-tribe/refs/heads/master/README.md"
+                          target="_blank"
+                          class="btn btn-sm btn-outline-dark"
+                          rel="noopener noreferrer"
+                        >
+                          <i class="fa-solid fa-file-lines me-1"></i>ember-tribe README (raw)
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-card" data-step-name="types.json blueprint AI context data architecture Junction">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">3</span>
+              <span class="step-title">Data Architecture — attach the types.json README</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                When designing a new data model, asking an AI to generate a
+                <code>types.json</code> blueprint, or adding new tracks and modules to an existing
+                project, attach the <strong>types.json repository README</strong>. It teaches the
+                AI every valid field type, relationship pattern and Junction rule.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>What types.json's README covers</strong></h6>
+                      <ul class="small text-muted mb-0 ps-3">
+                        <li>Full field type reference: all HTML5 input types + Junction-specific (<code>editorjs</code>, <code>file_uploader</code>, <code>select</code>)</li>
+                        <li>Five <code>var_type</code> values and when to use each</li>
+                        <li>Relationship patterns using <code>linked_type</code></li>
+                        <li>Critical Junction rules: <code>sendable: false</code>, file uploader placement, reserved names</li>
+                        <li>SEO and Open Graph module conventions</li>
+                        <li>A complete worked example (news media blueprint)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>How Junction AI deliverables work</strong></h6>
+                      <p class="small text-muted mb-2">
+                        When you describe your project in Junction's AI prompt, it returns a single
+                        JSON object with two keys:
+                      </p>
+                      <code class="small d-block bg-light p-2 rounded">
+                        {<br>
+                        &nbsp;&nbsp;"html": "consultation summary",<br>
+                        &nbsp;&nbsp;"json": "types.json blueprint"<br>
+                        }
+                      </code>
+                      <p class="small text-muted mt-2 mb-2">The <code>html</code> key contains a three-paragraph strategic consultation. The <code>json</code> key is the ready-to-use blueprint.</p>
+                      <a
+                        href="https://raw.githubusercontent.com/tribe-framework/types.json/refs/heads/master/README.md"
+                        target="_blank"
+                        class="btn btn-sm btn-outline-dark"
+                        rel="noopener noreferrer"
+                      >
+                        <i class="fa-solid fa-file-lines me-1"></i>types.json README (raw)
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-card" data-step-name="storylang.json AI spec full-stack frontend specification">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">4</span>
+              <span class="step-title">Use storylang.json as your AI Frontend Spec</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                <code>config/storylang.json</code> in your Ember app is not just a housekeeping
+                file — it is the most precise description of what your frontend does that exists
+                in the whole project. Attach it alongside <code>types.json</code> and the
+                ember-tribe README for the most powerful AI frontend workflow.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Why it's powerful for AI</strong></h6>
+                      <ul class="small text-muted mb-0 ps-3">
+                        <li>Lists every route with its tracked vars, query params, actions and backend calls</li>
+                        <li>Maps exactly which types each route and component consumes</li>
+                        <li>Documents every service's internal methods, actions and dependencies</li>
+                        <li>Gives an AI the complete dependency graph of your frontend in a single JSON file</li>
+                        <li>Eliminates guesswork about naming conventions, file locations and patterns already in use</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Optimal full-stack prompt</strong></h6>
+                      <p class="small text-muted mb-2">For full-stack feature work, combine all three:</p>
+                      <ol class="small text-muted mb-0 ps-3">
+                        <li>Attach <strong>ember-tribe README</strong> (code rules + patterns)</li>
+                        <li>Attach your <strong>types.json</strong> (data model)</li>
+                        <li>Attach your <strong>storylang.json</strong> (existing frontend structure)</li>
+                        <li>Describe the feature you want to add</li>
+                      </ol>
+                      <p class="small text-muted mt-2 mb-0">
+                        The AI will generate code that fits seamlessly into your existing
+                        architecture — correct field names, correct service names, correct
+                        patterns from day one.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-card" data-step-name="Tribe README infrastructure Docker multi-tenant AI context">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">5</span>
+              <span class="step-title">Infrastructure Work — attach the Tribe &amp; Loom READMEs</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>
+                For Docker configuration, environment setup, multi-tenant Loom provisioning, or
+                Tor onion service configuration, the relevant README files give the AI exact
+                service names, port conventions, env variable names and CLI commands.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Tribe (main)</strong></h6>
+                      <p class="small text-muted mb-2">Standard single-project setup, default ports, Docker CLI commands.</p>
+                      <a
+                        href="https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/README.md"
+                        target="_blank"
+                        class="btn btn-sm btn-outline-dark"
+                        rel="noopener noreferrer"
+                      >tribe README</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Loom (multi-tenant)</strong></h6>
+                      <p class="small text-muted mb-2">Thread isolation model, <code>loom.sh</code> CLI, port allocation, Typesense collection naming.</p>
+                      <a
+                        href="https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/config/loom/README.loom.md"
+                        target="_blank"
+                        class="btn btn-sm btn-outline-dark"
+                        rel="noopener noreferrer"
+                      >Loom README</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card method-item h-100">
+                    <div class="card-body">
+                      <h6 class="mb-2"><strong>Tor (onion)</strong></h6>
+                      <p class="small text-muted mb-2">Hidden service setup, onion address generation, compose overlay structure.</p>
+                      <a
+                        href="https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/config/tor/README.tor.md"
+                        target="_blank"
+                        class="btn btn-sm btn-outline-dark"
+                        rel="noopener noreferrer"
+                      >Tor README</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-card" data-step-name="AI prompting quick reference cheat sheet tribe">
+            <div class="step-header" onclick="toggleStep(this)">
+              <span class="step-badge">6</span>
+              <span class="step-title">Quick Reference — What to attach for each task</span>
+              <i class="fa-solid fa-chevron-down step-chevron"></i>
+            </div>
+            <div class="step-body">
+              <p>Use this table as a quick reference when starting any AI-assisted task on a Tribe project:</p>
+              <table class="table table-bordered table-sm small">
+                <thead class="table-dark">
+                  <tr>
+                    <th>Task</th>
+                    <th>Primary context to attach</th>
+                    <th>Also attach</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Write a custom PHP endpoint or <code>pushObject</code> call</td>
+                    <td><code>tribe-core</code> README</td>
+                    <td>Your <code>types.json</code></td>
+                  </tr>
+                  <tr>
+                    <td>Build or extend an Ember route / component</td>
+                    <td><code>ember-tribe</code> README</td>
+                    <td>Your <code>types.json</code> + <code>storylang.json</code></td>
+                  </tr>
+                  <tr>
+                    <td>Design a new data model / generate <code>types.json</code></td>
+                    <td><code>types.json</code> README</td>
+                    <td>Your project description</td>
+                  </tr>
+                  <tr>
+                    <td>Add a new feature (full-stack)</td>
+                    <td><code>ember-tribe</code> README + <code>tribe-core</code> README</td>
+                    <td>Your <code>types.json</code> + <code>storylang.json</code></td>
+                  </tr>
+                  <tr>
+                    <td>Configure multi-tenant Loom setup</td>
+                    <td>Loom README</td>
+                    <td>Tribe main README</td>
+                  </tr>
+                  <tr>
+                    <td>Set up Tor / onion services</td>
+                    <td>Tor README</td>
+                    <td>Tribe main README</td>
+                  </tr>
+                  <tr>
+                    <td>Implement video upload &amp; playback</td>
+                    <td><code>tribe-core</code> README (Uploads class)</td>
+                    <td><code>ember-tribe</code> README (file upload pattern)</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="alert alert-success mt-2 mb-0 small">
+                <strong>Pro tip:</strong> Run <code>node storylang</code> before starting any
+                AI session on a frontend task. An up-to-date <code>storylang.json</code>
+                gives the AI a live map of your entire frontend — no hallucinated file names
+                or conflicting patterns.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>{{! end tab-pane #ai-pane }}
+
+    </div>{{! end tab-content }}
 
     <ManualFooter />
 
