@@ -1,0 +1,480 @@
+<div class="tribe-manual">
+	<ManualHeader />
+
+	<ManualPageNav @activePage="ai" />
+
+	<div class="container pb-5">
+
+		<div class="alert alert-dark mb-4">
+			<h5 class="alert-heading mb-1">
+				<i class="fa-solid fa-wand-sparkles me-2"></i>All README files in this
+				ecosystem are optimised for AI
+			</h5>
+			<p class="mb-0 small">
+				Every repository in the Tribe framework ships a README that has been
+				written with AI consumption in mind — comprehensive API documentation,
+				clear data models, code patterns and architectural explanations.
+				Attaching the right README as context before asking an AI assistant to
+				generate code dramatically improves the quality of the output.
+			</p>
+		</div>
+
+		<div class="steps-container mb-5">
+
+			<div
+				class="step-card"
+				data-step-name="Backend tribe-core README AI context PHP API"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">1</span>
+					<span class="step-title">Backend Projects — attach tribe-core's README</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						When working on anything backend — custom PHP endpoints,
+						<code>pushObject</code>
+						calls, API integrations, upload handling, or content type queries —
+						start every AI session by attaching
+						<strong>tribe-core's README</strong>
+						as context.
+					</p>
+					<div class="row g-3">
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>What tribe-core's README covers</strong></h6>
+									<ul class="small text-muted mb-0 ps-3">
+										<li>All
+											<code>\Tribe\Core</code>
+											methods:
+											<code>pushObject</code>,
+											<code>getObject</code>,
+											<code>getIDs</code>,
+											<code>deleteObject</code>,
+											<code>pushObjects</code>
+											(batch)</li>
+										<li>Full JSON:API endpoint structure and request/response
+											formats</li>
+										<li>Authentication levels (public, API key, domain
+											whitelisting)</li>
+										<li>File upload response shapes including image size
+											variants and HLS video</li>
+										<li>Search parameters, range queries, pagination patterns</li>
+										<li>Environment variable requirements</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>How to use it</strong></h6>
+									<ol class="small text-muted mb-0 ps-3">
+										<li>Open the README at the link below</li>
+										<li>Copy its full contents (or download the raw file)</li>
+										<li>Paste it as the first message or attachment in your AI
+											chat</li>
+										<li>Then describe your task — the AI now has the full API
+											contract</li>
+									</ol>
+									<div class="mt-3">
+										<a
+											href="https://raw.githubusercontent.com/tribe-framework/tribe-core/refs/heads/master/README.md"
+											target="_blank"
+											class="btn btn-sm btn-outline-dark"
+											rel="noopener noreferrer"
+										>
+											<i class="fa-solid fa-file-lines me-1"></i>tribe-core
+											README (raw)
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="Frontend ember-tribe README AI context EmberJS"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">2</span>
+					<span class="step-title">Frontend Projects — attach ember-tribe's
+						README</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						When building or extending a Tribe frontend — routes, components,
+						services, forms, file upload UI, data querying — attach
+						<strong>ember-tribe's README</strong>. It contains everything an AI
+						needs to generate valid, idiomatic Tribe frontend code.
+					</p>
+					<div class="row g-3">
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>What ember-tribe's README covers</strong></h6>
+									<ul class="small text-muted mb-0 ps-3">
+										<li>The 20+ mandatory code rules (EmberJS 6.x, Bootstrap 5,
+											field access via
+											<code>modules</code>, etc.)</li>
+										<li>EmberData query patterns:
+											<code>modules</code>
+											(AND) vs
+											<code>filter</code>
+											(OR), pagination, sorting</li>
+										<li>Route, controller, helper, modifier, service and
+											component patterns with real examples</li>
+										<li>Input field conventions:
+											<code>&lt;Input&gt;</code>,
+											<code>&lt;Textarea&gt;</code>,
+											<code>ember-power-select</code></li>
+										<li>File upload JavaScript pattern and the response shape</li>
+										<li><code>storylang.json</code>
+											spec format and how to use the CLI</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Ideal prompt structure</strong></h6>
+									<p class="small text-muted mb-2">After attaching the README,
+										structure your prompt like this:</p>
+									<div class="bg-light p-2 rounded small font-monospace">
+										[Paste ember-tribe README]<br /><br />
+										Here is my types.json: [paste]<br />
+										Here is my storylang.json: [paste]<br /><br />
+										Build me a route that lists all [type] records, with
+										pagination and search.
+									</div>
+									<div class="mt-3">
+										<a
+											href="https://raw.githubusercontent.com/tribe-framework/ember-tribe/refs/heads/master/README.md"
+											target="_blank"
+											class="btn btn-sm btn-outline-dark"
+											rel="noopener noreferrer"
+										>
+											<i class="fa-solid fa-file-lines me-1"></i>ember-tribe
+											README (raw)
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="types.json blueprint AI context data architecture Junction"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">3</span>
+					<span class="step-title">Data Architecture — attach the types.json
+						README</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						When designing a new data model, asking an AI to generate a
+						<code>types.json</code>
+						blueprint, or adding new tracks and modules to an existing project,
+						attach the
+						<strong>types.json repository README</strong>. It teaches the AI
+						every valid field type, relationship pattern and Junction rule.
+					</p>
+					<div class="row g-3">
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>What types.json's README covers</strong></h6>
+									<ul class="small text-muted mb-0 ps-3">
+										<li>Full field type reference: all HTML5 input types +
+											Junction-specific (<code>editorjs</code>,
+											<code>file_uploader</code>,
+											<code>select</code>)</li>
+										<li>Five
+											<code>var_type</code>
+											values and when to use each</li>
+										<li>Relationship patterns using
+											<code>linked_type</code></li>
+										<li>Critical Junction rules:
+											<code>sendable: false</code>, file uploader placement,
+											reserved names</li>
+										<li>SEO and Open Graph module conventions</li>
+										<li>A complete worked example (news media blueprint)</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>How Junction AI deliverables work</strong></h6>
+									<p class="small text-muted mb-2">
+										When you describe your project in Junction's AI prompt, it
+										returns a single JSON object with two keys:
+									</p>
+									<code class="small d-block bg-light p-2 rounded">
+										{<br />
+										&nbsp;&nbsp;"html": "consultation summary",<br />
+										&nbsp;&nbsp;"json": "types.json blueprint"<br />
+										}
+									</code>
+									<p class="small text-muted mt-2 mb-2">The
+										<code>html</code>
+										key contains a three-paragraph strategic consultation. The
+										<code>json</code>
+										key is the ready-to-use blueprint.</p>
+									<a
+										href="https://raw.githubusercontent.com/tribe-framework/types.json/refs/heads/master/README.md"
+										target="_blank"
+										class="btn btn-sm btn-outline-dark"
+										rel="noopener noreferrer"
+									>
+										<i class="fa-solid fa-file-lines me-1"></i>types.json README
+										(raw)
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="storylang.json AI spec full-stack frontend specification"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">4</span>
+					<span class="step-title">Use storylang.json as your AI Frontend Spec</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						<code>public/storylang.json</code>
+						in your Ember app is not just a housekeeping file — it is the most
+						precise description of what your frontend does that exists in the
+						whole project. Attach it alongside
+						<code>types.json</code>
+						and the ember-tribe README for the most powerful AI frontend
+						workflow.
+					</p>
+					<div class="row g-3">
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Why it's powerful for AI</strong></h6>
+									<ul class="small text-muted mb-0 ps-3">
+										<li>Lists every route with its tracked vars, query params,
+											actions and backend calls</li>
+										<li>Maps exactly which types each route and component
+											consumes</li>
+										<li>Documents every service's internal methods, actions and
+											dependencies</li>
+										<li>Gives an AI the complete dependency graph of your
+											frontend in a single JSON file</li>
+										<li>Eliminates guesswork about naming conventions, file
+											locations and patterns already in use</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Optimal full-stack prompt</strong></h6>
+									<p class="small text-muted mb-2">For full-stack feature work,
+										combine all three:</p>
+									<ol class="small text-muted mb-0 ps-3">
+										<li>Attach
+											<strong>ember-tribe README</strong>
+											(code rules + patterns)</li>
+										<li>Attach your
+											<strong>types.json</strong>
+											(data model)</li>
+										<li>Attach your
+											<strong>storylang.json</strong>
+											(existing frontend structure)</li>
+										<li>Describe the feature you want to add</li>
+									</ol>
+									<p class="small text-muted mt-2 mb-0">
+										The AI will generate code that fits seamlessly into your
+										existing architecture — correct field names, correct service
+										names, correct patterns from day one.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="Tribe README infrastructure Docker multi-tenant AI context"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">5</span>
+					<span class="step-title">Infrastructure Work — attach the Tribe &amp;
+						Loom READMEs</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						For Docker configuration, environment setup, multi-tenant Loom
+						provisioning, or Tor onion service configuration, the relevant
+						README files give the AI exact service names, port conventions, env
+						variable names and CLI commands.
+					</p>
+					<div class="row g-3">
+						<div class="col-md-4">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Tribe (main)</strong></h6>
+									<p class="small text-muted mb-2">Standard single-project
+										setup, default ports, Docker CLI commands.</p>
+									<a
+										href="https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/README.md"
+										target="_blank"
+										class="btn btn-sm btn-outline-dark"
+										rel="noopener noreferrer"
+									>tribe README</a>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Loom (multi-tenant)</strong></h6>
+									<p class="small text-muted mb-2">Thread isolation model,
+										<code>loom.sh</code>
+										CLI, port allocation, Typesense collection naming.</p>
+									<a
+										href="https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/config/loom/README.loom.md"
+										target="_blank"
+										class="btn btn-sm btn-outline-dark"
+										rel="noopener noreferrer"
+									>Loom README</a>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Tor (onion)</strong></h6>
+									<p class="small text-muted mb-2">Hidden service setup, onion
+										address generation, compose overlay structure.</p>
+									<a
+										href="https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/config/tor/README.tor.md"
+										target="_blank"
+										class="btn btn-sm btn-outline-dark"
+										rel="noopener noreferrer"
+									>Tor README</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="AI prompting quick reference cheat sheet tribe"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">6</span>
+					<span class="step-title">Quick Reference — What to attach for each
+						task</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>Use this table as a quick reference when starting any AI-assisted
+						task on a Tribe project:</p>
+					<table class="table table-bordered table-sm small">
+						<thead class="table-dark">
+							<tr>
+								<th>Task</th>
+								<th>Primary context to attach</th>
+								<th>Also attach</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Write a custom PHP endpoint or
+									<code>pushObject</code>
+									call</td>
+								<td><code>tribe-core</code> README</td>
+								<td>Your <code>types.json</code></td>
+							</tr>
+							<tr>
+								<td>Build or extend an Ember route / component</td>
+								<td><code>ember-tribe</code> README</td>
+								<td>Your
+									<code>types.json</code>
+									+
+									<code>storylang.json</code></td>
+							</tr>
+							<tr>
+								<td>Design a new data model / generate
+									<code>types.json</code></td>
+								<td><code>types.json</code> README</td>
+								<td>Your project description</td>
+							</tr>
+							<tr>
+								<td>Add a new feature (full-stack)</td>
+								<td><code>ember-tribe</code>
+									README +
+									<code>tribe-core</code>
+									README</td>
+								<td>Your
+									<code>types.json</code>
+									+
+									<code>storylang.json</code></td>
+							</tr>
+							<tr>
+								<td>Configure multi-tenant Loom setup</td>
+								<td>Loom README</td>
+								<td>Tribe main README</td>
+							</tr>
+							<tr>
+								<td>Set up Tor / onion services</td>
+								<td>Tor README</td>
+								<td>Tribe main README</td>
+							</tr>
+							<tr>
+								<td>Implement video upload &amp; playback</td>
+								<td><code>tribe-core</code> README (Uploads class)</td>
+								<td><code>ember-tribe</code>
+									README (file upload pattern)</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="alert alert-success mt-2 mb-0 small">
+						<strong>Pro tip:</strong>
+						Run
+						<code>node storylang</code>
+						before starting any AI session on a frontend task. An up-to-date
+						<code>storylang.json</code>
+						gives the AI a live map of your entire frontend — no hallucinated
+						file names or conflicting patterns.
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<ManualFooter />
+
+	</div>
+</div>
+
+<ManualScripts />
