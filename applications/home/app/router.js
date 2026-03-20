@@ -13,4 +13,5 @@ Router.map(function () {
   this.route('loom');
   this.route('tor');
   this.route('structure');
+  this.route('ai');
 });

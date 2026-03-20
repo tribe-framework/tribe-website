@@ -31,8 +31,16 @@
               @route="structure"
               class="dropdown-item {{if (eq @activePage 'structure') 'active'}}"
             >
-              <i class="fa-solid fa-folder-tree me-2"></i>
-              Project Structure
+              <i class="fa-solid fa-folder-tree me-2"></i>Project Structure
+            </LinkTo>
+          </li>
+          <li>
+            <LinkTo
+              @route="ai"
+              class="dropdown-item {{if (eq @activePage 'ai') 'active'}}"
+            >
+              <i class="fa-solid fa-wand-sparkles me-2"></i>Structured Approach
+              to AI
             </LinkTo>
           </li>
           <li>
