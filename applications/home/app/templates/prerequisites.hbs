@@ -7,7 +7,7 @@
 
     <div class="steps-container mb-5">
 
-      {{!-- Step 1: Install Git --}}
+      {{! Step 1: Install Git }}
       <div class="step-card" data-step-name="Install Git">
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">1</span>
@@ -15,19 +15,27 @@
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
-          <p>Git is the version control system used across all Tribe repositories. Install it for your operating system.</p>
+          <p>Git is the version control system used across all Tribe
+            repositories. Install it for your operating system.</p>
 
           <div class="row g-3">
             <div class="col-md-4">
               <div class="card method-item h-100">
                 <div class="card-body">
                   <h6><strong>macOS</strong></h6>
-                  <p class="small text-muted mb-2">Install via Homebrew or Xcode Command Line Tools:</p>
+                  <p class="small text-muted mb-2">Install via Homebrew or Xcode
+                    Command Line Tools:</p>
                   <div class="command-block">
-                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('brew install git', this)" type="button">Copy</button>
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('brew install git', this)"
+                      type="button"
+                    >Copy</button>
                     <code>brew install git</code>
                   </div>
-                  <p class="small text-muted mt-2 mb-0">Or run <code>xcode-select --install</code> which includes Git.</p>
+                  <p class="small text-muted mt-2 mb-0">Or run
+                    <code>xcode-select --install</code>
+                    which includes Git.</p>
                 </div>
               </div>
             </div>
@@ -35,8 +43,14 @@
               <div class="card method-item h-100">
                 <div class="card-body">
                   <h6><strong>Windows</strong></h6>
-                  <p class="small text-muted mb-2">Download the official installer:</p>
-                  <a href="https://git-scm.com/download/win" target="_blank" class="btn btn-sm btn-outline-dark" rel="noopener noreferrer">Download Git for Windows</a>
+                  <p class="small text-muted mb-2">Download the official
+                    installer:</p>
+                  <a
+                    href="https://git-scm.com/download/win"
+                    target="_blank"
+                    class="btn btn-sm btn-outline-dark"
+                    rel="noopener noreferrer"
+                  >Download Git for Windows</a>
                 </div>
               </div>
             </div>
@@ -45,7 +59,11 @@
                 <div class="card-body">
                   <h6><strong>Linux (Ubuntu/Debian)</strong></h6>
                   <div class="command-block">
-                    <button class="btn btn-sm copy-btn-block" onclick="copyCmd('sudo apt update &amp;&amp; sudo apt install git', this)" type="button">Copy</button>
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('sudo apt update &amp;&amp; sudo apt install git', this)"
+                      type="button"
+                    >Copy</button>
                     <code>sudo apt update &amp;&amp; sudo apt install git</code>
                   </div>
                 </div>
@@ -55,13 +73,17 @@
 
           <p class="mt-3 mb-1">Verify installation:</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('git --version', this)" type="button">Copy</button>
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('git --version', this)"
+              type="button"
+            >Copy</button>
             <code>git --version</code>
           </div>
         </div>
       </div>
 
-      {{!-- Step 2: Install Sublime Text --}}
+      {{! Step 2: Install Sublime Text }}
       <div class="step-card" data-step-name="Install Sublime Text">
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">2</span>
@@ -69,17 +91,25 @@
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
-          <p>Sublime Text is a fast, lightweight code editor recommended for editing Tribe project files.</p>
+          <p>Sublime Text is a fast, lightweight code editor recommended for
+            editing Tribe project files.</p>
           <div class="text-center my-3">
-            <a href="https://www.sublimetext.com/" target="_blank" class="btn btn-dark btn-lg" rel="noopener noreferrer">
+            <a
+              href="https://www.sublimetext.com/"
+              target="_blank"
+              class="btn btn-dark btn-lg"
+              rel="noopener noreferrer"
+            >
               <i class="fa-solid fa-download me-2"></i>Download Sublime Text
             </a>
           </div>
-          <p class="small text-muted">Available for macOS, Windows, and Linux. After downloading, follow the installer instructions for your platform.</p>
+          <p class="small text-muted">Available for macOS, Windows, and Linux.
+            After downloading, follow the installer instructions for your
+            platform.</p>
         </div>
       </div>
 
-      {{!-- Step 3: Install Sublime Merge --}}
+      {{! Step 3: Install Sublime Merge }}
       <div class="step-card" data-step-name="Install Sublime Merge">
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">3</span>
@@ -87,9 +117,16 @@
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
-          <p>Sublime Merge is a Git client by the same team behind Sublime Text. It provides a clean visual interface for Git operations like commits, merges, and diffs.</p>
+          <p>Sublime Merge is a Git client by the same team behind Sublime Text.
+            It provides a clean visual interface for Git operations like
+            commits, merges, and diffs.</p>
           <div class="text-center my-3">
-            <a href="https://www.sublimemerge.com/" target="_blank" class="btn btn-dark btn-lg" rel="noopener noreferrer">
+            <a
+              href="https://www.sublimemerge.com/"
+              target="_blank"
+              class="btn btn-dark btn-lg"
+              rel="noopener noreferrer"
+            >
               <i class="fa-solid fa-download me-2"></i>Download Sublime Merge
             </a>
           </div>
@@ -97,84 +134,142 @@
         </div>
       </div>
 
-      {{!-- Step 4: macOS & Git Configuration --}}
-      <div class="step-card" data-step-name="macOS and Git Configuration show hidden files credential manager post buffer">
+      {{! Step 4: Git Configuration }}
+      <div
+        class="step-card"
+        data-step-name="macOS and Git Configuration show hidden files credential manager post buffer"
+      >
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">4</span>
-          <span class="step-title">macOS &amp; Git Configuration</span>
+          <span class="step-title">Git Configuration</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
-          <p>Run the following commands to configure your development environment. These are especially important on macOS but the Git configurations apply to all platforms.</p>
-
-          <h6 class="mt-3 mb-2">Show hidden files in Finder (macOS)</h6>
-          <p class="small text-muted">This makes files like <code>.env</code>, <code>.gitignore</code>, etc. visible in Finder.</p>
-          <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder', this)" type="button">Copy</button>
-            <code>defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder</code>
-          </div>
+          <p>Run the following commands to configure your development
+            environment. Git configurations apply to all platforms.</p>
 
           <h6 class="mt-4 mb-2">Increase Git HTTP buffer size</h6>
-          <p class="small text-muted">Prevents errors when pushing/pulling large repositories.</p>
+          <p class="small text-muted">Prevents errors when pushing/pulling large
+            repositories.</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('git config --global http.postBuffer 524288000', this)" type="button">Copy</button>
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('git config --global http.postBuffer 524288000', this)"
+              type="button"
+            >Copy</button>
             <code>git config --global http.postBuffer 524288000</code>
           </div>
 
-          <h6 class="mt-4 mb-2">Install Git Credential Manager (macOS via Homebrew)</h6>
-          <p class="small text-muted">Securely stores your Git credentials so you don't have to re-enter them.</p>
+          <h6 class="mt-4 mb-2">Install Git Credential Manager (macOS via
+            Homebrew)</h6>
+          <p class="small text-muted">Securely stores your Git credentials so
+            you don't have to re-enter them.</p>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('brew install --cask git-credential-manager', this)" type="button">Copy</button>
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('brew install --cask git-credential-manager', this)"
+              type="button"
+            >Copy</button>
             <code>brew install --cask git-credential-manager</code>
           </div>
 
           <h6 class="mt-4 mb-2">Set Git to use Credential Manager</h6>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('git config --global credential.helper manager', this)" type="button">Copy</button>
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('git config --global credential.helper manager', this)"
+              type="button"
+            >Copy</button>
             <code>git config --global credential.helper manager</code>
+          </div>
+
+          <h6 class="mt-3 mb-2">Show hidden files in Finder (macOS)</h6>
+          <p class="small text-muted">This makes files like
+            <code>.env</code>,
+            <code>.gitignore</code>, etc. visible in Finder.</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder', this)"
+              type="button"
+            >Copy</button>
+            <code>defaults write com.apple.finder AppleShowAllFiles TRUE;
+              killall Finder</code>
           </div>
         </div>
       </div>
 
-      {{!-- Step 5: GitHub Personal Access Token --}}
-      <div class="step-card" data-step-name="GitHub Personal Access Token password authentication PAT">
+      {{! Step 5: GitHub Personal Access Token }}
+      <div
+        class="step-card"
+        data-step-name="GitHub Personal Access Token password authentication PAT"
+      >
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">5</span>
           <span class="step-title">GitHub Personal Access Token</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
-          <p>GitHub no longer accepts account passwords for Git operations. You need a Personal Access Token (PAT) instead. When Git asks for your password, use this token.</p>
+          <p>GitHub no longer accepts account passwords for Git operations. You
+            need a Personal Access Token (PAT) instead. When Git asks for your
+            password, use this token.</p>
 
           <h6 class="mt-3 mb-2">How to generate a Personal Access Token:</h6>
           <ol>
-            <li>Go to <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">github.com/settings/tokens</a></li>
-            <li>Click <strong>Generate new token</strong> &rarr; <strong>Generate new token (classic)</strong></li>
+            <li>Go to
+              <a
+                href="https://github.com/settings/tokens"
+                target="_blank"
+                rel="noopener noreferrer"
+              >github.com/settings/tokens</a></li>
+            <li>Click
+              <strong>Generate new token</strong>
+              &rarr;
+              <strong>Generate new token (classic)</strong></li>
             <li>Give it a descriptive name (e.g., "Tribe Development")</li>
             <li>Set an expiration (or choose "No expiration" for convenience)</li>
-            <li>Select scopes: at minimum check <strong>repo</strong> (full control of private repositories)</li>
+            <li>Select scopes: at minimum check
+              <strong>repo</strong>
+              (full control of private repositories)</li>
             <li>Click <strong>Generate token</strong></li>
-            <li>Copy the token immediately &mdash; you won't be able to see it again</li>
+            <li>Copy the token immediately &mdash; you won't be able to see it
+              again</li>
           </ol>
 
           <div class="alert alert-warning mt-3 mb-0">
-            <strong>Important:</strong> When you <code>git clone</code>, <code>git push</code>, or <code>git pull</code> and are prompted for your password, paste this token instead of your GitHub password. If you've set up Git Credential Manager (Step 4), it will remember the token for you.
+            <strong>Important:</strong>
+            When you
+            <code>git clone</code>,
+            <code>git push</code>, or
+            <code>git pull</code>
+            and are prompted for your password, paste this token instead of your
+            GitHub password. If you've set up Git Credential Manager (Step 4),
+            it will remember the token for you.
           </div>
         </div>
       </div>
 
-      {{!-- Step 6: Install Docker --}}
-      <div class="step-card" data-step-name="Install Docker Desktop docker-compose containers">
+      {{! Step 6: Install Docker }}
+      <div
+        class="step-card"
+        data-step-name="Install Docker Desktop docker-compose containers"
+      >
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">6</span>
           <span class="step-title">Install Docker</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
-          <p>Docker is required to run the Tribe backend (Junction + Tribe API). Install Docker Desktop for your operating system.</p>
+          <p>Docker is required to run the Tribe backend (Junction + Tribe API).
+            Install Docker Desktop for your operating system.</p>
 
           <div class="text-center my-3">
-            <a href="https://www.docker.com/get-started/" target="_blank" class="btn btn-info btn-lg" rel="noopener noreferrer">
+            <a
+              href="https://www.docker.com/get-started/"
+              target="_blank"
+              class="btn btn-info btn-lg"
+              rel="noopener noreferrer"
+            >
               <i class="fa-brands fa-docker me-2"></i>Download Docker Desktop
             </a>
           </div>
@@ -183,78 +278,139 @@
           <div class="row g-3">
             <div class="col-md-6">
               <div class="command-block">
-                <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker --version', this)" type="button">Copy</button>
+                <button
+                  class="btn btn-sm copy-btn-block"
+                  onclick="copyCmd('docker --version', this)"
+                  type="button"
+                >Copy</button>
                 <code>docker --version</code>
               </div>
             </div>
             <div class="col-md-6">
               <div class="command-block">
-                <button class="btn btn-sm copy-btn-block" onclick="copyCmd('docker compose version', this)" type="button">Copy</button>
+                <button
+                  class="btn btn-sm copy-btn-block"
+                  onclick="copyCmd('docker compose version', this)"
+                  type="button"
+                >Copy</button>
                 <code>docker compose version</code>
               </div>
             </div>
           </div>
 
           <div class="alert alert-info mt-3 mb-0">
-            <strong>Note:</strong> Docker Desktop for Windows and macOS includes Docker Compose by default. On Linux, you may need to install Docker Compose separately via <a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener noreferrer">docs.docker.com/compose/install</a>.
+            <strong>Note:</strong>
+            Docker Desktop for Windows and macOS includes Docker Compose by
+            default. On Linux, you may need to install Docker Compose separately
+            via
+            <a
+              href="https://docs.docker.com/compose/install/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >docs.docker.com/compose/install</a>.
           </div>
         </div>
       </div>
 
-      {{!-- Step 7: Install NVM, Node.js, and npm --}}
-      <div class="step-card" data-step-name="Install NVM Node.js npm nvm node version manager">
+      {{! Step 7: Install NVM, Node.js, and npm }}
+      <div
+        class="step-card"
+        data-step-name="Install NVM Node.js npm nvm node version manager"
+      >
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">7</span>
           <span class="step-title">Install NVM, Node.js &amp; npm</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
-          <p>NVM (Node Version Manager) lets you install and switch between Node.js versions. Tribe's frontend requires Node.js (latest LTS) and npm.</p>
+          <p>NVM (Node Version Manager) lets you install and switch between
+            Node.js versions. Tribe's frontend requires Node.js (latest LTS) and
+            npm.</p>
 
           <h6 class="mt-3 mb-2">Install NVM (macOS / Linux)</h6>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash', this)" type="button">Copy</button>
-            <code><span class="comment"># Install NVM</span><br>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash</code>
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash', this)"
+              type="button"
+            >Copy</button>
+            <code><span class="comment"># Install NVM</span><br />curl -o-
+              https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh |
+              bash</code>
           </div>
-          <p class="small text-muted">For Windows, use <a href="https://github.com/coreybutler/nvm-windows" target="_blank" rel="noopener noreferrer">nvm-windows</a> instead.</p>
+          <p class="small text-muted">For Windows, use
+            <a
+              href="https://github.com/coreybutler/nvm-windows"
+              target="_blank"
+              rel="noopener noreferrer"
+            >nvm-windows</a>
+            instead.</p>
 
           <h6 class="mt-4 mb-2">Restart your terminal, then install Node.js</h6>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('nvm install --lts\nnvm use --lts', this)" type="button">Copy</button>
-            <code><span class="comment"># Install latest LTS version of Node.js</span><br>nvm install --lts<br>nvm use --lts</code>
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('nvm install --lts\nnvm use --lts', this)"
+              type="button"
+            >Copy</button>
+            <code><span class="comment"># Install latest LTS version of Node.js</span><br
+              />nvm install --lts<br />nvm use --lts</code>
           </div>
 
           <h6 class="mt-4 mb-2">Verify installation</h6>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('node --version\nnpm --version', this)" type="button">Copy</button>
-            <code>node --version<br>npm --version</code>
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('node --version\nnpm --version', this)"
+              type="button"
+            >Copy</button>
+            <code>node --version<br />npm --version</code>
           </div>
         </div>
       </div>
 
-      {{!-- Step 8: Install EmberJS --}}
-      <div class="step-card" data-step-name="Install EmberJS Ember CLI ember-cli frontend framework">
+      {{! Step 8: Install EmberJS }}
+      <div
+        class="step-card"
+        data-step-name="Install EmberJS Ember CLI ember-cli frontend framework"
+      >
         <div class="step-header" onclick="toggleStep(this)">
           <span class="step-badge">8</span>
           <span class="step-title">Install EmberJS</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
-          <p>Ember.js is the frontend framework used by Tribe. Install the Ember CLI globally so you can create and serve Ember applications.</p>
+          <p>Ember.js is the frontend framework used by Tribe. Install the Ember
+            CLI globally so you can create and serve Ember applications.</p>
 
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('npm install -g ember-cli', this)" type="button">Copy</button>
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('npm install -g ember-cli', this)"
+              type="button"
+            >Copy</button>
             <code>npm install -g ember-cli</code>
           </div>
 
           <h6 class="mt-4 mb-2">Verify installation</h6>
           <div class="command-block">
-            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('ember --version', this)" type="button">Copy</button>
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('ember --version', this)"
+              type="button"
+            >Copy</button>
             <code>ember --version</code>
           </div>
 
           <div class="alert alert-info mt-3 mb-0">
-            <strong>Compatibility:</strong> Tribe requires Ember.js v6.0 or above and Ember CLI v6.0 or above. To learn more about EmberJS visit <a href="https://emberjs.com" target="_blank" rel="noopener noreferrer">emberjs.com</a>.
+            <strong>Compatibility:</strong>
+            Tribe requires Ember.js v6.0 or above and Ember CLI v6.0 or above.
+            To learn more about EmberJS visit
+            <a
+              href="https://emberjs.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >emberjs.com</a>.
           </div>
         </div>
       </div>

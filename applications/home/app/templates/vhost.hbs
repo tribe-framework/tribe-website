@@ -1,0 +1,419 @@
+{{page-title "Vhost"}}
+
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="vhost" />
+
+  <div class="container pb-5">
+
+    <div class="alert alert-dark mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h5 class="mb-1"><i class="fa-solid fa-server me-2"></i>Vhost: Nginx
+            Domain Virtual Hosting</h5>
+          <p class="mb-0 small text-muted">Installs host-level nginx reverse
+            proxies for the BASE Tribe stack. Does not touch Docker — assumes
+            the root
+            <code>docker-compose.yml</code>
+            is already running and publishing services to localhost ports.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+          <span class="badge bg-dark me-1">nginx</span>
+          <span class="badge bg-dark me-1">certbot</span>
+          <span class="badge bg-dark me-1">Cloudflare</span>
+          <span class="badge bg-dark">Node.js</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps-container mb-5">
+
+      <div
+        class="step-card open"
+        data-step-name="Vhost concept architecture nginx reverse proxy base stack services ports"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i
+              class="fa-solid fa-diagram-project"
+            ></i></span>
+          <span class="step-title">Architecture Overview</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p><code>vhost</code>
+            is a single Node.js CLI file that wires host nginx to the four
+            base-stack services running inside Docker:</p>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>Service Port Map</strong></h6>
+                  <p class="small text-muted mb-1">Read from
+                    <code>.env</code>
+                    (defaults shown):</p>
+                  <ul class="small mb-0">
+                    <li><code>TRIBE_PORT</code>
+                      → tribe (default
+                      <code>12000</code>)</li>
+                    <li><code>JUNCTION_PORT</code>
+                      → junction (default
+                      <code>12002</code>)</li>
+                    <li><code>DIST_PORT</code>
+                      → dist static (default
+                      <code>12003</code>)</li>
+                    <li><code>DIST_PHP_PORT</code>
+                      → dist-php (default
+                      <code>12004</code>)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong>What vhost does</strong></h6>
+                  <ul class="small mb-0">
+                    <li>Writes
+                      <code>/etc/nginx/sites-available/&lt;domain&gt;</code>
+                      and symlinks into
+                      <code>sites-enabled</code></li>
+                    <li>Reloads nginx, then runs
+                      <code>certbot --nginx</code>
+                      for the domain (+ optional alias)</li>
+                    <li>If Cloudflare creds are in
+                      <code>.env</code>, creates DNS records unproxied for ACME
+                      issuance then flips to proxied after certbot succeeds</li>
+                    <li>Never replaces an existing nginx site file</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-light mb-0">
+            <strong>nginx block:</strong>
+            Each generated server block proxies
+            <code>http://127.0.0.1:&lt;port&gt;</code>
+            with WebSocket upgrade headers,
+            <code>client_max_body_size 2048M</code>, and 300 s timeouts. certbot
+            rewrites the block to add SSL automatically.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Vhost prerequisites root nginx certbot docker stack running"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">1</span>
+          <span class="step-title">Prerequisites</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Before running
+            <code>vhost</code>, ensure the following are in place on the host:</p>
+          <div class="row g-3">
+            <div class="col-md-3">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <code>docker compose up -d</code>
+                  <p class="small text-muted mb-0 mt-1">Root stack must be
+                    running and publishing services to their localhost ports</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <code>nginx</code>
+                  <p class="small text-muted mb-0 mt-1">Host nginx installed and
+                    owning ports 80 and 443</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <code>certbot</code>
+                  <p class="small text-muted mb-0 mt-1">certbot +
+                    python3-certbot-nginx installed for SSL issuance</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <code>root</code>
+                  <p class="small text-muted mb-0 mt-1">Run as root — writing
+                    <code>/etc/nginx</code>
+                    and invoking certbot require elevated privileges</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Vhost configure env cloudflare contact email ports"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">2</span>
+          <span class="step-title">Configure Environment</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('nano .env', this)"
+              type="button"
+            >Copy</button>
+            <code>nano .env</code>
+          </div>
+          <p class="mt-3 mb-2">Open
+            <code>.env</code>
+            and set at minimum:</p>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <div class="card method-item">
+                <div class="card-body">
+                  <code>CONTACT_EMAIL</code>
+                  <p class="small text-muted mb-0 mt-1">Used by certbot for
+                    Let's Encrypt registration and expiry notices</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item">
+                <div class="card-body">
+                  <code>PROJECT_NAME</code>
+                  <p class="small text-muted mb-0 mt-1">Optional — defaults to
+                    <code>tribe</code>. Shown in the installer header.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="mb-2"><strong>Cloudflare DNS (optional)</strong>
+            — set all four to enable automatic DNS record management:</p>
+          <div class="row g-3">
+            <div class="col-md-3">
+              <div class="card method-item">
+                <div class="card-body">
+                  <code>CLOUDFLARE_API_EMAIL</code>
+                  <p class="small text-muted mb-0 mt-1">Account email for Global
+                    API Key auth</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card method-item">
+                <div class="card-body">
+                  <code>CLOUDFLARE_API_KEY</code>
+                  <p class="small text-muted mb-0 mt-1">Global API Key from your
+                    Cloudflare profile</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card method-item">
+                <div class="card-body">
+                  <code>CLOUDFLARE_ZONE_ID</code>
+                  <p class="small text-muted mb-0 mt-1">Zone ID of the domain
+                    from the Cloudflare dashboard</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card method-item">
+                <div class="card-body">
+                  <code>CLOUDFLARE_SERVER</code>
+                  <p class="small text-muted mb-0 mt-1">CNAME target — your
+                    server's hostname or
+                    <code>BARE_URL</code></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Vhost install domains nginx certbot SSL tribe junction dist"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">3</span>
+          <span class="step-title">Install (Interactive)</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('node vhost', this)"
+              type="button"
+            >Copy</button>
+            <code>node vhost</code>
+          </div>
+          <div class="alert alert-success mt-3 mb-3">
+            <h6 class="alert-heading mb-1">What the installer does:</h6>
+            <p class="mb-0 small">
+              Prompts for a domain (and optional alias) for each service &bull;
+              Skips any domain that already has an nginx file &bull; Confirms
+              the working directory &bull; If Cloudflare is configured, creates
+              CNAME records (unproxied) before running certbot &bull; Writes the
+              nginx site, symlinks it, reloads nginx, then runs
+              <code>certbot --nginx --redirect</code>
+              &bull; Flips Cloudflare records to proxied on success
+            </p>
+          </div>
+          <p class="mb-2">The four services and their prompts:</p>
+          <div class="command-block">
+            <code>
+              Tribe domain &nbsp;&nbsp;&nbsp;&nbsp;(required)<br />
+              Junction domain&nbsp;(required)<br />
+              Dist domain &nbsp;&nbsp;&nbsp;&nbsp;(optional) + optional alias<br
+              />
+              Dist-PHP domain&nbsp;(optional) + optional alias
+            </code>
+          </div>
+          <div class="alert alert-warning mt-3 mb-0">
+            <strong>Never replaces existing sites.</strong>
+            If a domain or alias already has a file in
+            <code>/etc/nginx/sites-available/</code>, that service is silently
+            skipped.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Vhost status check nginx sites certificates"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">4</span>
+          <span class="step-title">Check Status</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Show which base-stack services have nginx sites in
+            <code>sites-enabled</code>:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('node vhost status', this)"
+              type="button"
+            >Copy</button>
+            <code>node vhost status</code>
+          </div>
+          <p class="mt-3 mb-0 small text-muted">Each service is listed with its
+            port and the nginx filename if an enabled site is found, or marked
+            as having no nginx site.</p>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Vhost uninstall remove nginx site DNS cloudflare domain"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">5</span>
+          <span class="step-title">Uninstall</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Remove the nginx site for a specific domain (and its Cloudflare DNS
+            record, if configured). Prompts for the exact
+            <code>server_name</code>:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('node vhost uninstall', this)"
+              type="button"
+            >Copy</button>
+            <code>node vhost uninstall</code>
+          </div>
+          <div class="alert alert-warning mt-3 mb-0">
+            <strong>Certificates are not removed.</strong>
+            Only the nginx site file and symlink are deleted (plus DNS if
+            Cloudflare is configured). Use
+            <code>certbot delete</code>
+            separately to revoke or clean up issued certificates.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Vhost command reference all commands node vhost install status uninstall"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-terminal"></i></span>
+          <span class="step-title">Command Reference</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('node vhost', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>node vhost</code>
+                  </div>
+                  <p class="small text-muted mb-0">Interactive install (same as
+                    <code>node vhost install</code>)</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('node vhost status', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>node vhost status</code>
+                  </div>
+                  <p class="small text-muted mb-0">Show which service domains
+                    have nginx files and certs</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('node vhost uninstall', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>node vhost uninstall</code>
+                  </div>
+                  <p class="small text-muted mb-0">Remove an nginx site (and its
+                    DNS) by domain name</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <ManualFooter />
+
+  </div>
+</div>
+
+<ManualScripts />

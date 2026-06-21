@@ -52,6 +52,22 @@
           </li>
           <li>
             <LinkTo
+              @route="ubuntu"
+              class="dropdown-item {{if (eq @activePage 'ubuntu') 'active'}}"
+            >
+              Ubuntu: Server Setup
+            </LinkTo>
+          </li>
+          <li>
+            <LinkTo
+              @route="vhost"
+              class="dropdown-item {{if (eq @activePage 'vhost') 'active'}}"
+            >
+              Nginx: Domain Virtual Hosting
+            </LinkTo>
+          </li>
+          <li>
+            <LinkTo
               @route="loom"
               class="dropdown-item {{if (eq @activePage 'loom') 'active'}}"
             >

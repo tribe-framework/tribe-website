@@ -14,4 +14,6 @@ Router.map(function () {
   this.route('tor');
   this.route('structure');
   this.route('ai');
+  this.route('ubuntu');
+  this.route('vhost');
 });

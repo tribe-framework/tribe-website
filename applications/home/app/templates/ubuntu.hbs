@@ -1,0 +1,494 @@
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="ubuntu" />
+
+  <div class="container pb-5">
+
+    <div class="alert alert-dark mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h5 class="mb-1"><i class="fa-brands fa-ubuntu me-2"></i>Ubuntu Server
+            Setup</h5>
+          <p class="mb-0 small text-muted">One script provisions a fresh Ubuntu
+            ≥ 24.04 host with everything the Tribe / Loom stack needs — Docker,
+            Node.js, nginx, certbot, and ufw — then walks you through first
+            boot.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+          <span class="badge bg-dark me-1">Docker</span>
+          <span class="badge bg-dark me-1">Node.js</span>
+          <span class="badge bg-dark me-1">nginx</span>
+          <span class="badge bg-dark me-1">certbot</span>
+          <span class="badge bg-dark">ufw</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps-container mb-5">
+
+      {{! ── Install ── }}
+      <div
+        class="step-card open"
+        data-step-name="ubuntu provision install script curl bash"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-terminal"></i></span>
+          <span class="step-title">Run the Provisioning Script</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>On a fresh Ubuntu ≥ 24.04 host, run as
+            <strong>root</strong>
+            (or with
+            <code>sudo</code>). The script is idempotent — safe to re-run.</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('curl -s https://raw.githubusercontent.com/tribe-framework/tribe/master/ubuntu.sh -o ubuntu.sh; chmod +x ubuntu.sh; bash ubuntu.sh', this)"
+              type="button"
+            >Copy</button>
+            <code><span class="comment"># Install script</span><br />curl -s
+              https://raw.githubusercontent.com/tribe-framework/tribe/master/ubuntu.sh
+              \ -o ubuntu.sh; chmod +x ubuntu.sh; bash ubuntu.sh</code>
+          </div>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('reboot', this)"
+              type="button"
+            >Copy</button>
+            <code><span class="comment"># Apply docker group membership — reboot
+                (recommended)</span><br />reboot</code>
+          </div>
+          <p class="mb-1 small text-muted">Or, to skip a reboot:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('newgrp docker', this)"
+              type="button"
+            >Copy</button>
+            <code>newgrp docker</code>
+          </div>
+          <p class="mb-2">Two optional flags change firewall behaviour:</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <code>--open-services</code>
+                  <p class="small text-muted mb-0 mt-1">Also opens Docker
+                    service ports
+                    <code>12000–12008</code>
+                    and Loom thread range
+                    <code>13000–13999</code>
+                    in ufw. Use when you need services reachable directly
+                    without going through nginx.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <code>--no-firewall</code>
+                  <p class="small text-muted mb-0 mt-1">Skips all ufw
+                    configuration. Use when your host or cloud provider manages
+                    the firewall externally.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{! ── What's installed ── }}
+      <div
+        class="step-card"
+        data-step-name="ubuntu installed packages docker node nginx certbot ufw"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-box-open"></i></span>
+          <span class="step-title">What Gets Installed</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-brands fa-docker me-1"
+                      ></i>Docker Engine + Compose</strong></h6>
+                  <p class="small text-muted mb-0">Installed from the official
+                    Docker apt repo (
+                    <code>docker-ce</code>,
+                    <code>containerd</code>,
+                    <code>buildx</code>, Compose plugin). Your sudo user is
+                    added to the
+                    <code>docker</code>
+                    group automatically.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-brands fa-node-js me-1"
+                      ></i>Node.js LTS</strong></h6>
+                  <p class="small text-muted mb-0">Installed via NodeSource (v22
+                    LTS). Runs the
+                    <code>tribe</code>
+                    and
+                    <code>loom</code>
+                    CLI tools. Skipped if Node ≥ 20 is already present.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-server me-1"
+                      ></i>nginx</strong></h6>
+                  <p class="small text-muted mb-0">Host reverse proxy.
+                    <code>sites-available</code>
+                    /
+                    <code>sites-enabled</code>
+                    are wired in automatically. The stock
+                    <code>default</code>
+                    vhost is removed so
+                    <code>tribe</code>
+                    /
+                    <code>loom</code>
+                    configs take effect cleanly.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-lock me-1"
+                      ></i>certbot + nginx plugin</strong></h6>
+                  <p class="small text-muted mb-0">Let's Encrypt client used by
+                    <code>node tribe</code>
+                    to provision and renew SSL certificates for your domains
+                    automatically.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-light mt-3 mb-0">
+            <strong>Firewall (ufw):</strong>
+            Default policy is deny-incoming / allow-outgoing. Ports
+            <code>22</code>
+            (SSH),
+            <code>80</code>
+            (HTTP), and
+            <code>443</code>
+            (HTTPS) are always opened. Direct service ports are left closed
+            unless
+            <code>--open-services</code>
+            is passed — all production traffic should arrive through nginx.
+          </div>
+        </div>
+      </div>
+
+      {{! ── DNS note ── }}
+      <div
+        class="step-card"
+        data-step-name="ubuntu DNS A record AAAA Cloudflare certbot SSL domain"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i
+              class="fa-solid fa-triangle-exclamation"
+            ></i></span>
+          <span class="step-title">DNS Before certbot</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>certbot (invoked by
+            <code>node tribe</code>) performs an HTTP-01 challenge — your
+            domain's A / AAAA record must resolve to this server
+            <strong>before</strong>
+            you run it, or certificate issuance will fail.</p>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-1"><strong>A record</strong></h6>
+                  <p class="small text-muted mb-0">Point your domain's A record
+                    at the server's IPv4 address. TTL of 300 s is fine for
+                    initial setup.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-1"><strong>Cloudflare</strong></h6>
+                  <p class="small text-muted mb-0">Set the proxy mode to
+                    <strong>DNS only</strong>
+                    (grey cloud) during initial cert issuance. You can re-enable
+                    the proxy after.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-1"><strong>Verify propagation</strong></h6>
+                  <p class="small text-muted mb-0">
+                    <code>dig +short yourdomain.com</code>
+                    should return this server's IP before proceeding.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{! ── Docker Volume Location ── }}
+      <div
+        class="step-card"
+        data-step-name="ubuntu docker volume storage location data-root mounted disk migrate transport"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-hard-drive"></i></span>
+          <span class="step-title">Move Docker's Data Root
+            <span
+              class="badge bg-warning text-dark ms-2"
+              style="font-size:0.65rem;vertical-align:middle;"
+            >Recommended</span></span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>By default Docker stores everything — images, containers, volumes,
+            and networks — under
+            <code>/var/lib/docker</code>. If you're running on a mounted
+            persistent disk (e.g.
+            <code>/mnt/data</code>), moving the data root there makes the stack
+            easier to snapshot, back up, and transport to another host in
+            future.</p>
+
+          <div class="alert alert-light mb-4">
+            <strong>What this changes:</strong>
+            editing
+            <code>data-root</code>
+            in
+            <code>daemon.json</code>
+            moves
+            <em>everything</em>
+            — containers, images, volumes, and networks. Only containers created
+            <strong>after</strong>
+            the change will live at the new path; existing ones stay in
+            <code>/var/lib/docker</code>
+            until you migrate them.
+          </div>
+
+          <div class="steps-container mb-0">
+
+            {{! Step 1 }}
+            <div class="step-card">
+              <div class="step-header" onclick="toggleStep(this)">
+                <span class="step-badge">1</span>
+                <span class="step-title">Stop Docker</span>
+                <i class="fa-solid fa-chevron-down step-chevron"></i>
+              </div>
+              <div class="step-body">
+                <div class="command-block mb-2">
+                  <button
+                    class="btn btn-sm copy-btn-block"
+                    onclick="copyCmd('sudo systemctl stop docker\nsudo systemctl stop docker.socket', this)"
+                    type="button"
+                  >Copy</button>
+                  <code>sudo systemctl stop docker<br />sudo systemctl stop
+                    docker.socket</code>
+                </div>
+              </div>
+            </div>
+
+            {{! Step 2 }}
+            <div class="step-card">
+              <div class="step-header" onclick="toggleStep(this)">
+                <span class="step-badge">2</span>
+                <span class="step-title">Edit the Daemon Config</span>
+                <i class="fa-solid fa-chevron-down step-chevron"></i>
+              </div>
+              <div class="step-body">
+                <p>Open (or create)
+                  <code>/etc/docker/daemon.json</code>
+                  and set
+                  <code>data-root</code>
+                  to your mounted disk path:</p>
+                <div class="command-block mb-3">
+                  <button
+                    class="btn btn-sm copy-btn-block"
+                    onclick="copyCmd('sudo nano /etc/docker/daemon.json', this)"
+                    type="button"
+                  >Copy</button>
+                  <code>sudo nano /etc/docker/daemon.json</code>
+                </div>
+                <p class="mb-1 small text-muted">Add or merge this into the
+                  file:</p>
+                <div class="command-block mb-0">
+                  <button
+                    class="btn btn-sm copy-btn-block"
+                    onclick="copyCmd('{\n  &quot;data-root&quot;: &quot;/mnt/data/docker&quot;\n}', this)"
+                    type="button"
+                  >Copy</button>
+                  <code>{<br />&nbsp;&nbsp;"data-root": "/mnt/data/docker"<br
+                    />}</code>
+                </div>
+              </div>
+            </div>
+
+            {{! Step 3 }}
+            <div class="step-card">
+              <div class="step-header" onclick="toggleStep(this)">
+                <span class="step-badge">3</span>
+                <span class="step-title">Create the Directory</span>
+                <i class="fa-solid fa-chevron-down step-chevron"></i>
+              </div>
+              <div class="step-body">
+                <div class="command-block mb-0">
+                  <button
+                    class="btn btn-sm copy-btn-block"
+                    onclick="copyCmd('sudo mkdir -p /mnt/data/docker', this)"
+                    type="button"
+                  >Copy</button>
+                  <code>sudo mkdir -p /mnt/data/docker</code>
+                </div>
+              </div>
+            </div>
+
+            {{! Step 4 }}
+            <div class="step-card">
+              <div class="step-header" onclick="toggleStep(this)">
+                <span class="step-badge">4</span>
+                <span class="step-title">Restart Docker</span>
+                <i class="fa-solid fa-chevron-down step-chevron"></i>
+              </div>
+              <div class="step-body">
+                <div class="command-block mb-0">
+                  <button
+                    class="btn btn-sm copy-btn-block"
+                    onclick="copyCmd('sudo systemctl start docker\nsudo systemctl start docker.socket', this)"
+                    type="button"
+                  >Copy</button>
+                  <code>sudo systemctl start docker<br />sudo systemctl start
+                    docker.socket</code>
+                </div>
+              </div>
+            </div>
+
+            {{! Step 5 }}
+            <div class="step-card">
+              <div class="step-header" onclick="toggleStep(this)">
+                <span class="step-badge">5</span>
+                <span class="step-title">Verify</span>
+                <i class="fa-solid fa-chevron-down step-chevron"></i>
+              </div>
+              <div class="step-body">
+                <div class="command-block mb-2">
+                  <button
+                    class="btn btn-sm copy-btn-block"
+                    onclick="copyCmd('docker info | grep &quot;Docker Root Dir&quot;', this)"
+                    type="button"
+                  >Copy</button>
+                  <code>docker info | grep "Docker Root Dir"<br /><span
+                      class="comment"
+                    ># Should show: Docker Root Dir: /mnt/data/docker</span></code>
+                </div>
+              </div>
+            </div>
+
+          </div>{{! end inner steps-container }}
+
+          <div class="row g-3 mt-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-triangle-exclamation me-1"
+                      ></i>Existing Containers</strong></h6>
+                  <p class="small text-muted mb-0">Containers created
+                    <em>before</em>
+                    the change still run from
+                    <code>/var/lib/docker</code>. To migrate them,
+                    <code>rsync</code>
+                    the old data root to the new location
+                    <em>before</em>
+                    switching — otherwise you'll have two data roots running in
+                    parallel.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-database me-1"
+                      ></i>Persistent Disk Only</strong></h6>
+                  <p class="small text-muted mb-0">Make sure
+                    <code>/mnt/data</code>
+                    is a
+                    <strong>mounted persistent disk</strong>, not a
+                    <code>tmpfs</code>. A temporary filesystem will lose all
+                    Docker data on reboot.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    {{! ── Quick Reference ── }}
+    <div class="section-divider mb-4">
+      <span class="section-label">QUICK REFERENCE</span>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <div class="alert alert-dark mb-0">
+          <h5 class="mb-2">Script Flags</h5>
+          <p class="mb-0">
+            <strong>Default:</strong>
+            <code>bash ubuntu.sh</code><br />
+            <strong>Open ports:</strong>
+            <code>bash ubuntu.sh --open-services</code><br />
+            <strong>No firewall:</strong>
+            <code>bash ubuntu.sh --no-firewall</code>
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="alert alert-dark mb-0">
+          <h5 class="mb-2">Firewall Ports</h5>
+          <p class="mb-0">
+            <strong>Always open:</strong>
+            <code>22</code>
+            SSH,
+            <code>80</code>
+            HTTP,
+            <code>443</code>
+            HTTPS<br />
+            <strong>With --open-services:</strong>
+            <code>12000–12008</code>
+            services,
+            <code>13000–13999</code>
+            threads
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <ManualFooter />
+
+  </div>
+</div>
+
+<ManualScripts />
