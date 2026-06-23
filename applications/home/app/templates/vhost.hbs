@@ -165,7 +165,16 @@
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
-          <div class="command-block">
+          <p>Create <code>.env</code> from the sample if you haven't already, then open it:</p>
+          <div class="command-block mb-2">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('cp .env.sample .env', this)"
+              type="button"
+            >Copy</button>
+            <code>cp .env.sample .env</code>
+          </div>
+          <div class="command-block mb-2">
             <button
               class="btn btn-sm copy-btn-block"
               onclick="copyCmd('nano .env', this)"
@@ -173,9 +182,15 @@
             >Copy</button>
             <code>nano .env</code>
           </div>
-          <p class="mt-3 mb-2">Open
-            <code>.env</code>
-            and set at minimum:</p>
+          <p class="mt-3 mb-2">Confirm the ports Docker published before editing — <code>vhost</code> reads <code>TRIBE_PORT</code>, <code>JUNCTION_PORT</code>, etc. directly from <code>.env</code>:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('node portmap', this)"
+              type="button"
+            >Copy</button>
+            <code><span class="comment"># Lists every container → host port mapping</span><br>node portmap</code>
+          </div>
           <div class="row g-3 mb-3">
             <div class="col-md-6">
               <div class="card method-item">

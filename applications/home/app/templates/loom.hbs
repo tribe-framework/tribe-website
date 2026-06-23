@@ -280,6 +280,11 @@
               <code>docker compose up -d</code>
             </p>
           </div>
+          <p class="mb-1">Verify the allocated ports with:</p>
+          <div class="command-block mb-3">
+            <button class="btn btn-sm copy-btn-block" onclick="copyCmd('node portmap', this)" type="button">Copy</button>
+            <code><span class="comment"># Shows all container → host port mappings</span><br>node portmap</code>
+          </div>
           <p class="mb-2"><strong>Thread directory layout</strong>
             (fully self-contained under
             <code>threads/&lt;name&gt;/</code>):</p>
