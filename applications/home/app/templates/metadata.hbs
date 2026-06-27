@@ -1,0 +1,377 @@
+<div class="tribe-manual">
+	<ManualHeader />
+
+	<ManualPageNav @activePage="metadata" />
+
+	<div class="container pb-5">
+
+		<div class="alert alert-dark mb-4">
+			<h5 class="alert-heading mb-1">
+				<i class="fa-solid fa-tags me-2"></i>Read-only file indexer
+			</h5>
+			<p class="mb-0 small">
+				<code>metadata.sh</code>
+				walks a directory tree and writes a single
+				<code>archive-metadata.csv</code>
+				alongside your files. It is safe to run on any disk at any time. Nothing is
+				ever renamed, moved, or deleted.
+			</p>
+		</div>
+
+		{{! ── QUICK USE ── }}
+		<div class="mb-4">
+			<p class="mb-2">Download, make executable, and run in one command:</p>
+			<div class="row g-3">
+				<div class="col-md-6">
+					<div class="card method-item h-100">
+						<div class="card-body">
+							<h6 class="mb-2"><strong>curl</strong></h6>
+							<div class="command-block mb-0">
+								<button class="btn btn-sm copy-btn-block" onclick="copyCmd('curl -O https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh && chmod +x metadata.sh && ./metadata.sh', this)" type="button">Copy</button>
+								<code>curl -O https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh &amp;&amp; chmod +x metadata.sh &amp;&amp; ./metadata.sh</code>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card method-item h-100">
+						<div class="card-body">
+							<h6 class="mb-2"><strong>wget</strong></h6>
+							<div class="command-block mb-0">
+								<button class="btn btn-sm copy-btn-block" onclick="copyCmd('wget https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh && chmod +x metadata.sh && ./metadata.sh', this)" type="button">Copy</button>
+								<code>wget https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh &amp;&amp; chmod +x metadata.sh &amp;&amp; ./metadata.sh</code>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="steps-container mb-5">
+
+			{{! ── STEP 1: Download ── }}
+			<div
+				class="step-card"
+				data-step-name="metadata.sh download curl wget install"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">1</span>
+					<span class="step-title">Download the script</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						Place
+						<code>metadata.sh</code>
+						in or near the folder you want to index. Both one-liners below
+						download the latest version from GitHub.
+					</p>
+					<div class="row g-3">
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>curl</strong></h6>
+									<div class="command-block mb-0">
+										<button class="btn btn-sm copy-btn-block" onclick="copyCmd('curl -O https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh', this)" type="button">Copy</button>
+										<code>curl -O https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh</code>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>wget</strong></h6>
+									<div class="command-block mb-0">
+										<button class="btn btn-sm copy-btn-block" onclick="copyCmd('wget https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh', this)" type="button">Copy</button>
+										<code>wget https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh</code>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="mt-3">
+						<a
+							href="https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh"
+							target="_blank"
+							class="btn btn-sm btn-outline-dark"
+							rel="noopener noreferrer"
+						>
+							<i class="fa-solid fa-file-lines me-1"></i>metadata.sh (raw)
+						</a>
+					</div>
+				</div>
+			</div>
+
+			{{! ── STEP 2: Make executable ── }}
+			<div
+				class="step-card"
+				data-step-name="chmod executable bash permissions"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">2</span>
+					<span class="step-title">Make it executable</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>Run once after downloading:</p>
+					<div class="command-block mb-0">
+						<button class="btn btn-sm copy-btn-block" onclick="copyCmd('chmod +x metadata.sh', this)" type="button">Copy</button>
+						<code>chmod +x metadata.sh</code>
+					</div>
+				</div>
+			</div>
+
+			{{! ── STEP 3: Run ── }}
+			<div
+				class="step-card"
+				data-step-name="run usage path argument disk root"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">3</span>
+					<span class="step-title">Run the script</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						Without an argument the script indexes the directory it lives in.
+						Pass any path to index an external disk or folder instead.
+					</p>
+					<div class="row g-3">
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2">
+										<strong>Index the script's own directory</strong>
+									</h6>
+									<div class="command-block mb-0">
+										<button class="btn btn-sm copy-btn-block" onclick="copyCmd('./metadata.sh', this)" type="button">Copy</button>
+										<code>./metadata.sh</code>
+									</div>
+									<p class="small text-muted mt-2 mb-0">
+										Output is written as
+										<code>archive-metadata.csv</code>
+										in the same folder.
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2">
+										<strong>Index an external disk or folder</strong>
+									</h6>
+									<div class="command-block mb-0">
+										<button class="btn btn-sm copy-btn-block" onclick="copyCmd('./metadata.sh /Volumes/MyDisk', this)" type="button">Copy</button>
+										<code>./metadata.sh /Volumes/MyDisk</code>
+									</div>
+									<p class="small text-muted mt-2 mb-0">
+										Output is written as
+										<code>/Volumes/MyDisk/archive-metadata.csv</code>.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<p class="small text-muted mt-3 mb-0">
+						Compatible with macOS (BSD
+						<code>stat</code>) and Ubuntu / Linux (GNU
+						<code>stat</code>). No additional dependencies required.
+					</p>
+				</div>
+			</div>
+
+			{{! ── STEP 4: Output ── }}
+			<div
+				class="step-card"
+				data-step-name="CSV output columns fields format size year category"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">4</span>
+					<span class="step-title">Understanding the output CSV</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						Every file found is written as one row in
+						<code>archive-metadata.csv</code>. The seven columns are:
+					</p>
+					<table class="table table-bordered table-sm small">
+						<thead class="table-dark">
+							<tr>
+								<th>Column</th>
+								<th>Example</th>
+								<th>Notes</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><code>filename</code></td>
+								<td><code>photo.jpg</code></td>
+								<td>Bare filename with extension</td>
+							</tr>
+							<tr>
+								<td><code>filepath</code></td>
+								<td><code>2023/events</code></td>
+								<td>
+									Relative path from the disk root; empty for files at the
+									top level
+								</td>
+							</tr>
+							<tr>
+								<td><code>year</code></td>
+								<td><code>2023</code></td>
+								<td>
+									First
+									<code>YYYY</code>
+									folder segment found in the path, or in the script's own
+									parent directories (up to three levels up)
+								</td>
+							</tr>
+							<tr>
+								<td><code>format</code></td>
+								<td><code>jpg</code></td>
+								<td>Lowercased file extension; <code>(none)</code> if absent</td>
+							</tr>
+							<tr>
+								<td><code>size_mb</code></td>
+								<td><code>3.47</code></td>
+								<td>File size in megabytes, two decimal places</td>
+							</tr>
+							<tr>
+								<td><code>date_modified</code></td>
+								<td><code>2023-08-15</code></td>
+								<td>Filesystem modification date in <code>YYYY-MM-DD</code> format</td>
+							</tr>
+							<tr>
+								<td><code>category</code></td>
+								<td><code>events</code></td>
+								<td>
+									Top-level subdirectory name; if that segment is a year, the
+									next segment is used instead
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<div class="alert alert-secondary small mt-3 mb-0">
+						<strong>What gets skipped:</strong>
+						Tribe image resize variants
+						(<code>xs</code>,
+						<code>sm</code>,
+						<code>md</code>,
+						<code>lg</code>,
+						<code>xl</code>),
+						HLS video segments (<code>hls</code>),
+						<code>tribe-cache</code>,
+						<code>tribe-temp</code>,
+						<code>node_modules</code>,
+						<code>.git</code>,
+						<code>__MACOSX</code>,
+						<code>.DS_Store</code>, other hidden files, and the output CSV itself.
+					</div>
+				</div>
+			</div>
+
+			{{! ── STEP 5: Open in spreadsheet ── }}
+			<div
+				class="step-card"
+				data-step-name="CSV open spreadsheet Excel LibreOffice Numbers Google Sheets filter sort"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">5</span>
+					<span class="step-title">Work with the CSV</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						Open
+						<code>archive-metadata.csv</code>
+						in any spreadsheet application. From there you can filter by
+						format, sort by size, group by year or category, and build pivot
+						tables across an entire archive.
+					</p>
+					<div class="row g-3">
+						<div class="col-md-4">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>macOS</strong></h6>
+									<ul class="small text-muted mb-0 ps-3">
+										<li>Numbers — drag and drop the CSV</li>
+										<li>Excel — File → Open</li>
+										<li>Google Sheets — File → Import</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Ubuntu / Linux</strong></h6>
+									<ul class="small text-muted mb-0 ps-3">
+										<li>LibreOffice Calc — right-click → Open With</li>
+										<li>Google Sheets — File → Import</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Command line</strong></h6>
+									<div class="command-block mb-0">
+										<button class="btn btn-sm copy-btn-block" onclick="copyCmd('# count by format\nawk -F, \'NR>1{print $4}\' archive-metadata.csv | sort | uniq -c | sort -rn', this)" type="button">Copy</button>
+										<code><span class="comment"># count by format</span><br />awk -F, 'NR>1{print $4}' archive-metadata.csv \<br />&nbsp;&nbsp;| sort | uniq -c | sort -rn</code>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		{{! ── QUICK REFERENCE ── }}
+		<div class="section-divider mb-4">
+			<span class="section-label">QUICK REFERENCE</span>
+		</div>
+
+		<div class="row g-3 mb-4">
+			<div class="col-md-6">
+				<div class="alert alert-dark mb-0">
+					<h5 class="mb-2">Usage</h5>
+					<p class="mb-0">
+						<strong>Current dir:</strong>
+						<code>./metadata.sh</code><br />
+						<strong>Custom path:</strong>
+						<code>./metadata.sh /path/to/disk</code><br />
+						<strong>Output:</strong>
+						<code>archive-metadata.csv</code>
+						at the disk root
+					</p>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="alert alert-dark mb-0">
+					<h5 class="mb-2">CSV Columns</h5>
+					<p class="mb-0">
+						<code>filename</code>,
+						<code>filepath</code>,
+						<code>year</code>,
+						<code>format</code>,
+						<code>size_mb</code>,
+						<code>date_modified</code>,
+						<code>category</code>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<ManualFooter />
+
+	</div>
+</div>
+
+<ManualScripts />

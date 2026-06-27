@@ -52,6 +52,14 @@
           </li>
           <li>
             <LinkTo
+              @route="metadata"
+              class="dropdown-item {{if (eq @activePage 'metadata') 'active'}}"
+            >
+              Metadata Generator
+            </LinkTo>
+          </li>
+          <li>
+            <LinkTo
               @route="ubuntu"
               class="dropdown-item {{if (eq @activePage 'ubuntu') 'active'}}"
             >
