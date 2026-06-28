@@ -52,10 +52,18 @@
           </li>
           <li>
             <LinkTo
+              @route="env"
+              class="dropdown-item {{if (eq @activePage 'env') 'active'}}"
+            >
+              .env File Generator
+            </LinkTo>
+          </li>
+          <li>
+            <LinkTo
               @route="metadata"
               class="dropdown-item {{if (eq @activePage 'metadata') 'active'}}"
             >
-              Metadata Generator
+              Uploads Metadata Generator
             </LinkTo>
           </li>
           <li>

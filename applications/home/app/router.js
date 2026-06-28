@@ -17,4 +17,5 @@ Router.map(function () {
   this.route('ubuntu');
   this.route('vhost');
   this.route('metadata');
+  this.route('env');
 });
