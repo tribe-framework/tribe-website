@@ -41,13 +41,13 @@
           <div class="command-block mb-3">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('curl -s https://raw.githubusercontent.com/tribe-framework/tribe/master/config/tribe/upgrade.sh -o upgrade.sh; chmod +x upgrade.sh; bash upgrade.sh', this)"
+              onclick="copyCmd('curl -s https://raw.githubusercontent.com/tribe-framework/tribe/master/config/tribe/upgrade.sh -o upgrade.sh; chmod +x upgrade.sh; bash upgrade.sh; rm upgrade.sh', this)"
               type="button"
             >Copy</button>
             <code><span class="comment"># Download and run from your project
                 root</span><br />curl -s
               https://raw.githubusercontent.com/tribe-framework/tribe/master/config/tribe/upgrade.sh
-              \ -o upgrade.sh; chmod +x upgrade.sh; bash upgrade.sh</code>
+              \ -o upgrade.sh; chmod +x upgrade.sh; bash upgrade.sh; rm upgrade.sh</code>
           </div>
           <p class="mb-1 small text-muted">Or, if you already have the script,
             pass your project path explicitly:</p>
