@@ -1,0 +1,363 @@
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="upgrade" />
+
+  <div class="container pb-5">
+
+    <div class="alert alert-dark mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h5 class="mb-1"><i class="fa-solid fa-arrow-up-right-dots me-2"></i>Upgrade
+            Tribe</h5>
+          <p class="mb-0 small text-muted">One script syncs the latest Tribe
+            framework files into your project — without touching your
+            environment, uploads, logs, or custom code.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+          <span class="badge bg-dark me-1">rsync</span>
+          <span class="badge bg-dark me-1">git</span>
+          <span class="badge bg-dark">non-destructive</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps-container mb-5">
+
+      {{! ── Run the upgrade ── }}
+      <div
+        class="step-card open"
+        data-step-name="upgrade tribe script rsync git clone sync"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-terminal"></i></span>
+          <span class="step-title">Run the Upgrade Script</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>From inside your project root (or pass the project path as an
+            argument). The script is non-destructive — it never overwrites your
+            <code>.env</code>, uploads, logs, or custom folders.</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('curl -s https://raw.githubusercontent.com/tribe-framework/tribe/master/config/tribe/upgrade.sh -o upgrade.sh; chmod +x upgrade.sh; bash upgrade.sh', this)"
+              type="button"
+            >Copy</button>
+            <code><span class="comment"># Download and run from your project
+                root</span><br />curl -s
+              https://raw.githubusercontent.com/tribe-framework/tribe/master/config/tribe/upgrade.sh
+              \ -o upgrade.sh; chmod +x upgrade.sh; bash upgrade.sh</code>
+          </div>
+          <p class="mb-1 small text-muted">Or, if you already have the script,
+            pass your project path explicitly:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('bash upgrade.sh /path/to/your/project', this)"
+              type="button"
+            >Copy</button>
+            <code>bash upgrade.sh /path/to/your/project</code>
+          </div>
+          <p class="mb-2">After the sync completes, review what changed before
+            restarting services:</p>
+          <div class="command-block mb-0">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('git diff', this)"
+              type="button"
+            >Copy</button>
+            <code>git diff</code>
+          </div>
+        </div>
+      </div>
+
+      {{! ── What gets updated ── }}
+      <div
+        class="step-card"
+        data-step-name="upgrade what updated synced rsync files framework"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-box-open"></i></span>
+          <span class="step-title">What Gets Updated</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>The script clones the latest
+            <code>tribe-framework/tribe</code>
+            repo into a temp directory and
+            <code>rsync</code>s it into your project, skipping protected paths.</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-file-code me-1"
+                      ></i>Framework Files</strong></h6>
+                  <p class="small text-muted mb-0">All core Tribe framework
+                    files — scripts, configs, application code — are synced from
+                    the latest
+                    <code>master</code>
+                    branch. Existing files are overwritten in place.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-shield-halved me-1"
+                      ></i>Protected Paths</strong></h6>
+                  <p class="small text-muted mb-0">The following are
+                    <strong>never touched</strong>:
+                    <code>.env</code>,
+                    <code>uploads/</code>,
+                    <code>logs/</code>,
+                    <code>config/mysql/</code>,
+                    <code>applications/tribe/custom</code>, and
+                    <code>threads/</code>.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-light mt-3 mb-0">
+            <strong>How it works:</strong>
+            The upstream repo is cloned with
+            <code>--depth=1</code>
+            into
+            <code>/tmp</code>, then
+            <code>rsync -av</code>
+            copies it into your project with exclude flags for every protected
+            path. The temp clone is removed automatically when done.
+          </div>
+        </div>
+      </div>
+
+      {{! ── Protected paths detail ── }}
+      <div
+        class="step-card"
+        data-step-name="upgrade exclude protected paths env uploads logs custom threads mysql"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-lock"></i></span>
+          <span class="step-title">Protected Paths — Never Overwritten</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>These paths are excluded from every upgrade run. Your project-specific
+            data and customisations are always preserved.</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><code>.env</code></strong></h6>
+                  <p class="small text-muted mb-0">Your environment variables —
+                    secrets, database credentials, domain names. Never replaced.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><code>uploads/</code></strong></h6>
+                  <p class="small text-muted mb-0">User-uploaded files and media.
+                    Untouched regardless of upgrade.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><code>logs/</code></strong></h6>
+                  <p class="small text-muted mb-0">Application and service logs.
+                    Left in place so you keep a full history across upgrades.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><code>config/mysql/</code></strong></h6>
+                  <p class="small text-muted mb-0">Project-specific database
+                    configuration. Preserved to avoid breaking your DB setup.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><code>applications/tribe/custom</code></strong></h6>
+                  <p class="small text-muted mb-0">Your custom Tribe application
+                    code. This folder is the designated place for project-level
+                    overrides — it is always skipped.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><code>threads/</code></strong></h6>
+                  <p class="small text-muted mb-0">Loom thread definitions.
+                    Always excluded — managed entirely by
+                    <code>node loom</code>, not the framework upgrade.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{! ── After the upgrade ── }}
+      <div
+        class="step-card"
+        data-step-name="upgrade after restart docker compose services review diff"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-rotate"></i></span>
+          <span class="step-title">After the Upgrade</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Once the sync completes, restart your services to pick up any
+            updated images or config:</p>
+
+          <div class="steps-container mb-0">
+
+            {{! Step 1 }}
+            <div class="step-card">
+              <div class="step-header" onclick="toggleStep(this)">
+                <span class="step-badge">1</span>
+                <span class="step-title">Review Changes</span>
+                <i class="fa-solid fa-chevron-down step-chevron"></i>
+              </div>
+              <div class="step-body">
+                <div class="command-block mb-0">
+                  <button
+                    class="btn btn-sm copy-btn-block"
+                    onclick="copyCmd('git diff', this)"
+                    type="button"
+                  >Copy</button>
+                  <code>git diff<br /><span class="comment"># Review all updated
+                      files before restarting</span></code>
+                </div>
+              </div>
+            </div>
+
+            {{! Step 2 }}
+            <div class="step-card">
+              <div class="step-header" onclick="toggleStep(this)">
+                <span class="step-badge">2</span>
+                <span class="step-title">Pull Updated Docker Images</span>
+                <i class="fa-solid fa-chevron-down step-chevron"></i>
+              </div>
+              <div class="step-body">
+                <div class="command-block mb-0">
+                  <button
+                    class="btn btn-sm copy-btn-block"
+                    onclick="copyCmd('docker compose pull', this)"
+                    type="button"
+                  >Copy</button>
+                  <code>docker compose pull</code>
+                </div>
+              </div>
+            </div>
+
+            {{! Step 3 }}
+            <div class="step-card">
+              <div class="step-header" onclick="toggleStep(this)">
+                <span class="step-badge">3</span>
+                <span class="step-title">Restart the Stack</span>
+                <i class="fa-solid fa-chevron-down step-chevron"></i>
+              </div>
+              <div class="step-body">
+                <div class="command-block mb-0">
+                  <button
+                    class="btn btn-sm copy-btn-block"
+                    onclick="copyCmd('docker compose up -d', this)"
+                    type="button"
+                  >Copy</button>
+                  <code>docker compose up -d</code>
+                </div>
+              </div>
+            </div>
+
+          </div>{{! end inner steps-container }}
+
+          <div class="row g-3 mt-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-triangle-exclamation me-1"
+                      ></i>Check for Breaking Changes</strong></h6>
+                  <p class="small text-muted mb-0">Always read the upstream
+                    changelog or commit history after a major upgrade. Framework
+                    updates may change environment variable names, service
+                    ports, or compose structure.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-code-branch me-1"
+                      ></i>Custom Code</strong></h6>
+                  <p class="small text-muted mb-0">Keep project-level overrides
+                    inside
+                    <code>applications/tribe/custom</code>
+                    — that folder is always skipped and will never conflict
+                    with upstream changes.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    {{! ── Quick Reference ── }}
+    <div class="section-divider mb-4">
+      <span class="section-label">QUICK REFERENCE</span>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <div class="alert alert-dark mb-0">
+          <h5 class="mb-2">Script Usage</h5>
+          <p class="mb-0">
+            <strong>From project root:</strong>
+            <code>bash upgrade.sh</code><br />
+            <strong>Explicit path:</strong>
+            <code>bash upgrade.sh /path/to/project</code>
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="alert alert-dark mb-0">
+          <h5 class="mb-2">Always Excluded</h5>
+          <p class="mb-0">
+            <code>.env</code>
+            &nbsp;·&nbsp;
+            <code>uploads/</code>
+            &nbsp;·&nbsp;
+            <code>logs/</code>
+            &nbsp;·&nbsp;
+            <code>config/mysql/</code>
+            &nbsp;·&nbsp;
+            <code>applications/tribe/custom</code>
+            &nbsp;·&nbsp;
+            <code>threads/</code>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <ManualFooter />
+
+  </div>
+</div>
+
+<ManualScripts />

@@ -45,12 +45,12 @@
           <div class="command-block mb-3">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('curl -s https://raw.githubusercontent.com/tribe-framework/tribe/master/ubuntu.sh -o ubuntu.sh; chmod +x ubuntu.sh; bash ubuntu.sh', this)"
+              onclick="copyCmd('curl -s https://raw.githubusercontent.com/tribe-framework/tribe/master/config/ubuntu/setup.sh -o setup.sh; chmod +x setup.sh; bash setup.sh', this)"
               type="button"
             >Copy</button>
             <code><span class="comment"># Install script</span><br />curl -s
-              https://raw.githubusercontent.com/tribe-framework/tribe/master/ubuntu.sh
-              \ -o ubuntu.sh; chmod +x ubuntu.sh; bash ubuntu.sh</code>
+              https://raw.githubusercontent.com/tribe-framework/tribe/master/config/ubuntu/setup.sh
+              \ -o setup.sh; chmod +x setup.sh; bash setup.sh</code>
           </div>
           <div class="command-block mb-3">
             <button
@@ -457,11 +457,11 @@
           <h5 class="mb-2">Script Flags</h5>
           <p class="mb-0">
             <strong>Default:</strong>
-            <code>bash ubuntu.sh</code><br />
+            <code>bash setup.sh</code><br />
             <strong>Open ports:</strong>
-            <code>bash ubuntu.sh --open-services</code><br />
+            <code>bash setup.sh --open-services</code><br />
             <strong>No firewall:</strong>
-            <code>bash ubuntu.sh --no-firewall</code>
+            <code>bash setup.sh --no-firewall</code>
           </p>
         </div>
       </div>
