@@ -18,4 +18,5 @@ Router.map(function () {
   this.route('vhost');
   this.route('metadata');
   this.route('env');
+  this.route('mysql');
 });

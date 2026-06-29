@@ -84,6 +84,14 @@
           </li>
           <li>
             <LinkTo
+              @route="mysql"
+              class="dropdown-item {{if (eq @activePage 'mysql') 'active'}}"
+            >
+              MySQL: Performance Tuning
+            </LinkTo>
+          </li>
+          <li>
+            <LinkTo
               @route="loom"
               class="dropdown-item {{if (eq @activePage 'loom') 'active'}}"
             >
