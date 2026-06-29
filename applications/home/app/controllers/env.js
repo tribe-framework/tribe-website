@@ -37,7 +37,7 @@ const PORT_OFFSETS = {
 
 const SCHEMAS = {
   tribe: [
-    { key: 'PROJECT_NAME',                           label: 'Project Name',              placeholder: 'my_project',                comment: 'Project Identity' },
+    { key: 'PROJECT_NAME',                           label: 'Project Name',              placeholder: 'tribe_project',                comment: 'Project Identity' },
     { key: 'BARE_URL',                               label: 'Bare URL',                  placeholder: 'tribe.example.com',               comment: 'Application' },
     { key: 'TRIBE_API_URL',                          label: 'Tribe API URL',             placeholder: 'https://tribe.example.com' },
     { key: 'ALLOW_ALL_CONNECTIONS_DANGEROUSLY',      label: 'Allow All Connections', 		 hide: true, placeholder: 'false' },
@@ -45,7 +45,7 @@ const SCHEMAS = {
     { key: 'DEFAULT_TIMEZONE',                       label: 'Default Timezone',          hide: true, placeholder: 'Asia/Kolkata' },
     { key: 'CONTACT_EMAIL',                          label: 'Contact Email',             placeholder: 'tribe@example.com' },
     { key: 'CACHE_WEBAPP_TOTAL_OBJECTS',             label: 'Cache Webapp Total Objects',hide: true, placeholder: 'false' },
-    { key: 'DB_ROOT_PASSWORD',                       label: 'DB Root Password',          generate: password,                       comment: 'Database' },
+    { key: 'DB_ROOT_PASSWORD',                       label: 'DB Root Password',          generate: password },
     { key: 'DB_NAME',                                label: 'DB Name',                   hide: true },
     { key: 'DB_USER',                                label: 'DB User',                   hide: true },
     { key: 'DB_PASS',                                label: 'DB Password',               generate: password },
@@ -72,12 +72,12 @@ const SCHEMAS = {
     { key: 'TIKA_HOST',                              label: 'Tika Host',                 hide: true },
     { key: 'TIKA_PORT',                              label: 'Tika Port',                 hide: true, placeholder: '9998' },
     { key: 'HIDE_POSTCODE_ATTRIBUTION',              label: 'Hide Postcode Attribution', hide: true, placeholder: 'false',                     comment: 'Hide Postcode Attribution' },
-    { key: 'CRONICLE_SECRET_KEY',                    label: 'Cronicle Secret Key',       generate: uuid,                           comment: 'Cronicle' },
+    { key: 'CRONICLE_SECRET_KEY',                    label: 'Cronicle Secret Key',       hide: true, generate: uuid,                           comment: 'Cronicle' },
     { key: 'CRONICLE_LOG_KEEP_DAYS',                 label: 'Cronicle Log Keep Days',    hide: true, placeholder: '30' },
-    { key: 'CENTRIFUGO_CLIENT_TOKEN_HMAC_SECRET_KEY',label: 'Centrifugo HMAC Secret',    generate: uuid,                           comment: 'Centrifugo' },
-    { key: 'CENTRIFUGO_HTTP_API_KEY',                label: 'Centrifugo HTTP API Key',   generate: uuid },
+    { key: 'CENTRIFUGO_CLIENT_TOKEN_HMAC_SECRET_KEY',label: 'Centrifugo HMAC Secret',    hide: true, generate: uuid,                           comment: 'Centrifugo' },
+    { key: 'CENTRIFUGO_HTTP_API_KEY',                label: 'Centrifugo HTTP API Key',   hide: true, generate: uuid },
     { key: 'CENTRIFUGO_ADMIN_PASSWORD',              label: 'Centrifugo Admin Password', generate: password },
-    { key: 'CENTRIFUGO_ADMIN_SECRET',                label: 'Centrifugo Admin Secret',   generate: uuid },
+    { key: 'CENTRIFUGO_ADMIN_SECRET',                label: 'Centrifugo Admin Secret',   hide: true, generate: uuid },
   ],
   junction: [
     { key: 'TRIBE_API_URL',              label: 'Tribe API URL',             placeholder: 'https://tribe.example.com' },
@@ -104,7 +104,7 @@ function seedValues(schema) {
 
 export default class EnvController extends Controller {
   @tracked activeTarget = 'tribe';
-  @tracked portPrefix = '';
+  @tracked portPrefix = '120';
   @tracked values = seedValues(SCHEMAS['tribe']);
   @tracked generated = null;
 
@@ -143,7 +143,7 @@ export default class EnvController extends Controller {
 
   @action
   generate() {
-    const projectName = (this.values['PROJECT_NAME'] ?? '').trim();
+    const projectName = (this.values['PROJECT_NAME'] ?? 'tribe_project').trim();
     const lines = [];
     let lastComment = null;
 
