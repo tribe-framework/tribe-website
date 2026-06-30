@@ -8,18 +8,13 @@
     <div class="alert alert-dark mb-4">
       <div class="row align-items-center">
         <div class="col-md-8">
-          <h5 class="mb-1"><i class="fa-solid fa-database me-2"></i>MySQL Tuning
-            &amp; Migration</h5>
+          <h5 class="mb-1"><i class="fa-solid fa-database me-2"></i>MySQL Tuning</h5>
           <p class="mb-0 small text-muted">Tune MySQL for higher loads via
-            <code>my.cnf</code>
-            and migrate existing named-volume data into the project folder so
-            it's easy to snapshot, back up, and transport.</p>
+            <code>my.cnf</code>.</p>
         </div>
         <div class="col-md-4 text-md-end mt-2 mt-md-0">
           <span class="badge bg-dark me-1">InnoDB</span>
-          <span class="badge bg-dark me-1">my.cnf</span>
-          <span class="badge bg-dark me-1">bind-mount</span>
-          <span class="badge bg-dark">migration</span>
+          <span class="badge bg-dark">my.cnf</span>
         </div>
       </div>
     </div>
@@ -57,8 +52,8 @@
             on a dedicated DB host, or
             <strong>25–40 %</strong>
             when MySQL shares the machine with the app. The default
-            <code>2G</code>
-            suits a 4–8 GB host.
+            <code>1G</code>
+            suits a 2–4 GB host.
           </div>
 
           <div class="row g-3 mb-4">
@@ -73,7 +68,7 @@
                     InnoDB performance. Caches table data and indexes in RAM —
                     the more that fits here, the fewer disk reads MySQL needs.
                     Default:
-                    <code>2G</code>.</p>
+                    <code>1G</code>.</p>
                 </div>
               </div>
             </div>
@@ -90,7 +85,22 @@
                     <code>1</code>
                     per GB of buffer pool, up to
                     <code>8</code>. Default:
-                    <code>2</code>.</p>
+                    <code>4</code>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-file-circle-check me-1"
+                      ></i><code>innodb_redo_log_capacity</code></strong></h6>
+                  <p class="small text-muted mb-0">Total size of the InnoDB redo
+                    log, used to absorb write bursts and speed crash recovery.
+                    Larger values smooth out write-heavy workloads at the cost
+                    of more disk space and longer recovery time. Default:
+                    <code>256M</code>.</p>
                 </div>
               </div>
             </div>
@@ -120,7 +130,103 @@
                     connections don't pay thread-creation cost. Set to roughly
                     <code>max_connections / 10</code>, minimum
                     <code>4</code>. Default:
-                    <code>4</code>.</p>
+                    <code>8</code>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-sort me-1"
+                      ></i><code>sort_buffer_size</code></strong></h6>
+                  <p class="small text-muted mb-0">Per-connection buffer used for
+                    sorting results (ORDER BY / GROUP BY) that don't use an
+                    index. Allocated per session, so keep it modest to avoid
+                    runaway memory use under high concurrency. Default:
+                    <code>256K</code>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-shuffle me-1"
+                      ></i><code>read_rnd_buffer_size</code></strong></h6>
+                  <p class="small text-muted mb-0">Per-connection buffer for
+                    reading rows in sorted order after a filesort, e.g. when
+                    resolving ORDER BY. Default:
+                    <code>512K</code>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-table me-1"
+                      ></i><code>tmp_table_size</code>
+                    /
+                    <code>max_heap_table_size</code></strong></h6>
+                  <p class="small text-muted mb-0">Caps how large an in-memory
+                    temporary table can grow (used for complex GROUP BY/ORDER BY
+                    and some joins) before MySQL spills it to disk. Keep the two
+                    in sync. Default:
+                    <code>16M</code>
+                    each.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-hard-drive me-1"
+                      ></i><code>innodb_flush_method</code></strong></h6>
+                  <p class="small text-muted mb-0">Controls how InnoDB flushes
+                    data and log files to disk.
+                    <code>O_DIRECT</code>
+                    bypasses the OS file cache to avoid double-buffering, since
+                    InnoDB already caches data in the buffer pool.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-bolt me-1"
+                      ></i><code>innodb_flush_log_at_trx_commit</code></strong></h6>
+                  <p class="small text-muted mb-0">Trades strict durability for
+                    throughput.
+                    <code>2</code>
+                    flushes the log to the OS cache on every commit but only
+                    syncs to disk once per second — fine for most apps, though a
+                    host crash (not just a MySQL crash) could lose the last
+                    second of transactions.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-file-lines me-1"
+                      ></i><code>slow_query_log</code>
+                    /
+                    <code>general_log</code></strong></h6>
+                  <p class="small text-muted mb-0">Both disabled by default to
+                    avoid the disk I/O overhead of logging every query. Enable
+                    temporarily (set to
+                    <code>1</code>) when debugging performance or query
+                    behavior, then turn back off.</p>
                 </div>
               </div>
             </div>
@@ -133,15 +239,17 @@
           <div class="command-block mb-3">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('[mysqld]\ninnodb_buffer_pool_size = 2G\ninnodb_buffer_pool_instances = 2\n\n# Connections\nmax_connections = 50\nthread_cache_size = 4\n\n# Network binding\nbind-address = 0.0.0.0', this)"
+              onclick="copyCmd('[mysqld]\ninnodb_buffer_pool_size = 1G\ninnodb_buffer_pool_instances = 4\ninnodb_redo_log_capacity = 256M\n\nmax_connections = 50\nthread_cache_size = 8\nbind-address = 0.0.0.0\n\nsort_buffer_size = 256K\nread_rnd_buffer_size = 512K\ntmp_table_size = 16M\nmax_heap_table_size = 16M\n\nslow_query_log = 0\ngeneral_log = 0\n\ninnodb_flush_method = O_DIRECT\ninnodb_flush_log_at_trx_commit = 2', this)"
               type="button"
             >Copy</button>
             <code><span class="comment">[mysqld]</span><br />innodb_buffer_pool_size
-              = 2G<br />innodb_buffer_pool_instances = 2<br /><br /><span
-                class="comment"
-              ># Connections</span><br />max_connections = 50<br />thread_cache_size
-              = 4<br /><br /><span class="comment"># Network
-                binding</span><br />bind-address = 0.0.0.0</code>
+              = 1G<br />innodb_buffer_pool_instances = 4<br />innodb_redo_log_capacity
+              = 256M<br /><br />max_connections = 50<br />thread_cache_size =
+              8<br />bind-address = 0.0.0.0<br /><br />sort_buffer_size =
+              256K<br />read_rnd_buffer_size = 512K<br />tmp_table_size =
+              16M<br />max_heap_table_size = 16M<br /><br />slow_query_log =
+              0<br />general_log = 0<br /><br />innodb_flush_method =
+              O_DIRECT<br />innodb_flush_log_at_trx_commit = 2</code>
           </div>
 
           <p class="mb-1">After editing, restart the container to apply:</p>
@@ -156,151 +264,6 @@
         </div>
       </div>
 
-      {{! ── Named volume → bind mount migration ── }}
-      <div
-        class="step-card"
-        data-step-name="mysql migrate volume bind mount uploads docker named volume old instance"
-      >
-        <div class="step-header" onclick="toggleStep(this)">
-          <span class="step-badge"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
-          <span class="step-title">Migrate from a Named Volume
-            <span
-              class="badge bg-warning text-dark ms-2"
-              style="font-size:0.65rem;vertical-align:middle;"
-            >Existing instances</span></span>
-          <i class="fa-solid fa-chevron-down step-chevron"></i>
-        </div>
-        <div class="step-body">
-          <p>Older deployments stored MySQL data in a Docker named volume
-            (<code>PROJECT_NAME_mysql_data</code>). The current setup uses a
-            bind-mount at
-            <code>./uploads/mysql</code>
-            so all project data lives in one folder — easier to snapshot, back
-            up, and move between hosts.</p>
-
-          <div class="alert alert-light mb-4">
-            <strong>What the script does:</strong>
-            stops MySQL cleanly, copies everything from the named volume into
-            <code>./uploads/mysql</code>
-            via a temporary Alpine container, patches
-            <code>docker-compose.yml</code>
-            to switch the volume reference, then restarts and health-checks
-            MySQL. The original named volume is
-            <strong>not deleted</strong>
-            — you remove it manually once you've verified the migration.
-          </div>
-
-          <div class="steps-container mb-0">
-
-            {{! Step 1 }}
-            <div class="step-card">
-              <div class="step-header" onclick="toggleStep(this)">
-                <span class="step-badge">1</span>
-                <span class="step-title">Run from the Project Root</span>
-                <i class="fa-solid fa-chevron-down step-chevron"></i>
-              </div>
-              <div class="step-body">
-                <p>
-                  <code>PROJECT_NAME</code>
-                  is read from your
-                  <code>.env</code>
-                  file automatically. Docker must be running.</p>
-                <div class="command-block mb-0">
-                  <button
-                    class="btn btn-sm copy-btn-block"
-                    onclick="copyCmd('cd /path/to/your/project\nbash config/tribe/migrate-mysql-volume.sh', this)"
-                    type="button"
-                  >Copy</button>
-                  <code>cd /path/to/your/project<br />bash
-                    config/tribe/migrate-mysql-volume.sh</code>
-                </div>
-              </div>
-            </div>
-
-            {{! Step 2 }}
-            <div class="step-card">
-              <div class="step-header" onclick="toggleStep(this)">
-                <span class="step-badge">2</span>
-                <span class="step-title">Verify MySQL is Healthy</span>
-                <i class="fa-solid fa-chevron-down step-chevron"></i>
-              </div>
-              <div class="step-body">
-                <p>The script waits for
-                  <code>mysqladmin ping</code>
-                  to succeed before finishing. Confirm yourself with:</p>
-                <div class="command-block mb-0">
-                  <button
-                    class="btn btn-sm copy-btn-block"
-                    onclick="copyCmd('docker compose exec mysql mysqladmin ping -h localhost', this)"
-                    type="button"
-                  >Copy</button>
-                  <code>docker compose exec mysql mysqladmin ping -h
-                    localhost</code>
-                </div>
-              </div>
-            </div>
-
-            {{! Step 3 }}
-            <div class="step-card">
-              <div class="step-header" onclick="toggleStep(this)">
-                <span class="step-badge">3</span>
-                <span class="step-title">Remove the Old Named Volume</span>
-                <i class="fa-solid fa-chevron-down step-chevron"></i>
-              </div>
-              <div class="step-body">
-                <p>Once you're satisfied everything works, delete the now-unused
-                  named volume to reclaim disk space. Replace
-                  <code>PROJECT_NAME</code>
-                  with the value from your
-                  <code>.env</code>.</p>
-                <div class="command-block mb-0">
-                  <button
-                    class="btn btn-sm copy-btn-block"
-                    onclick="copyCmd('docker volume rm PROJECT_NAME_mysql_data', this)"
-                    type="button"
-                  >Copy</button>
-                  <code>docker volume rm PROJECT_NAME_mysql_data</code>
-                </div>
-              </div>
-            </div>
-
-          </div>{{! end inner steps-container }}
-
-          <div class="row g-3 mt-3">
-            <div class="col-md-6">
-              <div class="card method-item h-100">
-                <div class="card-body">
-                  <h6 class="mb-2"><strong><i
-                        class="fa-solid fa-triangle-exclamation me-1"
-                      ></i>Non-empty Target Aborts</strong></h6>
-                  <p class="small text-muted mb-0">If
-                    <code>./uploads/mysql</code>
-                    already exists and is non-empty the script exits without
-                    touching anything. Clear or rename it first to proceed.</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="card method-item h-100">
-                <div class="card-body">
-                  <h6 class="mb-2"><strong><i
-                        class="fa-solid fa-file-pen me-1"
-                      ></i>Backup Kept</strong></h6>
-                  <p class="small text-muted mb-0">The script saves your original
-                    <code>docker-compose.yml</code>
-                    as
-                    <code>docker-compose.yml.bak</code>
-                    before patching. Restore it with
-                    <code>mv docker-compose.yml.bak docker-compose.yml</code>
-                    if needed.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
     </div>
 
     {{! ── Quick Reference ── }}
@@ -309,33 +272,32 @@
     </div>
 
     <div class="row g-3 mb-4">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="alert alert-dark mb-0">
           <h5 class="mb-2">Key my.cnf Settings</h5>
           <p class="mb-0">
             <strong>Buffer pool:</strong>
-            <code>innodb_buffer_pool_size = 2G</code><br />
+            <code>innodb_buffer_pool_size = 1G</code><br />
             <strong>Instances:</strong>
-            <code>innodb_buffer_pool_instances = 2</code><br />
+            <code>innodb_buffer_pool_instances = 4</code><br />
+            <strong>Redo log capacity:</strong>
+            <code>innodb_redo_log_capacity = 256M</code><br />
             <strong>Connections:</strong>
             <code>max_connections = 50</code><br />
             <strong>Thread cache:</strong>
-            <code>thread_cache_size = 4</code>
-          </p>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="alert alert-dark mb-0">
-          <h5 class="mb-2">Migration Script</h5>
-          <p class="mb-0">
-            <strong>Run:</strong>
-            <code>bash config/tribe/migrate-mysql-volume.sh</code><br />
-            <strong>Requires:</strong>
-            <code>PROJECT_NAME</code>
-            in
-            <code>.env</code>, Docker running<br />
-            <strong>After:</strong>
-            <code>docker volume rm PROJECT_NAME_mysql_data</code>
+            <code>thread_cache_size = 8</code><br />
+            <strong>Sort buffer:</strong>
+            <code>sort_buffer_size = 256K</code><br />
+            <strong>Read random buffer:</strong>
+            <code>read_rnd_buffer_size = 512K</code><br />
+            <strong>Temp table size:</strong>
+            <code>tmp_table_size = 16M</code><br />
+            <strong>Max heap table size:</strong>
+            <code>max_heap_table_size = 16M</code><br />
+            <strong>Flush method:</strong>
+            <code>innodb_flush_method = O_DIRECT</code><br />
+            <strong>Flush log at trx commit:</strong>
+            <code>innodb_flush_log_at_trx_commit = 2</code>
           </p>
         </div>
       </div>
