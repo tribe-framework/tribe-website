@@ -20,4 +20,5 @@ Router.map(function () {
   this.route('env');
   this.route('mysql');
   this.route('upgrade');
+  this.route('backup');
 });

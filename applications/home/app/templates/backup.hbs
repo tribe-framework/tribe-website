@@ -1,0 +1,1192 @@
+{{page-title "Backup"}}
+
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="backup" />
+
+  <div class="container pb-5">
+
+    <div class="alert alert-dark mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h5 class="mb-1"><i class="fa-solid fa-hard-drive me-2"></i>Backup:
+            Restic Volume Snapshots</h5>
+          <p class="mb-0 small text-muted">Pulls a full server volume from
+            <code>server</code>
+            to a local disk on
+            <code>local</code>
+            over Tailscale. First run copies everything; every run after copies
+            only changed chunks, while still producing a complete, independently
+            restorable snapshot.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+          <span class="badge bg-dark me-1">restic</span>
+          <span class="badge bg-dark me-1">rest-server</span>
+          <span class="badge bg-dark me-1">Tailscale</span>
+          <span class="badge bg-dark">systemd</span>
+        </div>
+      </div>
+    </div>
+
+    {{! ============================================================ }}
+    {{! EVERYDAY USE }}
+    {{! ============================================================ }}
+    <div class="section-divider mb-4">
+      <span class="section-label">EVERYDAY USE</span>
+    </div>
+
+    <div class="steps-container mb-5">
+
+      <div
+        class="step-card open"
+        data-step-name="Run a backup now on demand manual trigger systemctl start"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-play"></i></span>
+          <span class="step-title">Run a Backup Now</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Run from
+            <code>local</code>. The scheduled run and the on-demand run are the
+            same unit, so there is only ever one code path to debug:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('sudo systemctl start restic-backup@volume.service', this)"
+              type="button"
+            >Copy</button>
+            <code>sudo systemctl start restic-backup@volume.service</code>
+          </div>
+          <p class="mb-1"><strong>The instance name is the volume name.</strong>
+            Swap it to back up the other volume:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('sudo systemctl start restic-backup@postcode.service', this)"
+              type="button"
+            >Copy</button>
+            <code>sudo systemctl start restic-backup@postcode.service</code>
+          </div>
+          <div class="alert alert-info mt-3 mb-0">
+            <strong>The command will appear to hang.</strong>
+            <code>Type=oneshot</code>
+            makes
+            <code>systemctl start</code>
+            block until the backup finishes. Press
+            <code>Ctrl-C</code>
+            to get your prompt back &mdash; that detaches your terminal only.
+            The backup keeps running under systemd, and closing the tab does not
+            stop it.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Watch progress logs journalctl status running backup"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-eye"></i></span>
+          <span class="step-title">Watch Progress</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('sudo journalctl -fu restic-backup@volume.service', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>journalctl -fu restic-backup@volume</code>
+                  </div>
+                  <p class="small text-muted mb-0">Live output. A pure reader
+                    &mdash;
+                    <code>Ctrl-C</code>
+                    stops the reading, never the backup.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('systemctl status restic-backup@volume.service', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>systemctl status restic-backup@volume</code>
+                  </div>
+                  <p class="small text-muted mb-0"><code>activating (start)</code>
+                    means a run is in flight;
+                    <code>inactive (dead)</code>
+                    means idle.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-success mt-3 mb-0">
+            <h6 class="alert-heading mb-1">How to know a backup succeeded:</h6>
+            <p class="mb-0">Restic writes the snapshot object only after the run
+              completes cleanly. A new row in
+              <code>restic snapshots</code>
+              is proof; a growing repository directory is not.</p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="List snapshots inspect repository stats browse restic snapshots ls"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-list"></i></span>
+          <span class="step-title">Inspect the Repository</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Run these on
+            <code>local</code>
+            against the local path &mdash; same repository, reached the short
+            way, with no HTTP layer in between:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('export RESTIC_REPOSITORY=/media/username/WD-Internal/restic/volume-backup\nexport RESTIC_PASSWORD_FILE=/etc/restic/password', this)"
+              type="button"
+            >Copy</button>
+            <code><span class="comment"># Set once per shell; every command
+                below assumes it</span><br />export
+              RESTIC_REPOSITORY=/media/username/WD-Internal/restic/volume-backup<br
+              />export RESTIC_PASSWORD_FILE=/etc/restic/password</code>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div
+                  class="card-body d-flex justify-content-between align-items-center"
+                >
+                  <div><strong>All snapshots:</strong><br /><code>restic
+                      snapshots</code></div>
+                  <button
+                    class="btn btn-sm btn-outline-dark"
+                    onclick="copyCmd('restic snapshots', this)"
+                    type="button"
+                  >Copy</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div
+                  class="card-body d-flex justify-content-between align-items-center"
+                >
+                  <div><strong>Real disk usage:</strong><br /><code>restic stats
+                      --mode raw-data</code></div>
+                  <button
+                    class="btn btn-sm btn-outline-dark"
+                    onclick="copyCmd('restic stats --mode raw-data', this)"
+                    type="button"
+                  >Copy</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div
+                  class="card-body d-flex justify-content-between align-items-center"
+                >
+                  <div><strong>Browse a snapshot:</strong><br /><code>restic ls
+                      latest</code></div>
+                  <button
+                    class="btn btn-sm btn-outline-dark"
+                    onclick="copyCmd('restic ls latest', this)"
+                    type="button"
+                  >Copy</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div
+                  class="card-body d-flex justify-content-between align-items-center"
+                >
+                  <div><strong>What changed:</strong><br /><code>restic diff
+                      &lt;old-id&gt; &lt;new-id&gt;</code></div>
+                  <button
+                    class="btn btn-sm btn-outline-dark"
+                    onclick="copyCmd('restic diff OLDID NEWID', this)"
+                    type="button"
+                  >Copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-info mt-3 mb-0">
+            <strong>Two numbers, two meanings.</strong>
+            <code>restic stats</code>
+            defaults to the restore size of one snapshot;
+            <code>--mode raw-data</code>
+            reports what the repository actually occupies after deduplication
+            across every snapshot. The second is the one to watch against free
+            space.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Restore files recover data restic restore mount fuse single file"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i
+              class="fa-solid fa-rotate-left"
+            ></i></span>
+          <span class="step-title">Restore</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p class="mb-1"><strong>Browse before you commit.</strong>
+            Mounting is read-only and instant, and is almost always the right
+            first move:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('mkdir -p /tmp/restic-mount \u0026\u0026 restic mount /tmp/restic-mount', this)"
+              type="button"
+            >Copy</button>
+            <code><span class="comment"># Ctrl-C to unmount</span><br />mkdir -p
+              /tmp/restic-mount &amp;&amp; restic mount /tmp/restic-mount</code>
+          </div>
+          <p class="mb-1"><strong>Pull a single path</strong>
+            out of the newest snapshot:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('restic restore latest --target /tmp/recover --include /mnt/volume/path/to/file', this)"
+              type="button"
+            >Copy</button>
+            <code>restic restore latest --target /tmp/recover --include
+              /mnt/volume/path/to/file</code>
+          </div>
+          <p class="mb-1"><strong>Restore a whole volume</strong>
+            from a specific snapshot:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('restic restore 1a2b3c4d --target /mnt/restore-target', this)"
+              type="button"
+            >Copy</button>
+            <code>restic restore 1a2b3c4d --target /mnt/restore-target</code>
+          </div>
+          <div class="alert alert-warning mt-3 mb-0">
+            <strong>MySQL data directories are excluded by design.</strong>
+            A restore gives you the nightly
+            <code>mysqldump</code>
+            zips each container writes, not live InnoDB tablespaces. Recovering
+            a database means restoring the zip and importing it &mdash; not
+            copying files back into a running container.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Pause disable timer schedule stop scheduled runs enable"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-clock"></i></span>
+          <span class="step-title">Pause or Resume the Schedule</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Backups fire at
+            <strong>04:00 IST daily</strong>. If
+            <code>local</code>
+            was off, the missed run happens on next boot rather than being
+            skipped.</p>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('sudo systemctl disable --now restic-backup@volume.timer', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>disable --now ...timer</code>
+                  </div>
+                  <p class="small text-muted mb-0">Pause the schedule. An
+                    already-running backup keeps going.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('sudo systemctl enable --now restic-backup@volume.timer', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>enable --now ...timer</code>
+                  </div>
+                  <p class="small text-muted mb-0">Resume. Also triggers an
+                    immediate catch-up run.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <div class="command-block mb-2">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('systemctl list-timers \u0027restic-*\u0027', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>list-timers 'restic-*'</code>
+                  </div>
+                  <p class="small text-muted mb-0">Confirm what is armed and
+                    when it next fires.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-warning mt-3 mb-0">
+            <strong>Suppressing the catch-up run.</strong>
+            To resume without an immediate backup, stamp the timer forward right
+            after enabling it:
+            <code>sudo touch
+              /var/lib/systemd/timers/stamp-restic-backup@volume.timer</code>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Retention pruning forget prune weekly check integrity disk space"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-broom"></i></span>
+          <span class="step-title">Retention &amp; Integrity</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>A weekly timer on
+            <code>local</code>
+            (Sundays, 08:00 IST) forgets old snapshots, prunes the freed data,
+            and verifies a rotating 2% slice of pack contents so disk rot
+            surfaces long before a restore does. Retention keeps
+            <strong>14 daily, 8 weekly, 12 monthly, 3 yearly</strong>.</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('sudo systemctl start restic-prune@volume-backup.service', this)"
+              type="button"
+            >Copy</button>
+            <code><span class="comment"># Prune on demand</span><br />sudo
+              systemctl start restic-prune@volume-backup.service</code>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div
+                  class="card-body d-flex justify-content-between align-items-center"
+                >
+                  <div><strong>Full verification:</strong><br /><code>restic
+                      check --read-data</code></div>
+                  <button
+                    class="btn btn-sm btn-outline-dark"
+                    onclick="copyCmd('restic check --read-data', this)"
+                    type="button"
+                  >Copy</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div
+                  class="card-body d-flex justify-content-between align-items-center"
+                >
+                  <div><strong>Free space:</strong><br /><code>df -h
+                      /media/username/WD-Internal</code></div>
+                  <button
+                    class="btn btn-sm btn-outline-dark"
+                    onclick="copyCmd('df -h /media/username/WD-Internal', this)"
+                    type="button"
+                  >Copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-info mt-3 mb-0">
+            <strong>Note the instance names differ.</strong>
+            Backup units take the volume (<code>@volume</code>) because that
+            selects a source path on
+            <code>server</code>; prune units take the repository directory (<code
+            >@volume-backup</code>) because that is a local path on
+            <code>local</code>.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {{! ============================================================ }}
+    {{! INSTALLATION }}
+    {{! ============================================================ }}
+    <div class="section-divider mb-4">
+      <span class="section-label">INSTALLATION</span>
+    </div>
+
+    <div class="steps-container mb-5">
+
+      <div
+        class="step-card"
+        data-step-name="Architecture overview how it works server local direction pull push"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i
+              class="fa-solid fa-diagram-project"
+            ></i></span>
+          <span class="step-title">Architecture Overview</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>The schedule lives on the machine that might be off; the work runs
+            on the machine that is always up. At 04:00,
+            <code>local</code>
+            SSHes into
+            <code>server</code>, which reads the volume and writes back across
+            Tailscale into
+            <code>rest-server</code>
+            on
+            <code>local</code>.</p>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-server me-2"
+                      ></i>server (DigitalOcean)</strong></h6>
+                  <ul class="small mb-0">
+                    <li>Sources:
+                      <code>/mnt/postcodenews</code>,
+                      <code>/mnt/volume</code></li>
+                    <li>Runs
+                      <code>restic backup</code>
+                      and holds the chunk cache</li>
+                    <li>Script:
+                      <code>/usr/local/bin/restic-backup.sh</code></li>
+                    <li>Excludes:
+                      <code>/etc/restic/exclude.txt</code></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-2"><strong><i
+                        class="fa-solid fa-desktop me-2"
+                      ></i>local (desktop, 4&nbsp;TB WD)</strong></h6>
+                  <ul class="small mb-0">
+                    <li>Repositories under
+                      <code>/media/username/WD-Internal/restic/</code></li>
+                    <li><code>rest-server</code>
+                      bound to the Tailscale address only</li>
+                    <li>Owns the timers, the pruning, and the restores</li>
+                    <li>Repository key:
+                      <code>/etc/restic/password</code></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-warning mb-0">
+            <strong>Why not Cloudflare Tunnel.</strong>
+            Proxying hundreds of gigabytes of non-HTML traffic through
+            Cloudflare's edge is both slower &mdash; every byte detours through
+            a PoP &mdash; and against the self-serve terms. Tailscale gives a
+            direct WireGuard path with NAT traversal, no inbound port at the
+            office, and a relay fallback if UDP is blocked.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Install Tailscale network both machines magicdns connectivity"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">1</span>
+          <span class="step-title">Tailscale (both machines)</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('curl -fsSL https://tailscale.com/install.sh | sh\nsudo tailscale up\ntailscale ip -4', this)"
+              type="button"
+            >Copy</button>
+            <code>curl -fsSL https://tailscale.com/install.sh | sh<br />sudo
+              tailscale up<br />tailscale ip -4</code>
+          </div>
+          <p>Note
+            <code>local</code>'s
+            <code>100.x.y.z</code>
+            address &mdash;
+            <code>rest-server</code>
+            binds to it. Enable MagicDNS in the admin console so hostnames
+            resolve, then prove the path from
+            <code>server</code>:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('ping -c2 local', this)"
+              type="button"
+            >Copy</button>
+            <code>ping -c2 local</code>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Install rest-server local systemd service repository storage"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">2</span>
+          <span class="step-title">rest-server on local</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Roughly doubles SFTP throughput and handles repository locking
+            properly:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('cd /tmp\ncurl -LO https://github.com/restic/rest-server/releases/download/v0.13.0/rest-server_0.13.0_linux_amd64.tar.gz\ntar xzf rest-server_0.13.0_linux_amd64.tar.gz\nsudo install -m755 rest-server_0.13.0_linux_amd64/rest-server /usr/local/bin/rest-server\nsudo mkdir -p /media/username/WD-Internal/restic', this)"
+              type="button"
+            >Copy</button>
+            <code>cd /tmp<br />curl -LO
+              https://github.com/restic/rest-server/releases/download/v0.13.0/rest-server_0.13.0_linux_amd64.tar.gz<br
+              />tar xzf rest-server_0.13.0_linux_amd64.tar.gz<br />sudo install
+              -m755 rest-server_0.13.0_linux_amd64/rest-server
+              /usr/local/bin/rest-server<br />sudo mkdir -p
+              /media/username/WD-Internal/restic</code>
+          </div>
+          <p class="mb-1"><code>/etc/systemd/system/rest-server.service</code>
+            &mdash; replace
+            <code>100.x.y.z</code>
+            with the Tailscale address:</p>
+          <div class="command-block mb-3">
+            <code><span class="comment">[Unit]</span><br />Description=restic
+              REST server<br />After=network-online.target tailscaled.service<br
+              />Wants=network-online.target<br /><br /><span
+                class="comment"
+              >[Service]</span><br />ExecStart=/usr/local/bin/rest-server \<br
+              />&nbsp;&nbsp;--path /media/username/WD-Internal/restic \<br
+              />&nbsp;&nbsp;--listen 100.x.y.z:8000 \<br
+              />&nbsp;&nbsp;--no-auth<br />Restart=always<br />RestartSec=10<br
+              /><br /><span class="comment">[Install]</span><br
+              />WantedBy=multi-user.target</code>
+          </div>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('sudo systemctl daemon-reload\nsudo systemctl enable --now rest-server', this)"
+              type="button"
+            >Copy</button>
+            <code>sudo systemctl daemon-reload<br />sudo systemctl enable --now
+              rest-server</code>
+          </div>
+          <div class="alert alert-info mt-3 mb-0">
+            <strong>Binding to the Tailscale IP is the access control.</strong>
+            The office LAN cannot reach the service at all, which is what makes
+            <code>--no-auth</code>
+            safe and keeps day-to-day use frictionless.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Install restic password file key location server credentials"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">3</span>
+          <span class="step-title">restic &amp; the Repository Key</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Install on
+            <strong>both</strong>
+            machines &mdash;
+            <code>server</code>
+            writes backups,
+            <code>local</code>
+            prunes and restores:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('sudo apt install -y restic \u0026\u0026 sudo restic self-update', this)"
+              type="button"
+            >Copy</button>
+            <code>sudo apt install -y restic &amp;&amp; sudo restic self-update</code>
+          </div>
+          <p>Restic encrypts the repository whether or not you want it to. The
+            key therefore lives in a plainly readable file rather than being
+            guarded &mdash; access is governed by who can reach the machine, not
+            by the key:</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-1"><strong>Key location</strong></h6>
+                  <p class="mb-0 font-monospace">/etc/restic/password</p>
+                  <small class="text-muted">Mode
+                    <code>644</code>, identical on
+                    <code>server</code>
+                    and
+                    <code>local</code></small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-1"><strong>Referenced as</strong></h6>
+                  <p class="mb-0 font-monospace">RESTIC_PASSWORD_FILE</p>
+                  <small class="text-muted">Never typed inline; every unit and
+                    script points at the path</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-danger mt-3 mb-0">
+            <strong>Lose this file and the repository is unreadable</strong>
+            &mdash; permanently, for everyone, regardless of who was permitted
+            to read it. Copy it wherever you copy the backup.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Exclusions mysql innodb docker volumes exclude file inspect"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">4</span>
+          <span class="step-title">Exclusions</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Around fifty containers hold MySQL instances whose live tablespaces
+            are the largest and least restorable files on the volume. Each
+            container already writes a nightly
+            <code>mysqldump</code>
+            zip, and those zips are captured &mdash; so the raw data directories
+            are skipped. Find where they actually sit:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('docker ps -q | xargs -r docker inspect --format \u0027\u007B\u007B.Name\u007D\u007D \u007B\u007Brange .Mounts\u007D\u007D\u007B\u007B.Source\u007D\u007D:\u007B\u007B.Destination\u007D\u007D \u007B\u007Bend\u007D\u007D\u0027 | grep -i -E \u0027mysql|mariadb\u0027', this)"
+              type="button"
+            >Copy</button>
+            <code>docker ps -q | xargs -r docker inspect --format
+              '&#123;&#123;.Name&#125;&#125; &#123;&#123;range
+              .Mounts&#125;&#125;&#123;&#123;.Source&#125;&#125;:&#123;&#123;.Destination&#125;&#125;
+              &#123;&#123;end&#125;&#125;' | grep -iE 'mysql|mariadb'</code>
+          </div>
+          <p class="mb-1"><code>/etc/restic/exclude.txt</code>
+            on
+            <code>server</code>:</p>
+          <div class="command-block">
+            <code>**/mysql/data/**<br />**/var/lib/mysql/**<br
+              />**/mysql-data/**<br />**/*.ibd<br />**/ib_logfile*<br
+              />**/ibdata1<br />**/*.sock<br />**/lost+found<br
+              />**/*.tmp</code>
+          </div>
+          <div class="alert alert-info mt-3 mb-0">
+            <strong>The
+              <code>.ibd</code>
+              and
+              <code>ibdata1</code>
+              patterns are a backstop.</strong>
+            Adjust the directory patterns to match the
+            <code>docker inspect</code>
+            output, but keep the file-level ones &mdash; they catch tablespaces
+            in containers you forget about.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Backup script server restic-backup.sh volumes repository init"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">5</span>
+          <span class="step-title">Backup Script on server</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p><code>/usr/local/bin/restic-backup.sh</code>
+            &mdash; one script, one argument, both volumes:</p>
+          <div class="command-block mb-3">
+            <code>#!/usr/bin/env bash<br />set -euo pipefail<br /><br
+              />VOLUME="${1:?usage: restic-backup.sh &lt;postcode|volume&gt;}"<br
+              /><br />case "$VOLUME" in<br />&nbsp;&nbsp;postcode)
+              SOURCE=/mnt/postcodenews ; REPO=postcode-backup ;;<br
+              />&nbsp;&nbsp;volume) SOURCE=/mnt/volume&nbsp;&nbsp;&nbsp;&nbsp;
+              REPO=volume-backup ;;<br />&nbsp;&nbsp;*) echo "unknown volume:
+              $VOLUME" &gt;&amp;2 ; exit 64 ;;<br />esac<br /><br />mountpoint
+              -q "$SOURCE"<br /><br />export
+              RESTIC_REPOSITORY="rest:http://local:8000/${REPO}/"<br />export
+              RESTIC_PASSWORD_FILE=/etc/restic/password<br />export
+              RESTIC_CACHE_DIR=/var/cache/restic<br /><br />restic snapshots
+              &gt;/dev/null 2&gt;&amp;1 || restic init<br /><br />exec restic
+              backup "$SOURCE" \<br />&nbsp;&nbsp;--one-file-system \<br
+              />&nbsp;&nbsp;--exclude-file=/etc/restic/exclude.txt \<br
+              />&nbsp;&nbsp;--exclude-caches \<br />&nbsp;&nbsp;--retry-lock 30m
+              \<br />&nbsp;&nbsp;--cleanup-cache \<br />&nbsp;&nbsp;-o
+              rest.connections=10 \<br />&nbsp;&nbsp;--verbose</code>
+          </div>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('sudo chmod 755 /usr/local/bin/restic-backup.sh', this)"
+              type="button"
+            >Copy</button>
+            <code>sudo chmod 755 /usr/local/bin/restic-backup.sh</code>
+          </div>
+          <div class="alert alert-success mb-0">
+            <h6 class="alert-heading mb-1">Why each flag is there:</h6>
+            <p class="mb-0"><code>--one-file-system</code>
+              stops restic wandering into nested mounts &bull;
+              <code>--retry-lock</code>
+              makes a run that collides with a prune wait rather than fail
+              &bull;
+              <code>restic init</code>
+              is idempotent, creating the repository on first use and doing
+              nothing after.</p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="First backup initial run tmux resume interrupted 640GB"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">6</span>
+          <span class="step-title">The First Backup</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Run the initial copy by hand on
+            <code>server</code>, inside
+            <code>tmux</code>
+            so a dropped SSH session cannot kill it. Start with the smaller
+            volume to validate the whole chain:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('tmux new -s restic\n/usr/local/bin/restic-backup.sh postcode', this)"
+              type="button"
+            >Copy</button>
+            <code>tmux new -s restic<br />/usr/local/bin/restic-backup.sh
+              postcode</code>
+          </div>
+          <p class="small text-muted mb-3">Detach with
+            <code>Ctrl-b d</code>, return with
+            <code>tmux attach -t restic</code>.</p>
+          <div class="alert alert-success mb-3">
+            <h6 class="alert-heading mb-1">If it is interrupted, just run it
+              again.</h6>
+            <p class="mb-0">Restic uploads pack files as it goes and they
+              persist. A rerun rescans the source quickly from cached metadata
+              and re-uploads only what never landed. There is no resume flag and
+              no partial state to clean up.</p>
+          </div>
+          <div class="alert alert-warning mb-0">
+            <strong>Egress costs money.</strong>
+            A full 640&nbsp;GB may exceed the droplet's monthly transfer
+            allowance, billed at roughly $0.01/GiB over. Only the first run is
+            large; the deltas are not.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Schedule timers systemd template units ssh key local 4am"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">7</span>
+          <span class="step-title">Timers on local</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Give root on
+            <code>local</code>
+            a passwordless key into
+            <code>server</code>:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('sudo ssh-keygen -t ed25519 -N \u0027\u0027 -f /root/.ssh/id_ed25519\nsudo ssh-copy-id -i /root/.ssh/id_ed25519.pub root@server', this)"
+              type="button"
+            >Copy</button>
+            <code>sudo ssh-keygen -t ed25519 -N '' -f /root/.ssh/id_ed25519<br
+              />sudo ssh-copy-id -i /root/.ssh/id_ed25519.pub root@server</code>
+          </div>
+          <p class="mb-1"><code
+            >/etc/systemd/system/restic-backup@.service</code>
+            &mdash; the
+            <code>@</code>
+            makes one file serve every volume:</p>
+          <div class="command-block mb-3">
+            <code><span class="comment">[Unit]</span><br />Description=restic
+              backup of %i from server<br />After=network-online.target
+              rest-server.service tailscaled.service<br
+              />Requires=rest-server.service<br /><br /><span
+                class="comment"
+              >[Service]</span><br />Type=oneshot<br />ExecStart=/usr/bin/ssh -o
+              BatchMode=yes -o ServerAliveInterval=60 \<br
+              />&nbsp;&nbsp;root@server /usr/local/bin/restic-backup.sh %i<br
+              />TimeoutStartSec=infinity</code>
+          </div>
+          <p class="mb-1"><code
+            >/etc/systemd/system/restic-backup@.timer</code>:</p>
+          <div class="command-block mb-3">
+            <code><span class="comment">[Unit]</span><br />Description=Daily 4AM
+              IST restic backup of %i<br /><br /><span
+                class="comment"
+              >[Timer]</span><br />OnCalendar=*-*-* 04:00:00 Asia/Kolkata<br
+              />Persistent=true<br /><br /><span
+                class="comment"
+              >[Install]</span><br />WantedBy=timers.target</code>
+          </div>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('sudo systemctl daemon-reload\nsudo systemctl enable --now restic-backup@volume.timer', this)"
+              type="button"
+            >Copy</button>
+            <code>sudo systemctl daemon-reload<br />sudo systemctl enable --now
+              restic-backup@volume.timer</code>
+          </div>
+          <div class="alert alert-info mt-3 mb-0">
+            <strong><code>Persistent=true</code>
+              is the missed-run rule.</strong>
+            Systemd stamps each run and fires immediately at boot if a scheduled
+            time passed while the desktop was off &mdash; which is exactly the
+            behaviour wanted from a machine that is not always on.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Prune timer install retention units weekly local path"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">8</span>
+          <span class="step-title">Retention Timer on local</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p class="mb-1"><code
+            >/etc/systemd/system/restic-prune@.service</code>:</p>
+          <div class="command-block mb-3">
+            <code><span class="comment">[Unit]</span><br />Description=restic
+              forget+prune for %i<br /><br /><span
+                class="comment"
+              >[Service]</span><br />Type=oneshot<br
+              />Environment=RESTIC_REPOSITORY=/media/username/WD-Internal/restic/%i<br
+              />Environment=RESTIC_PASSWORD_FILE=/etc/restic/password<br
+              />ExecStart=/usr/bin/restic forget --prune \<br
+              />&nbsp;&nbsp;--keep-daily 14 --keep-weekly 8 --keep-monthly 12
+              --keep-yearly 3 \<br />&nbsp;&nbsp;--retry-lock 2h<br
+              />ExecStartPost=/usr/bin/restic check --read-data-subset=2%%</code>
+          </div>
+          <p class="mb-1"><code
+            >/etc/systemd/system/restic-prune@.timer</code>:</p>
+          <div class="command-block mb-3">
+            <code><span class="comment">[Timer]</span><br />OnCalendar=Sun *-*-*
+              08:00:00 Asia/Kolkata<br />Persistent=true<br /><br /><span
+                class="comment"
+              >[Install]</span><br />WantedBy=timers.target</code>
+          </div>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('sudo systemctl enable --now restic-prune@volume-backup.timer', this)"
+              type="button"
+            >Copy</button>
+            <code>sudo systemctl enable --now restic-prune@volume-backup.timer</code>
+          </div>
+          <div class="alert alert-warning mt-3 mb-0">
+            <strong>Pruning goes to the local path, not through
+              <code>rest-server</code>.</strong>
+            Repacking moves gigabytes; sending them through the HTTP layer to
+            reach a disk that is already local wastes hours.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Verify test restore round trip prove backup works before trusting"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">9</span>
+          <span class="step-title">Verify Before You Trust It</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Prove the round trip on the small volume before committing
+            640&nbsp;GB. On
+            <code>local</code>:</p>
+          <div class="command-block">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('export RESTIC_REPOSITORY=/media/username/WD-Internal/restic/postcode-backup\nexport RESTIC_PASSWORD_FILE=/etc/restic/password\nrestic snapshots\nrestic restore latest --target /tmp/verify --include \u0027**/*.zip\u0027', this)"
+              type="button"
+            >Copy</button>
+            <code>export
+              RESTIC_REPOSITORY=/media/username/WD-Internal/restic/postcode-backup<br
+              />export RESTIC_PASSWORD_FILE=/etc/restic/password<br />restic
+              snapshots<br />restic restore latest --target /tmp/verify
+              --include '**/*.zip'</code>
+          </div>
+          <div class="alert alert-success mt-3 mb-0">
+            <strong>A readable
+              <code>mysqldump</code>
+              zip is the pass condition.</strong>
+            It exercises exclusions, transport, encryption, and disk in one shot
+            &mdash; every link that could silently be wrong.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {{! ============================================================ }}
+    {{! MIGRATION & TROUBLESHOOTING }}
+    {{! ============================================================ }}
+    <div class="section-divider mb-4">
+      <span class="section-label">MIGRATION &amp; TROUBLESHOOTING</span>
+    </div>
+
+    <div class="steps-container mb-5">
+
+      <div
+        class="step-card"
+        data-step-name="Move backup to new computer migrate repository rsync continue incremental"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i class="fa-solid fa-truck"></i></span>
+          <span class="step-title">Moving the Backup to Another Machine</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>The repository is a self-contained directory with no external
+            state, so migration is a copy plus a redirect &mdash; nothing
+            restarts from scratch:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('rsync -aHAX --info=progress2 /media/username/WD-Internal/restic/ newhost:/path/to/restic/', this)"
+              type="button"
+            >Copy</button>
+            <code>rsync -aHAX --info=progress2
+              /media/username/WD-Internal/restic/ newhost:/path/to/restic/</code>
+          </div>
+          <ul>
+            <li>Install
+              <code>rest-server</code>
+              on the new host, pointing
+              <code>--path</code>
+              at the new parent directory.</li>
+            <li>Either rename the new host to
+              <code>local</code>
+              in Tailscale, or edit the hostname in
+              <code>RESTIC_REPOSITORY</code>
+              inside
+              <code>restic-backup.sh</code>.</li>
+            <li>Copy
+              <code>/etc/restic/password</code>
+              across, and copy the timer and prune units.</li>
+          </ul>
+          <div class="alert alert-success mb-0">
+            <h6 class="alert-heading mb-1">Why it continues incrementally:</h6>
+            <p class="mb-0">Snapshots are keyed by the
+              <em>source</em>
+              host and path, both still
+              <code>server:/mnt/volume</code>. Restic finds its parent snapshot
+              and carries on. The only thing that does not travel is
+              <code>server</code>'s cache in
+              <code>/var/cache/restic</code>, which is derived data &mdash; the
+              first run after the move is slower while it rebuilds, then normal.</p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Troubleshooting common problems locked repository connection refused stale lock"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i
+              class="fa-solid fa-triangle-exclamation"
+            ></i></span>
+          <span class="step-title">Troubleshooting</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-1"><strong>connection refused</strong></h6>
+                  <p class="small text-muted mb-2">Tailscale down, or
+                    <code>rest-server</code>
+                    bound to a stale IP after a tailnet change.</p>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('tailscale status \u0026\u0026 systemctl status rest-server', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>tailscale status &amp;&amp; systemctl status
+                      rest-server</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-1"><strong>repository is already locked</strong></h6>
+                  <p class="small text-muted mb-2">A run died without releasing
+                    its lock. Confirm nothing is actually running first.</p>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('restic unlock', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>restic unlock</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-1"><strong>Backup ran but nothing changed</strong></h6>
+                  <p class="small text-muted mb-2">Expected. Restic still writes
+                    a snapshot; it just stores no new chunks. Check what it
+                    considered:</p>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('restic diff \u0024(restic snapshots --json | tail -2 | head -1)', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>restic diff &lt;prev&gt; latest</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6 class="mb-1"><strong>Disk filling faster than expected</strong></h6>
+                  <p class="small text-muted mb-2">Usually a new large path that
+                    should have been excluded. Prune has not run yet, or
+                    retention is too generous.</p>
+                  <div class="command-block mb-0">
+                    <button
+                      class="btn btn-sm copy-btn-block"
+                      onclick="copyCmd('restic stats --mode raw-data', this)"
+                      type="button"
+                    >Copy</button>
+                    <code>restic stats --mode raw-data</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-info mt-3 mb-0">
+            <strong>Everything is in the journal.</strong>
+            <code>journalctl -u restic-backup@volume.service --since '7 days
+              ago'</code>
+            shows every run, its exit status, and the restic output that
+            explains it.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {{! ============================================================ }}
+    {{! QUICK REFERENCE }}
+    {{! ============================================================ }}
+    <div class="section-divider mb-4">
+      <span class="section-label">QUICK REFERENCE</span>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <div class="alert alert-dark mb-0">
+          <h5 class="mb-2">Paths</h5>
+          <p class="mb-0">
+            <strong>Sources (server):</strong>
+            <code>/mnt/postcodenews</code>,
+            <code>/mnt/volume</code><br />
+            <strong>Repos (local):</strong>
+            <code>/media/username/WD-Internal/restic/</code><br />
+            <strong>Key:</strong>
+            <code>/etc/restic/password</code><br />
+            <strong>Excludes:</strong>
+            <code>/etc/restic/exclude.txt</code>
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="alert alert-dark mb-0">
+          <h5 class="mb-2">Commands</h5>
+          <p class="mb-0">
+            <strong>Run now:</strong>
+            <code>systemctl start restic-backup@volume</code><br />
+            <strong>Watch:</strong>
+            <code>journalctl -fu restic-backup@volume</code><br />
+            <strong>List:</strong>
+            <code>restic snapshots</code><br />
+            <strong>Schedule:</strong>
+            04:00 IST daily, catch-up on boot
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <ManualFooter />
+
+  </div>
+</div>
+
+<ManualScripts />
