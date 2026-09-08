@@ -480,7 +480,7 @@
                       ></i>server (DigitalOcean)</strong></h6>
                   <ul class="small mb-0">
                     <li>Sources:
-                      <code>/mnt/postcodenews</code>,
+                      <code>/mnt/postcode</code>,
                       <code>/mnt/volume</code></li>
                     <li>Runs
                       <code>restic backup</code>
@@ -748,7 +748,7 @@
             <code>#!/usr/bin/env bash<br />set -euo pipefail<br /><br
               />VOLUME="${1:?usage: restic-backup.sh &lt;postcode|volume&gt;}"<br
               /><br />case "$VOLUME" in<br />&nbsp;&nbsp;postcode)
-              SOURCE=/mnt/postcodenews ; REPO=postcode-backup ;;<br
+              SOURCE=/mnt/postcode ; REPO=postcode-backup ;;<br
               />&nbsp;&nbsp;volume) SOURCE=/mnt/volume&nbsp;&nbsp;&nbsp;&nbsp;
               REPO=volume-backup ;;<br />&nbsp;&nbsp;*) echo "unknown volume:
               $VOLUME" &gt;&amp;2 ; exit 64 ;;<br />esac<br /><br />mountpoint
@@ -1156,7 +1156,7 @@
           <h5 class="mb-2">Paths</h5>
           <p class="mb-0">
             <strong>Sources (server):</strong>
-            <code>/mnt/postcodenews</code>,
+            <code>/mnt/postcode</code>,
             <code>/mnt/volume</code><br />
             <strong>Repos (local):</strong>
             <code>/media/username/WD-Internal/restic/</code><br />
