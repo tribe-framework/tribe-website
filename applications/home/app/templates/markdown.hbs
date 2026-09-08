@@ -1,2 +1,170 @@
-{{page-title "Markdown"}}
-{{outlet}}
+{{page-title "Markdown Editor"}}
+
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="markdown" />
+
+  <div class="container pb-5">
+
+    <div class="alert alert-dark mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-7">
+          <h5 class="mb-1"><i
+              class="fa-solid fa-pen-to-square me-2"
+            ></i>Markdown Editor</h5>
+          <p class="mb-0 small text-muted">Source on the left, live preview on
+            the right. Supports GFM pipe tables, inline HTML anchors
+            (<code>&lt;a id="stage-1"&gt;&lt;/a&gt;</code>) and in-page anchor
+            links — the constructs
+            <code>index.md</code>
+            relies on. Your work is kept in browser storage until you clear it.</p>
+        </div>
+        <div class="col-md-5 text-md-end mt-3 mt-md-0">
+          <label
+            for="md-open"
+            class="btn btn-sm btn-outline-light mb-0 me-1"
+            role="button"
+          >
+            <i class="fa-solid fa-folder-open me-1"></i>Open .md
+          </label>
+          <input
+            id="md-open"
+            type="file"
+            accept=".md,.markdown,text/markdown,text/plain"
+            class="d-none"
+            {{on "change" this.openFile}}
+          />
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-light me-1"
+            {{on "click" this.copySource}}
+          >
+            <i class="fa-solid fa-copy me-1"></i>Copy
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-light me-1"
+            {{on "click" this.clearAll}}
+          >
+            <i class="fa-solid fa-trash me-1"></i>Clear
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-light"
+            {{on "click" this.download}}
+          >
+            <i class="fa-solid fa-download me-1"></i>Download
+          </button>
+          <div class="small text-muted mt-2">
+            <code class="text-white-50">{{this.downloadName}}</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{! ------------------------------------------------------ toolbar ------ }}
+    <div class="md-toolbar mb-0">
+      {{#each this.toolbar as |group|}}
+        <div class="md-toolbar-group">
+          {{#if this.showToolbarLabels}}
+            <span class="md-toolbar-label">{{group.label}}</span>
+          {{/if}}
+          <div class="btn-group" role="group" aria-label={{group.label}}>
+            {{#each group.buttons as |btn|}}
+              <button
+                type="button"
+                class="btn btn-sm md-tool
+                  {{if (get this.activeMap btn.id) 'active'}}"
+                title={{btn.title}}
+                aria-pressed="{{if (get this.activeMap btn.id) 'true' 'false'}}"
+                {{on "click" (fn this.applyFormat btn)}}
+              >
+                <i class="fa-solid {{btn.icon}}"></i>
+                {{#if btn.text}}<span class="md-tool-text">{{btn.text}}</span>{{/if}}
+              </button>
+            {{/each}}
+          </div>
+        </div>
+      {{/each}}
+
+      <div class="md-toolbar-group ms-auto">
+        <div class="btn-group" role="group">
+          <button
+            type="button"
+            class="btn btn-sm md-tool {{if this.syncScroll 'active'}}"
+            title="Sync scrolling between panes"
+            {{on "click" this.toggleSyncScroll}}
+          >
+            <i class="fa-solid fa-arrows-up-down"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm md-tool {{if this.showToolbarLabels 'active'}}"
+            title="Show toolbar group labels"
+            {{on "click" this.toggleLabels}}
+          >
+            <i class="fa-solid fa-tag"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! -------------------------------------------------------- panes ------ }}
+    <div class="md-editor row g-0">
+
+      <div class="col-lg-6 md-pane md-pane-source">
+        <div class="md-pane-head">
+          <i class="fa-solid fa-code me-2"></i>Markdown
+          <span class="md-pane-meta">
+            {{this.lineCount}}
+            lines
+          </span>
+        </div>
+        <Textarea
+          id="md-source"
+          class="md-source"
+          @value={{this.source}}
+          spellcheck="true"
+          placeholder="# Start typing…"
+          {{this.bootEditor}}
+          {{on "input" this.handleInput}}
+          {{on "keydown" this.handleKeydown}}
+          {{on "click" this.handleSelection}}
+          {{on "keyup" this.handleSelection}}
+          {{on "select" this.handleSelection}}
+          {{on "scroll" this.mirrorScroll}}
+        />
+      </div>
+
+      <div class="col-lg-6 md-pane md-pane-preview">
+        <div class="md-pane-head">
+          <i class="fa-solid fa-eye me-2"></i>Preview
+          <span class="md-pane-meta">rendered</span>
+        </div>
+        <div
+          id="md-preview"
+          class="md-preview"
+          {{on "scroll" this.mirrorScroll}}
+        >
+          {{#if this.source}}
+            {{this.previewHtml}}
+          {{else}}
+            <p class="text-muted fst-italic">Nothing to preview yet. Start
+              typing on the left, or open an existing
+              <code>.md</code>
+              file.</p>
+          {{/if}}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="md-statusbar">
+      <span><i class="fa-solid fa-floppy-disk me-1"></i>{{this.savedLabel}}</span>
+      <span class="ms-auto">{{this.wordCount}} words</span>
+      <span class="ms-3">{{this.charCount}} characters</span>
+    </div>
+
+  </div>
+</div>
