@@ -54,20 +54,28 @@
           <div class="command-block mb-3">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('sudo systemctl start restic-backup@volume.service', this)"
+              onclick="copyCmd('sudo systemctl start \u0022restic-backup@$(systemd-escape /mnt/postcode).service\u0022', this)"
               type="button"
             >Copy</button>
-            <code>sudo systemctl start restic-backup@volume.service</code>
+            <code>sudo systemctl start "restic-backup@$(systemd-escape /mnt/postcode).service"</code>
           </div>
-          <p class="mb-1"><strong>The instance name is the volume name.</strong>
-            Swap it to back up the other volume:</p>
+          <p class="mb-1"><strong>The instance name is the volume path.</strong>
+            Every unit and script identifies a volume by its absolute path, and
+            the default everywhere is
+            <code>/mnt/postcode</code>. systemd cannot hold slashes in an
+            instance name, so
+            <code>systemd-escape</code>
+            turns the path into
+            <code>-mnt-postcode</code>
+            for you &mdash; let the shell build the name rather than typing it.
+            Swap the path to back up another volume:</p>
           <div class="command-block">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('sudo systemctl start restic-backup@postcode.service', this)"
+              onclick="copyCmd('sudo systemctl start \u0022restic-backup@$(systemd-escape /mnt/volume).service\u0022', this)"
               type="button"
             >Copy</button>
-            <code>sudo systemctl start restic-backup@postcode.service</code>
+            <code>sudo systemctl start "restic-backup@$(systemd-escape /mnt/volume).service"</code>
           </div>
           <div class="alert alert-info mt-3 mb-0">
             <strong>The command will appear to hang.</strong>
@@ -100,10 +108,10 @@
                   <div class="command-block mb-2">
                     <button
                       class="btn btn-sm copy-btn-block"
-                      onclick="copyCmd('sudo journalctl -fu restic-backup@volume.service', this)"
+                      onclick="copyCmd('sudo journalctl -fu restic-backup@-mnt-postcode.service', this)"
                       type="button"
                     >Copy</button>
-                    <code>journalctl -fu restic-backup@volume</code>
+                    <code>journalctl -fu restic-backup@-mnt-postcode</code>
                   </div>
                   <p class="small text-muted mb-0">Live output. A pure reader
                     &mdash;
@@ -118,10 +126,10 @@
                   <div class="command-block mb-2">
                     <button
                       class="btn btn-sm copy-btn-block"
-                      onclick="copyCmd('systemctl status restic-backup@volume.service', this)"
+                      onclick="copyCmd('systemctl status restic-backup@-mnt-postcode.service', this)"
                       type="button"
                     >Copy</button>
-                    <code>systemctl status restic-backup@volume</code>
+                    <code>systemctl status restic-backup@-mnt-postcode</code>
                   </div>
                   <p class="small text-muted mb-0"><code>activating (start)</code>
                     means a run is in flight;
@@ -158,12 +166,12 @@
           <div class="command-block mb-3">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('export RESTIC_REPOSITORY=/media/username/WD-Internal/restic/volume-backup\nexport RESTIC_PASSWORD_FILE=/etc/restic/password', this)"
+              onclick="copyCmd('export RESTIC_REPOSITORY=/media/cityowl/WD-Internal/restic/volume-backup\nexport RESTIC_PASSWORD_FILE=/etc/restic/password', this)"
               type="button"
             >Copy</button>
             <code><span class="comment"># Set once per shell; every command
                 below assumes it</span><br />export
-              RESTIC_REPOSITORY=/media/username/WD-Internal/restic/volume-backup<br
+              RESTIC_REPOSITORY=/media/cityowl/WD-Internal/restic/volume-backup<br
               />export RESTIC_PASSWORD_FILE=/etc/restic/password</code>
           </div>
           <div class="row g-3">
@@ -287,9 +295,13 @@
           </div>
           <div class="alert alert-warning mt-3 mb-0">
             <strong>MySQL data directories are excluded by design.</strong>
-            A restore gives you the nightly
+            A restore gives you the
             <code>mysqldump</code>
-            zips each container writes, not live InnoDB tablespaces. Recovering
+            zips that
+            <code>mysqldump-all.sh</code>
+            writes into
+            <code>/mnt/postcode/backup</code>
+            immediately before each run, not live InnoDB tablespaces. Recovering
             a database means restoring the zip and importing it &mdash; not
             copying files back into a running container.
           </div>
@@ -307,7 +319,7 @@
         </div>
         <div class="step-body">
           <p>Backups fire at
-            <strong>04:00 IST daily</strong>. If
+            <strong>02:00 IST daily</strong>. If
             <code>local</code>
             was off, the missed run happens on next boot rather than being
             skipped.</p>
@@ -318,7 +330,7 @@
                   <div class="command-block mb-2">
                     <button
                       class="btn btn-sm copy-btn-block"
-                      onclick="copyCmd('sudo systemctl disable --now restic-backup@volume.timer', this)"
+                      onclick="copyCmd('sudo systemctl disable --now restic-backup@-mnt-postcode.timer', this)"
                       type="button"
                     >Copy</button>
                     <code>disable --now ...timer</code>
@@ -334,7 +346,7 @@
                   <div class="command-block mb-2">
                     <button
                       class="btn btn-sm copy-btn-block"
-                      onclick="copyCmd('sudo systemctl enable --now restic-backup@volume.timer', this)"
+                      onclick="copyCmd('sudo systemctl enable --now restic-backup@-mnt-postcode.timer', this)"
                       type="button"
                     >Copy</button>
                     <code>enable --now ...timer</code>
@@ -366,7 +378,7 @@
             To resume without an immediate backup, stamp the timer forward right
             after enabling it:
             <code>sudo touch
-              /var/lib/systemd/timers/stamp-restic-backup@volume.timer</code>
+              /var/lib/systemd/timers/stamp-restic-backup@-mnt-postcode.timer</code>
           </div>
         </div>
       </div>
@@ -390,11 +402,11 @@
           <div class="command-block mb-3">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('sudo systemctl start restic-prune@volume-backup.service', this)"
+              onclick="copyCmd('sudo systemctl start restic-prune@-mnt-postcode.service', this)"
               type="button"
             >Copy</button>
             <code><span class="comment"># Prune on demand</span><br />sudo
-              systemctl start restic-prune@volume-backup.service</code>
+              systemctl start restic-prune@-mnt-postcode.service</code>
           </div>
           <div class="row g-3">
             <div class="col-md-6">
@@ -418,10 +430,10 @@
                   class="card-body d-flex justify-content-between align-items-center"
                 >
                   <div><strong>Free space:</strong><br /><code>df -h
-                      /media/username/WD-Internal</code></div>
+                      /media/cityowl/WD-Internal</code></div>
                   <button
                     class="btn btn-sm btn-outline-dark"
-                    onclick="copyCmd('df -h /media/username/WD-Internal', this)"
+                    onclick="copyCmd('df -h /media/cityowl/WD-Internal', this)"
                     type="button"
                   >Copy</button>
                 </div>
@@ -448,6 +460,22 @@
       <span class="section-label">INSTALLATION</span>
     </div>
 
+    <div class="alert alert-secondary mb-4">
+      <strong>The steps below are also scripted.</strong>
+      <code>install-server.sh</code>
+      performs steps 3&ndash;6 on
+      <code>server</code>
+      and
+      <code>install-local.sh</code>
+      performs steps 2, 8 and 9 on
+      <code>local</code>. They are written to be re-runnable, so use them for a
+      fresh build and read the steps below when something needs explaining or
+      repairing. Whichever route you take, the files in
+      <code>config/restic/</code>
+      are the source of truth &mdash; if you change a script or a unit here,
+      change it there too.
+    </div>
+
     <div class="steps-container mb-5">
 
       <div
@@ -463,7 +491,7 @@
         </div>
         <div class="step-body">
           <p>The schedule lives on the machine that might be off; the work runs
-            on the machine that is always up. At 04:00,
+            on the machine that is always up. At 02:00,
             <code>local</code>
             SSHes into
             <code>server</code>, which reads the volume and writes back across
@@ -501,7 +529,7 @@
                       ></i>local (desktop, 4&nbsp;TB WD)</strong></h6>
                   <ul class="small mb-0">
                     <li>Repositories under
-                      <code>/media/username/WD-Internal/restic/</code></li>
+                      <code>/media/cityowl/WD-Internal/restic/</code></li>
                     <li><code>rest-server</code>
                       bound to the Tailscale address only</li>
                     <li>Owns the timers, the pruning, and the restores</li>
@@ -576,7 +604,7 @@
           <div class="command-block mb-3">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('cd /tmp\ncurl -LO https://github.com/restic/rest-server/releases/download/v0.13.0/rest-server_0.13.0_linux_amd64.tar.gz\ntar xzf rest-server_0.13.0_linux_amd64.tar.gz\nsudo install -m755 rest-server_0.13.0_linux_amd64/rest-server /usr/local/bin/rest-server\nsudo mkdir -p /media/username/WD-Internal/restic', this)"
+              onclick="copyCmd('cd /tmp\ncurl -LO https://github.com/restic/rest-server/releases/download/v0.13.0/rest-server_0.13.0_linux_amd64.tar.gz\ntar xzf rest-server_0.13.0_linux_amd64.tar.gz\nsudo install -m755 rest-server_0.13.0_linux_amd64/rest-server /usr/local/bin/rest-server\nsudo mkdir -p /media/cityowl/WD-Internal/restic', this)"
               type="button"
             >Copy</button>
             <code>cd /tmp<br />curl -LO
@@ -584,7 +612,7 @@
               />tar xzf rest-server_0.13.0_linux_amd64.tar.gz<br />sudo install
               -m755 rest-server_0.13.0_linux_amd64/rest-server
               /usr/local/bin/rest-server<br />sudo mkdir -p
-              /media/username/WD-Internal/restic</code>
+              /media/cityowl/WD-Internal/restic</code>
           </div>
           <p class="mb-1"><code>/etc/systemd/system/rest-server.service</code>
             &mdash; replace
@@ -596,7 +624,7 @@
               />Wants=network-online.target<br /><br /><span
                 class="comment"
               >[Service]</span><br />ExecStart=/usr/local/bin/rest-server \<br
-              />&nbsp;&nbsp;--path /media/username/WD-Internal/restic \<br
+              />&nbsp;&nbsp;--path /media/cityowl/WD-Internal/restic \<br
               />&nbsp;&nbsp;--listen 100.x.y.z:8000 \<br
               />&nbsp;&nbsp;--no-auth<br />Restart=always<br />RestartSec=10<br
               /><br /><span class="comment">[Install]</span><br
@@ -694,10 +722,12 @@
         <div class="step-body">
           <p>Around fifty containers hold MySQL instances whose live tablespaces
             are the largest and least restorable files on the volume. Each
-            container already writes a nightly
+            container is dumped to a
             <code>mysqldump</code>
-            zip, and those zips are captured &mdash; so the raw data directories
-            are skipped. Find where they actually sit:</p>
+            zip by
+            <code>mysqldump-all.sh</code>
+            immediately before every run (step 6), and those zips are captured
+            &mdash; so the raw data directories are skipped. Find where they actually sit:</p>
           <div class="command-block mb-3">
             <button
               class="btn btn-sm copy-btn-block"
@@ -743,18 +773,23 @@
         </div>
         <div class="step-body">
           <p><code>/usr/local/bin/restic-backup.sh</code>
-            &mdash; one script, one argument, both volumes:</p>
+            &mdash; one script, one argument: the absolute path of the volume,
+            defaulting to
+            <code>/mnt/postcode</code>. The repository name is derived from the
+            last path component, so
+            <code>/mnt/postcode</code>
+            backs up into
+            <code>postcode-backup</code>:</p>
           <div class="command-block mb-3">
             <code>#!/usr/bin/env bash<br />set -euo pipefail<br /><br
-              />VOLUME="${1:?usage: restic-backup.sh &lt;postcode|volume&gt;}"<br
-              /><br />case "$VOLUME" in<br />&nbsp;&nbsp;postcode)
-              SOURCE=/mnt/postcode ; REPO=postcode-backup ;;<br
-              />&nbsp;&nbsp;volume) SOURCE=/mnt/volume&nbsp;&nbsp;&nbsp;&nbsp;
-              REPO=volume-backup ;;<br />&nbsp;&nbsp;*) echo "unknown volume:
-              $VOLUME" &gt;&amp;2 ; exit 64 ;;<br />esac<br /><br />mountpoint
-              -q "$SOURCE"<br /><br />export
-              RESTIC_REPOSITORY="rest:http://local:8000/${REPO}/"<br />export
-              RESTIC_PASSWORD_FILE=/etc/restic/password<br />export
+              />SOURCE="${1:-/mnt/postcode}"<br /><br />case "$SOURCE" in<br
+              />&nbsp;&nbsp;/*) ;;<br />&nbsp;&nbsp;*) echo "volume must be an
+              absolute path, got: $SOURCE" &gt;&amp;2 ; exit 64 ;;<br />esac<br
+              /><br />SOURCE="${SOURCE%/}"<br />REPO="$(basename
+              "$SOURCE")-backup"<br /><br />mountpoint -q "$SOURCE"<br /><br
+              />/usr/local/bin/mysqldump-all.sh "${SOURCE}/backup"<br /><br
+              />export RESTIC_REPOSITORY="rest:http://local:8000/${REPO}/"<br
+              />export RESTIC_PASSWORD_FILE=/etc/restic/password<br />export
               RESTIC_CACHE_DIR=/var/cache/restic<br /><br />restic snapshots
               &gt;/dev/null 2&gt;&amp;1 || restic init<br /><br />exec restic
               backup "$SOURCE" \<br />&nbsp;&nbsp;--one-file-system \<br
@@ -780,7 +815,90 @@
               &bull;
               <code>restic init</code>
               is idempotent, creating the repository on first use and doing
-              nothing after.</p>
+              nothing after &bull; the
+              <code>mysqldump-all.sh</code>
+              call is inside this script rather than on a separate cron
+              schedule, so the dumps cannot drift out of sync with the snapshot
+              and a failed dump aborts the run instead of quietly producing a
+              backup with yesterday's databases in it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="mysqldump containers database dumps mysql mariadb nightly script cron"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">6</span>
+          <span class="step-title">MySQL Dumps on server</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>The exclusions in the previous step drop every live InnoDB
+            tablespace, so the databases only survive a restore because
+            <code>/usr/local/bin/mysqldump-all.sh</code>
+            writes them out first. It takes the destination directory as its
+            argument &mdash;
+            <code>restic-backup.sh</code>
+            always passes
+            <code>&lt;volume&gt;/backup</code>, which for the default volume is
+            <code>/mnt/postcode/backup</code>. That path sits
+            <em>inside</em>
+            the volume being snapshotted, which is the whole point: a dump
+            written anywhere else would never be captured.</p>
+          <div class="command-block mb-3">
+            <code>#!/usr/bin/env bash<br />set -euo pipefail<br /><br
+              />DUMP_DIR="${1:-/mnt/postcode/backup}"<br />mkdir -p
+              "$DUMP_DIR"<br /><br />mapfile -t containers &lt; &lt;(docker ps
+              --format '&#123;&#123;.Names&#125;&#125;\t&#123;&#123;.Image&#125;&#125;'
+              \<br />&nbsp;&nbsp;| awk -F'\t' 'tolower($2) ~
+              /(^|\/)(mysql|mariadb|percona)([:@]|$)/ &#123;print
+              $1&#125;')<br /><br />if [ "${#containers[@]}" -eq 0 ]; then<br
+              />&nbsp;&nbsp;echo "WARNING: no mysql/mariadb containers matched,
+              no dumps written" &gt;&amp;2<br />fi<br /><br />for container in
+              "${containers[@]}"; do<br />&nbsp;&nbsp;PASS=$(docker exec
+              "$container" printenv MYSQL_ROOT_PASSWORD 2&gt;/dev/null ||
+              true)<br />&nbsp;&nbsp;[ -z "$PASS" ] &amp;&amp; PASS=$(docker exec
+              "$container" printenv MARIADB_ROOT_PASSWORD 2&gt;/dev/null ||
+              true)<br /><br />&nbsp;&nbsp;if [ -z "$PASS" ]; then<br
+              />&nbsp;&nbsp;&nbsp;&nbsp;echo "WARNING: no root password found in
+              $container, skipping" &gt;&amp;2<br
+              />&nbsp;&nbsp;&nbsp;&nbsp;continue<br />&nbsp;&nbsp;fi<br /><br
+              />&nbsp;&nbsp;TMPFILE="${DUMP_DIR}/${container}.sql.gz.tmp"<br
+              />&nbsp;&nbsp;FINAL="${DUMP_DIR}/${container}.sql.gz"<br /><br
+              />&nbsp;&nbsp;docker exec "$container" sh -c \<br
+              />&nbsp;&nbsp;&nbsp;&nbsp;"MYSQL_PWD='${PASS}' mysqldump -uroot
+              --all-databases --single-transaction --quick" \<br
+              />&nbsp;&nbsp;&nbsp;&nbsp;| gzip &gt; "$TMPFILE"<br /><br
+              />&nbsp;&nbsp;mv "$TMPFILE" "$FINAL"<br />done</code>
+          </div>
+          <p class="mb-1">Run it once by hand to confirm the containers are
+            matched and the passwords are readable before trusting a scheduled
+            run:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('sudo /usr/local/bin/mysqldump-all.sh /mnt/postcode/backup\nls -lh /mnt/postcode/backup', this)"
+              type="button"
+            >Copy</button>
+            <code>sudo /usr/local/bin/mysqldump-all.sh /mnt/postcode/backup<br
+              />ls -lh /mnt/postcode/backup</code>
+          </div>
+          <div class="alert alert-warning mb-0">
+            <strong>There is deliberately no cron entry.</strong>
+            An earlier design dumped on its own schedule a few minutes ahead of
+            the backup window, which meant a dump that overran, failed, or
+            matched no containers still produced a clean-looking snapshot
+            carrying the previous day's databases. Calling the script from
+            inside
+            <code>restic-backup.sh</code>
+            under
+            <code>set -euo pipefail</code>
+            makes a dump failure abort the backup loudly instead. The count
+            check exists for the same reason: an image-name filter that quietly
+            matches nothing is the failure mode you would not otherwise notice
+            until a restore.
           </div>
         </div>
       </div>
@@ -790,7 +908,7 @@
         data-step-name="First backup initial run tmux resume interrupted 640GB"
       >
         <div class="step-header" onclick="toggleStep(this)">
-          <span class="step-badge">6</span>
+          <span class="step-badge">7</span>
           <span class="step-title">The First Backup</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
@@ -803,11 +921,11 @@
           <div class="command-block mb-3">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('tmux new -s restic\n/usr/local/bin/restic-backup.sh postcode', this)"
+              onclick="copyCmd('tmux new -s restic\n/usr/local/bin/restic-backup.sh /mnt/postcode', this)"
               type="button"
             >Copy</button>
             <code>tmux new -s restic<br />/usr/local/bin/restic-backup.sh
-              postcode</code>
+              /mnt/postcode</code>
           </div>
           <p class="small text-muted mb-3">Detach with
             <code>Ctrl-b d</code>, return with
@@ -834,7 +952,7 @@
         data-step-name="Schedule timers systemd template units ssh key local 4am"
       >
         <div class="step-header" onclick="toggleStep(this)">
-          <span class="step-badge">7</span>
+          <span class="step-badge">8</span>
           <span class="step-title">Timers on local</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
@@ -856,25 +974,31 @@
             >/etc/systemd/system/restic-backup@.service</code>
             &mdash; the
             <code>@</code>
-            makes one file serve every volume:</p>
+            makes one file serve every volume.
+            <code>%f</code>
+            unescapes the instance name back into the absolute path, so
+            <code>restic-backup@-mnt-postcode.service</code>
+            passes
+            <code>/mnt/postcode</code>
+            to the script:</p>
           <div class="command-block mb-3">
             <code><span class="comment">[Unit]</span><br />Description=restic
-              backup of %i from server<br />After=network-online.target
+              backup of %f from server<br />After=network-online.target
               rest-server.service tailscaled.service<br
               />Requires=rest-server.service<br /><br /><span
                 class="comment"
               >[Service]</span><br />Type=oneshot<br />ExecStart=/usr/bin/ssh -o
               BatchMode=yes -o ServerAliveInterval=60 \<br
-              />&nbsp;&nbsp;root@server /usr/local/bin/restic-backup.sh %i<br
+              />&nbsp;&nbsp;root@server /usr/local/bin/restic-backup.sh %f<br
               />TimeoutStartSec=infinity</code>
           </div>
           <p class="mb-1"><code
             >/etc/systemd/system/restic-backup@.timer</code>:</p>
           <div class="command-block mb-3">
-            <code><span class="comment">[Unit]</span><br />Description=Daily 4AM
-              IST restic backup of %i<br /><br /><span
+            <code><span class="comment">[Unit]</span><br />Description=Daily 2AM
+              IST restic backup of %f<br /><br /><span
                 class="comment"
-              >[Timer]</span><br />OnCalendar=*-*-* 04:00:00 Asia/Kolkata<br
+              >[Timer]</span><br />OnCalendar=*-*-* 02:00:00 Asia/Kolkata<br
               />Persistent=true<br /><br /><span
                 class="comment"
               >[Install]</span><br />WantedBy=timers.target</code>
@@ -882,11 +1006,11 @@
           <div class="command-block">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('sudo systemctl daemon-reload\nsudo systemctl enable --now restic-backup@volume.timer', this)"
+              onclick="copyCmd('sudo systemctl daemon-reload\nsudo systemctl enable --now restic-backup@-mnt-postcode.timer', this)"
               type="button"
             >Copy</button>
             <code>sudo systemctl daemon-reload<br />sudo systemctl enable --now
-              restic-backup@volume.timer</code>
+              restic-backup@-mnt-postcode.timer</code>
           </div>
           <div class="alert alert-info mt-3 mb-0">
             <strong><code>Persistent=true</code>
@@ -903,40 +1027,51 @@
         data-step-name="Prune timer install retention units weekly local path"
       >
         <div class="step-header" onclick="toggleStep(this)">
-          <span class="step-badge">8</span>
+          <span class="step-badge">9</span>
           <span class="step-title">Retention Timer on local</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
         <div class="step-body">
+          <p>Prune takes the same volume path as the backup, so
+            <code>/usr/local/bin/restic-prune.sh</code>
+            turns it into the matching repository directory on the local disk:</p>
+          <div class="command-block mb-3">
+            <code>#!/usr/bin/env bash<br />set -euo pipefail<br /><br
+              />SOURCE="${1:-/mnt/postcode}"<br />SOURCE="${SOURCE%/}"<br
+              />REPO_ROOT=/media/cityowl/WD-Internal/restic<br /><br />export
+              RESTIC_REPOSITORY="${REPO_ROOT}/$(basename "$SOURCE")-backup"<br
+              />export RESTIC_PASSWORD_FILE=/etc/restic/password<br /><br
+              />restic forget --prune \<br />&nbsp;&nbsp;--keep-daily 14
+              --keep-weekly 8 --keep-monthly 12 --keep-yearly 3 \<br
+              />&nbsp;&nbsp;--retry-lock 2h<br /><br />exec restic check
+              --read-data-subset=2%</code>
+          </div>
           <p class="mb-1"><code
             >/etc/systemd/system/restic-prune@.service</code>:</p>
           <div class="command-block mb-3">
             <code><span class="comment">[Unit]</span><br />Description=restic
-              forget+prune for %i<br /><br /><span
+              forget+prune for %f<br /><br /><span
                 class="comment"
               >[Service]</span><br />Type=oneshot<br
-              />Environment=RESTIC_REPOSITORY=/media/username/WD-Internal/restic/%i<br
-              />Environment=RESTIC_PASSWORD_FILE=/etc/restic/password<br
-              />ExecStart=/usr/bin/restic forget --prune \<br
-              />&nbsp;&nbsp;--keep-daily 14 --keep-weekly 8 --keep-monthly 12
-              --keep-yearly 3 \<br />&nbsp;&nbsp;--retry-lock 2h<br
-              />ExecStartPost=/usr/bin/restic check --read-data-subset=2%%</code>
+              />ExecStart=/usr/local/bin/restic-prune.sh %f</code>
           </div>
           <p class="mb-1"><code
             >/etc/systemd/system/restic-prune@.timer</code>:</p>
           <div class="command-block mb-3">
-            <code><span class="comment">[Timer]</span><br />OnCalendar=Sun *-*-*
-              08:00:00 Asia/Kolkata<br />Persistent=true<br /><br /><span
+            <code><span class="comment">[Unit]</span><br />Description=Weekly
+              restic forget+prune for %f<br /><br /><span
+                class="comment"
+              >[Timer]</span><br />OnCalendar=Sun *-*-* 08:00:00 Asia/Kolkata<br />Persistent=true<br /><br /><span
                 class="comment"
               >[Install]</span><br />WantedBy=timers.target</code>
           </div>
           <div class="command-block">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('sudo systemctl enable --now restic-prune@volume-backup.timer', this)"
+              onclick="copyCmd('sudo systemctl enable --now restic-prune@-mnt-postcode.timer', this)"
               type="button"
             >Copy</button>
-            <code>sudo systemctl enable --now restic-prune@volume-backup.timer</code>
+            <code>sudo systemctl enable --now restic-prune@-mnt-postcode.timer</code>
           </div>
           <div class="alert alert-warning mt-3 mb-0">
             <strong>Pruning goes to the local path, not through
@@ -952,7 +1087,7 @@
         data-step-name="Verify test restore round trip prove backup works before trusting"
       >
         <div class="step-header" onclick="toggleStep(this)">
-          <span class="step-badge">9</span>
+          <span class="step-badge">10</span>
           <span class="step-title">Verify Before You Trust It</span>
           <i class="fa-solid fa-chevron-down step-chevron"></i>
         </div>
@@ -963,11 +1098,11 @@
           <div class="command-block">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('export RESTIC_REPOSITORY=/media/username/WD-Internal/restic/postcode-backup\nexport RESTIC_PASSWORD_FILE=/etc/restic/password\nrestic snapshots\nrestic restore latest --target /tmp/verify --include \u0027**/*.zip\u0027', this)"
+              onclick="copyCmd('export RESTIC_REPOSITORY=/media/cityowl/WD-Internal/restic/postcode-backup\nexport RESTIC_PASSWORD_FILE=/etc/restic/password\nrestic snapshots\nrestic restore latest --target /tmp/verify --include \u0027**/*.zip\u0027', this)"
               type="button"
             >Copy</button>
             <code>export
-              RESTIC_REPOSITORY=/media/username/WD-Internal/restic/postcode-backup<br
+              RESTIC_REPOSITORY=/media/cityowl/WD-Internal/restic/postcode-backup<br
               />export RESTIC_PASSWORD_FILE=/etc/restic/password<br />restic
               snapshots<br />restic restore latest --target /tmp/verify
               --include '**/*.zip'</code>
@@ -1009,11 +1144,11 @@
           <div class="command-block mb-3">
             <button
               class="btn btn-sm copy-btn-block"
-              onclick="copyCmd('rsync -aHAX --info=progress2 /media/username/WD-Internal/restic/ newhost:/path/to/restic/', this)"
+              onclick="copyCmd('rsync -aHAX --info=progress2 /media/cityowl/WD-Internal/restic/ newhost:/path/to/restic/', this)"
               type="button"
             >Copy</button>
             <code>rsync -aHAX --info=progress2
-              /media/username/WD-Internal/restic/ newhost:/path/to/restic/</code>
+              /media/cityowl/WD-Internal/restic/ newhost:/path/to/restic/</code>
           </div>
           <ul>
             <li>Install
@@ -1133,7 +1268,7 @@
           </div>
           <div class="alert alert-info mt-3 mb-0">
             <strong>Everything is in the journal.</strong>
-            <code>journalctl -u restic-backup@volume.service --since '7 days
+            <code>journalctl -u restic-backup@-mnt-postcode.service --since '7 days
               ago'</code>
             shows every run, its exit status, and the restic output that
             explains it.
@@ -1156,10 +1291,15 @@
           <h5 class="mb-2">Paths</h5>
           <p class="mb-0">
             <strong>Sources (server):</strong>
-            <code>/mnt/postcode</code>,
+            <code>/mnt/postcode</code>
+            (default),
             <code>/mnt/volume</code><br />
+            <strong>Dumps:</strong>
+            <code>&lt;volume&gt;/backup</code><br />
+            <strong>Instance names:</strong>
+            <code>systemd-escape &lt;volume&gt;</code><br />
             <strong>Repos (local):</strong>
-            <code>/media/username/WD-Internal/restic/</code><br />
+            <code>/media/cityowl/WD-Internal/restic/</code><br />
             <strong>Key:</strong>
             <code>/etc/restic/password</code><br />
             <strong>Excludes:</strong>
@@ -1172,13 +1312,13 @@
           <h5 class="mb-2">Commands</h5>
           <p class="mb-0">
             <strong>Run now:</strong>
-            <code>systemctl start restic-backup@volume</code><br />
+            <code>systemctl start restic-backup@-mnt-postcode</code><br />
             <strong>Watch:</strong>
-            <code>journalctl -fu restic-backup@volume</code><br />
+            <code>journalctl -fu restic-backup@-mnt-postcode</code><br />
             <strong>List:</strong>
             <code>restic snapshots</code><br />
             <strong>Schedule:</strong>
-            04:00 IST daily, catch-up on boot
+            02:00 IST daily, catch-up on boot
           </p>
         </div>
       </div>
