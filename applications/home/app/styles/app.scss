@@ -519,23 +519,141 @@ $md-pane-height: calc(100vh - 340px);
   color: #aaa;
 }
 
-.md-source {
-  flex: 1 1 auto;
-  height: $md-pane-height;
-  min-height: 400px;
-  width: 100%;
+// The textarea sits transparent on top of a highlighted <pre> that
+// mirrors it character for character — every metric below must stay
+// identical in both layers or the caret drifts away from the glyphs.
+
+%md-source-metrics {
+  margin: 0;
   border: none;
-  resize: none;
   padding: 20px 22px;
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 0.875rem;
   line-height: 1.7;
+  letter-spacing: normal;
   tab-size: 2;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.md-source-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  height: $md-pane-height;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.md-highlight {
+  @extend %md-source-metrics;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
   color: #222;
+  background: #fff;
+  pointer-events: none;
+}
+
+.md-source {
+  @extend %md-source-metrics;
+
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  resize: none;
+  overflow-y: auto;
+  background: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: #222;
+
+  &::placeholder {
+    color: #aaa;
+    -webkit-text-fill-color: #aaa;
+  }
+
+  &::selection {
+    background: rgba($primary, 0.22);
+  }
 
   &:focus {
     outline: none;
     box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// ---- Source tokens -------------------------------------------
+
+.md-highlight {
+  .hl-hash,
+  .hl-marker,
+  .hl-quote-marker,
+  .hl-pipe,
+  .hl-fence {
+    color: #b3006b;
+    font-weight: 600;
+  }
+
+  .hl-heading {
+    color: #111;
+    font-weight: 700;
+  }
+
+  .hl-quote {
+    color: #5c6b73;
+    font-style: italic;
+  }
+
+  .hl-task {
+    color: #0a7d33;
+    font-weight: 600;
+  }
+
+  .hl-strong {
+    color: #1c1c1c;
+    font-weight: 700;
+  }
+
+  .hl-em {
+    color: #1c1c1c;
+    font-style: italic;
+  }
+
+  .hl-strike {
+    color: #8a8a8a;
+    text-decoration: line-through;
+  }
+
+  .hl-code,
+  .hl-code-block {
+    color: #a35b00;
+    background: #f6f2ec;
+  }
+
+  .hl-link {
+    color: $primary;
+  }
+
+  .hl-url {
+    color: #7a7a7a;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .hl-tag {
+    color: #2b6cb0;
+  }
+
+  .hl-footnote {
+    color: #7a3fa8;
+  }
+
+  .hl-table-divider,
+  .hl-rule {
+    color: #9a9a9a;
   }
 }
 

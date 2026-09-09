@@ -208,6 +208,17 @@ const TOOLBAR = [
 	},
 ];
 
+/*
+  Inline token grammar for the source pane. Alternation order is the
+  precedence order: code spans swallow their contents so emphasis markers
+  inside them stay literal, and images/links are matched before emphasis so
+  an underscore in a URL never opens an <em>.
+*/
+const INLINE_TOKENS =
+	/(`[^`\n]+`)|(!?\[[^\]\n]*\]\([^)\n]*\))|(\[\^[^\]\n]+\])|(<\/?[A-Za-z][^>\n]*>)|(\*\*[^*\n]+\*\*|__[^_\n]+__)|(\*[^*\n]+\*|_[^_\n]+_)|(~~[^~\n]+~~)/g;
+
+const HTML_ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
+
 const TABLE_TEMPLATE =
 	'| Column | Column | Column |\n| --- | --- | --- |\n| Cell | Cell | Cell |\n';
 
@@ -277,6 +288,93 @@ export default class MarkdownController extends Controller {
 			ALLOW_DATA_ATTR: false,
 		});
 		return htmlSafe(clean);
+	}
+
+	// The highlight layer must end in a newline: a trailing empty line in the
+	// textarea has no glyph, and without it the two layers scroll out of step.
+	get highlightedSource() {
+		const lines = (this.source || '').split('\n');
+		let fence = null;
+
+		const html = lines
+			.map((line) => {
+				const marker = line.match(/^\s*(```+|~~~+)/);
+				if (marker && (!fence || marker[1][0] === fence)) {
+					fence = fence ? null : marker[1][0];
+					return this.token('fence', line);
+				}
+				return this.highlightLine(line, Boolean(fence));
+			})
+			.join('\n');
+
+		return htmlSafe(`${html}\n`);
+	}
+
+	escapeHtml(text) {
+		return text.replace(/[&<>]/g, (c) => HTML_ESCAPES[c]);
+	}
+
+	token(name, text) {
+		return `<span class="hl-${name}">${this.escapeHtml(text)}</span>`;
+	}
+
+	highlightLine(line, insideFence) {
+		if (insideFence) return this.token('code-block', line);
+
+		let m;
+		if ((m = line.match(/^(\s*)(#{1,6})(\s+)(.*)$/))) {
+			return `${m[1]}${this.token('hash', m[2])}${m[3]}<span class="hl-heading">${this.highlightInline(m[4])}</span>`;
+		}
+		if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) return this.token('rule', line);
+		if ((m = line.match(/^(\s*>+\s?)(.*)$/))) {
+			return `${this.token('quote-marker', m[1])}<span class="hl-quote">${this.highlightInline(m[2])}</span>`;
+		}
+		if ((m = line.match(/^(\s*)([-*+]|\d+[.)])(\s+)(\[[ xX]\]\s+)?(.*)$/))) {
+			const task = m[4] ? this.token('task', m[4]) : '';
+			return `${m[1]}${this.token('marker', m[2])}${m[3]}${task}${this.highlightInline(m[5])}`;
+		}
+		if (/^\s*\|/.test(line)) return this.highlightRow(line);
+		if ((m = line.match(/^(\[\^[^\]\n]+\]:)(.*)$/))) {
+			return this.token('footnote', m[1]) + this.highlightInline(m[2]);
+		}
+		return this.highlightInline(line);
+	}
+
+	highlightRow(line) {
+		if (/^\s*\|[\s:|-]+\s*$/.test(line)) return this.token('table-divider', line);
+		return line
+			.split('|')
+			.map(
+				(cell, i) =>
+					(i ? this.token('pipe', '|') : '') + this.highlightInline(cell),
+			)
+			.join('');
+	}
+
+	highlightInline(text) {
+		let out = '';
+		let cursor = 0;
+		let m;
+		INLINE_TOKENS.lastIndex = 0;
+
+		while ((m = INLINE_TOKENS.exec(text))) {
+			out += this.escapeHtml(text.slice(cursor, m.index));
+			if (m[1]) out += this.token('code', m[1]);
+			else if (m[2]) out += this.highlightLinkToken(m[2]);
+			else if (m[3]) out += this.token('footnote', m[3]);
+			else if (m[4]) out += this.token('tag', m[4]);
+			else if (m[5]) out += this.token('strong', m[5]);
+			else if (m[6]) out += this.token('em', m[6]);
+			else out += this.token('strike', m[7]);
+			cursor = m.index + m[0].length;
+		}
+
+		return out + this.escapeHtml(text.slice(cursor));
+	}
+
+	highlightLinkToken(text) {
+		const split = text.indexOf('](') + 1;
+		return `<span class="hl-link">${this.escapeHtml(text.slice(0, split))}${this.token('url', text.slice(split))}</span>`;
 	}
 
 	get wordCount() {
@@ -702,8 +800,18 @@ export default class MarkdownController extends Controller {
 
 	@action
 	mirrorScroll(event) {
-		if (!this.syncScroll || this._syncing) return;
 		const src = event.target;
+
+		// Alignment of the highlight layer is independent of the sync toggle.
+		if (src.id === 'md-source') {
+			const layer = document.getElementById('md-highlight');
+			if (layer) {
+				layer.scrollTop = src.scrollTop;
+				layer.scrollLeft = src.scrollLeft;
+			}
+		}
+
+		if (!this.syncScroll || this._syncing) return;
 		const target =
 			src.id === 'md-source'
 				? document.getElementById('md-preview')

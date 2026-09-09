@@ -16,14 +16,12 @@
           <p class="mb-0 small text-muted">Source on the left, live preview on
             the right. Supports GFM pipe tables, inline HTML anchors
             (<code>&lt;a id="stage-1"&gt;&lt;/a&gt;</code>) and in-page anchor
-            links — the constructs
-            <code>index.md</code>
-            relies on. Your work is kept in browser storage until you clear it.</p>
+            links. Your work is kept in browser storage until you clear it.</p>
         </div>
         <div class="col-md-5 text-md-end mt-3 mt-md-0">
           <label
             for="md-open"
-            class="btn btn-sm btn-outline-light mb-0 me-1"
+            class="btn btn-sm btn-outline-dark mb-0 me-1"
             role="button"
           >
             <i class="fa-solid fa-folder-open me-1"></i>Open .md
@@ -37,28 +35,25 @@
           />
           <button
             type="button"
-            class="btn btn-sm btn-outline-light me-1"
+            class="btn btn-sm btn-outline-dark me-1"
             {{on "click" this.copySource}}
           >
             <i class="fa-solid fa-copy me-1"></i>Copy
           </button>
           <button
             type="button"
-            class="btn btn-sm btn-outline-light me-1"
+            class="btn btn-sm btn-outline-dark me-1"
             {{on "click" this.clearAll}}
           >
             <i class="fa-solid fa-trash me-1"></i>Clear
           </button>
           <button
             type="button"
-            class="btn btn-sm btn-light"
+            class="btn btn-sm btn-dark"
             {{on "click" this.download}}
           >
             <i class="fa-solid fa-download me-1"></i>Download
           </button>
-          <div class="small text-muted mt-2">
-            <code class="text-white-50">{{this.downloadName}}</code>
-          </div>
         </div>
       </div>
     </div>
@@ -121,26 +116,33 @@
             lines
           </span>
         </div>
-        <Textarea
-          id="md-source"
-          class="md-source"
-          @value={{this.source}}
-          spellcheck="true"
-          placeholder="# Start typing…"
-          {{this.bootEditor}}
-          {{on "input" this.handleInput}}
-          {{on "keydown" this.handleKeydown}}
-          {{on "click" this.handleSelection}}
-          {{on "keyup" this.handleSelection}}
-          {{on "select" this.handleSelection}}
-          {{on "scroll" this.mirrorScroll}}
-        />
+        <div class="md-source-wrap">
+          <pre
+            id="md-highlight"
+            class="md-highlight"
+            aria-hidden="true"
+          >{{this.highlightedSource}}</pre>
+          <Textarea
+            id="md-source"
+            class="md-source"
+            @value={{this.source}}
+            spellcheck="true"
+            placeholder="# Start typing…"
+            {{this.bootEditor}}
+            {{on "input" this.handleInput}}
+            {{on "keydown" this.handleKeydown}}
+            {{on "click" this.handleSelection}}
+            {{on "keyup" this.handleSelection}}
+            {{on "select" this.handleSelection}}
+            {{on "scroll" this.mirrorScroll}}
+          />
+        </div>
       </div>
 
       <div class="col-lg-6 md-pane md-pane-preview">
         <div class="md-pane-head">
           <i class="fa-solid fa-eye me-2"></i>Preview
-          <span class="md-pane-meta">rendered</span>
+          <span class="md-pane-meta">rendered / non-editable</span>
         </div>
         <div
           id="md-preview"
