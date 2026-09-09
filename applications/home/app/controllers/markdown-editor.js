@@ -222,7 +222,7 @@ const HTML_ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
 const TABLE_TEMPLATE =
 	'| Column | Column | Column |\n| --- | --- | --- |\n| Cell | Cell | Cell |\n';
 
-export default class MarkdownController extends Controller {
+export default class MarkdownEditorController extends Controller {
 	@tracked source = '';
 	@tracked activeMap = {};
 	@tracked savedAt = null;

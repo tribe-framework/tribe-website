@@ -21,5 +21,5 @@ Router.map(function () {
   this.route('mysql');
   this.route('upgrade');
   this.route('backup');
-  this.route('markdown');
+  this.route('markdown-editor');
 });
