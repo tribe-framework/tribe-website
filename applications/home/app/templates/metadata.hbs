@@ -10,70 +10,332 @@
 				<i class="fa-solid fa-tags me-2"></i>Read-only file indexer
 			</h5>
 			<p class="mb-0 small">
-				<code>metadata.sh</code>
-				walks a directory tree and writes a single
-				<code>archive-metadata.csv</code>
-				alongside your files. It is safe to run on any disk at any time. Nothing is
-				ever renamed, moved, or deleted.
+				The metadata generator walks a folder and everything inside it, then
+				writes a single spreadsheet file listing every file it found. It is safe
+				to run on any disk at any time — nothing is ever renamed, moved, or
+				deleted. The same tool ships in four flavours so it runs on macOS,
+				Windows, and Linux without installing anything.
 			</p>
 		</div>
 
-		{{! ── QUICK USE ── }}
-		<div class="mb-4">
-			<p class="mb-2">Download, make executable, and run in one command:</p>
-			<div class="row g-3">
-				<div class="col-md-6">
-					<div class="card method-item h-100">
-						<div class="card-body">
-							<h6 class="mb-2"><strong>curl</strong></h6>
-							<div class="command-block mb-0">
-								<button class="btn btn-sm copy-btn-block" onclick="copyCmd('curl -O https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh && chmod +x metadata.sh && ./metadata.sh', this)" type="button">Copy</button>
-								<code>curl -O https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh &amp;&amp; chmod +x metadata.sh &amp;&amp; ./metadata.sh</code>
-							</div>
+		{{! ── DOWNLOAD ── }}
+		<div class="mb-5">
+			<div class="card method-item">
+				<div class="card-body">
+					<h6 class="mb-2"><strong>Get the scripts</strong></h6>
+					<p class="small text-muted">
+						One zip containing all four launchers, packaged fresh from the
+						latest version in the repository:
+						<code>metadata.sh</code>,
+						<code>metadata.command</code>,
+						<code>metadata.ps1</code>, and
+						<code>metadata.bat</code>.
+					</p>
+					<button
+						type="button"
+						class="btn btn-dark"
+						disabled={{this.zipBusy}}
+						{{on "click" this.downloadZip}}
+					>
+						{{#if this.zipBusy}}
+							<i class="fa-solid fa-circle-notch fa-spin me-2"></i>
+						{{else}}
+							<i class="fa-solid fa-file-zipper me-2"></i>
+						{{/if}}
+						{{this.zipLabel}}
+					</button>
+
+					{{#if this.zipError}}
+						<div class="alert alert-warning small mt-3 mb-0">
+							{{this.zipError}}
+							Individual files remain available directly from
+							<a
+								href="https://github.com/tribe-framework/tribe/tree/master/config/metadata"
+								target="_blank"
+								rel="noopener noreferrer"
+							>config/metadata</a>.
 						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="card method-item h-100">
-						<div class="card-body">
-							<h6 class="mb-2"><strong>wget</strong></h6>
-							<div class="command-block mb-0">
-								<button class="btn btn-sm copy-btn-block" onclick="copyCmd('wget https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh && chmod +x metadata.sh && ./metadata.sh', this)" type="button">Copy</button>
-								<code>wget https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh &amp;&amp; chmod +x metadata.sh &amp;&amp; ./metadata.sh</code>
-							</div>
-						</div>
-					</div>
+					{{/if}}
+
+					<p class="small text-muted mt-3 mb-0">
+						Unzip it, then move the four files into the folder you want to index
+						— or into that folder's parent. Only two of them matter to you;
+						which two depends on your operating system, and the steps below say
+						which.
+					</p>
 				</div>
 			</div>
 		</div>
 
 		<div class="steps-container mb-5">
 
-			{{! ── STEP 1: Download ── }}
+			{{! ── MACOS ── }}
 			<div
 				class="step-card"
-				data-step-name="metadata.sh download curl wget install"
+				data-step-name="macOS mac double click command terminal chmod gatekeeper"
 			>
 				<div class="step-header" onclick="toggleStep(this)">
-					<span class="step-badge">1</span>
-					<span class="step-title">Download the script</span>
+					<span class="step-badge"><i class="fa-brands fa-apple"></i></span>
+					<span class="step-title">macOS</span>
 					<i class="fa-solid fa-chevron-down step-chevron"></i>
 				</div>
 				<div class="step-body">
 					<p>
-						Place
+						Use
+						<code>metadata.command</code>
+						and
+						<code>metadata.sh</code>. Keep both in the same folder — the first
+						is only a double-click wrapper around the second.
+					</p>
+
+					<div class="row g-3">
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Double-click (no terminal)</strong></h6>
+									<ol class="small text-muted mb-0 ps-3">
+										<li>
+											Put both files inside the folder or disk you want indexed.
+										</li>
+										<li>
+											Open Terminal once and run the unlock command opposite —
+											macOS requires this before any downloaded script will run.
+										</li>
+										<li>
+											Double-click
+											<code>metadata.command</code>. A window opens, reports
+											progress, and waits for a keypress before closing.
+										</li>
+										<li>
+											If macOS refuses with an "unidentified developer" warning,
+											right-click the file → Open → Open.
+										</li>
+									</ol>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Unlock, then run</strong></h6>
+									<div class="command-block mb-2">
+										<button
+											class="btn btn-sm copy-btn-block"
+											onclick="copyCmd('chmod +x metadata.sh metadata.command', this)"
+											type="button"
+										>Copy</button>
+										<code>chmod +x metadata.sh metadata.command</code>
+									</div>
+									<p class="small text-muted mb-2">
+										Run that once, in Terminal, from the folder holding the
+										files. Afterwards either double-click, or run directly:
+									</p>
+									<div class="command-block mb-0">
+										<button
+											class="btn btn-sm copy-btn-block"
+											onclick="copyCmd('./metadata.sh', this)"
+											type="button"
+										>Copy</button>
+										<code>./metadata.sh</code>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<p class="small text-muted mt-3 mb-0">
+						To index a different disk, pass its path:
+						<code>./metadata.sh /Volumes/MyDisk</code>. External drives appear
+						under
+						<code>/Volumes/</code>.
+					</p>
+				</div>
+			</div>
+
+			{{! ── WINDOWS ── }}
+			<div
+				class="step-card"
+				data-step-name="Windows PowerShell bat double click execution policy SmartScreen"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge"><i class="fa-brands fa-windows"></i></span>
+					<span class="step-title">Windows</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						Use
+						<code>metadata.bat</code>
+						and
+						<code>metadata.ps1</code>. Keep both in the same folder — the
+						<code>.bat</code>
+						exists so you never have to touch PowerShell directly.
+					</p>
+
+					<div class="row g-3">
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Double-click (no terminal)</strong></h6>
+									<ol class="small text-muted mb-0 ps-3">
+										<li>
+											Put both files inside the folder or drive you want
+											indexed.
+										</li>
+										<li>
+											Right-click each file → Properties → tick
+											<em>Unblock</em>
+											if the option appears, then Apply. Windows marks anything
+											downloaded from the web until you do this.
+										</li>
+										<li>Double-click <code>metadata.bat</code>.</li>
+										<li>
+											If Microsoft Defender SmartScreen interrupts, choose
+											<em>More info</em>
+											→
+											<em>Run anyway</em>.
+										</li>
+									</ol>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>From PowerShell</strong></h6>
+									<p class="small text-muted mb-2">
+										Open the folder in File Explorer, then Shift+right-click an
+										empty area →
+										<em>Open PowerShell window here</em>:
+									</p>
+									<div class="command-block mb-2">
+										<button
+											class="btn btn-sm copy-btn-block"
+											onclick="copyCmd('powershell -ExecutionPolicy Bypass -File .\\metadata.ps1', this)"
+											type="button"
+										>Copy</button>
+										<code>powershell -ExecutionPolicy Bypass -File
+											.\metadata.ps1</code>
+									</div>
+									<p class="small text-muted mb-0">
+										The
+										<code>-ExecutionPolicy Bypass</code>
+										flag applies to this one run only and changes nothing on
+										your machine.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<p class="small text-muted mt-3 mb-0">
+						To index a different drive, pass its path:
+						<code>powershell -ExecutionPolicy Bypass -File .\metadata.ps1
+							D:\Archive</code>.
+					</p>
+				</div>
+			</div>
+
+			{{! ── LINUX ── }}
+			<div
+				class="step-card"
+				data-step-name="Ubuntu Linux bash chmod terminal run script"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge"><i class="fa-brands fa-ubuntu"></i></span>
+					<span class="step-title">Ubuntu / Linux</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						Use
 						<code>metadata.sh</code>
-						in or near the folder you want to index. Both one-liners below
-						download the latest version from GitHub.
+						alone; the other three files are for macOS and Windows and can be
+						deleted. Bash is already present on every mainstream distribution,
+						so there is nothing to install.
+					</p>
+
+					<div class="row g-3">
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Unlock and run</strong></h6>
+									<div class="command-block mb-2">
+										<button
+											class="btn btn-sm copy-btn-block"
+											onclick="copyCmd('chmod +x metadata.sh && ./metadata.sh', this)"
+											type="button"
+										>Copy</button>
+										<code>chmod +x metadata.sh &amp;&amp; ./metadata.sh</code>
+									</div>
+									<p class="small text-muted mb-0">
+										Run from the folder holding the script. It indexes that
+										folder's parent by default.
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Index a mounted disk</strong></h6>
+									<div class="command-block mb-2">
+										<button
+											class="btn btn-sm copy-btn-block"
+											onclick="copyCmd('./metadata.sh /media/$USER/MyDisk', this)"
+											type="button"
+										>Copy</button>
+										<code>./metadata.sh /media/$USER/MyDisk</code>
+									</div>
+									<p class="small text-muted mb-0">
+										Removable drives usually mount under
+										<code>/media/</code>
+										or
+										<code>/mnt/</code>.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<p class="small text-muted mt-3 mb-0">
+						Desktop environments can also run it on double-click, but most
+						default to opening scripts in a text editor instead. The terminal is
+						the reliable route.
+					</p>
+				</div>
+			</div>
+
+			{{! ── DIRECT DOWNLOAD ── }}
+			<div
+				class="step-card"
+				data-step-name="curl wget raw github direct download config metadata"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge"><i class="fa-solid fa-terminal"></i></span>
+					<span class="step-title">Command-line download (optional)</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						If you would rather skip the zip, pull the single file you need
+						straight from the repository.
 					</p>
 					<div class="row g-3">
 						<div class="col-md-6">
 							<div class="card method-item h-100">
 								<div class="card-body">
-									<h6 class="mb-2"><strong>curl</strong></h6>
+									<h6 class="mb-2"><strong>macOS / Linux</strong></h6>
 									<div class="command-block mb-0">
-										<button class="btn btn-sm copy-btn-block" onclick="copyCmd('curl -O https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh', this)" type="button">Copy</button>
-										<code>curl -O https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh</code>
+										<button
+											class="btn btn-sm copy-btn-block"
+											onclick="copyCmd('curl -O https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/config/metadata/metadata.sh && chmod +x metadata.sh && ./metadata.sh', this)"
+											type="button"
+										>Copy</button>
+										<code>curl -O
+											https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/config/metadata/metadata.sh
+											\<br />&nbsp;&nbsp;&amp;&amp; chmod +x metadata.sh
+											&amp;&amp; ./metadata.sh</code>
 									</div>
 								</div>
 							</div>
@@ -81,10 +343,17 @@
 						<div class="col-md-6">
 							<div class="card method-item h-100">
 								<div class="card-body">
-									<h6 class="mb-2"><strong>wget</strong></h6>
+									<h6 class="mb-2"><strong>Windows PowerShell</strong></h6>
 									<div class="command-block mb-0">
-										<button class="btn btn-sm copy-btn-block" onclick="copyCmd('wget https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh', this)" type="button">Copy</button>
-										<code>wget https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh</code>
+										<button
+											class="btn btn-sm copy-btn-block"
+											onclick="copyCmd('iwr https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/config/metadata/metadata.ps1 -OutFile metadata.ps1; powershell -ExecutionPolicy Bypass -File .\\metadata.ps1', this)"
+											type="button"
+										>Copy</button>
+										<code>iwr
+											https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/config/metadata/metadata.ps1
+											-OutFile metadata.ps1<br />powershell -ExecutionPolicy
+											Bypass -File .\metadata.ps1</code>
 									</div>
 								</div>
 							</div>
@@ -92,110 +361,34 @@
 					</div>
 					<div class="mt-3">
 						<a
-							href="https://raw.githubusercontent.com/tribe-framework/tribe/refs/heads/master/uploads/metadata.sh"
+							href="https://github.com/tribe-framework/tribe/tree/master/config/metadata"
 							target="_blank"
 							class="btn btn-sm btn-outline-dark"
 							rel="noopener noreferrer"
 						>
-							<i class="fa-solid fa-file-lines me-1"></i>metadata.sh (raw)
+							<i class="fa-solid fa-folder-open me-1"></i>Browse config/metadata
 						</a>
 					</div>
 				</div>
 			</div>
 
-			{{! ── STEP 2: Make executable ── }}
-			<div
-				class="step-card"
-				data-step-name="chmod executable bash permissions"
-			>
-				<div class="step-header" onclick="toggleStep(this)">
-					<span class="step-badge">2</span>
-					<span class="step-title">Make it executable</span>
-					<i class="fa-solid fa-chevron-down step-chevron"></i>
-				</div>
-				<div class="step-body">
-					<p>Run once after downloading:</p>
-					<div class="command-block mb-0">
-						<button class="btn btn-sm copy-btn-block" onclick="copyCmd('chmod +x metadata.sh', this)" type="button">Copy</button>
-						<code>chmod +x metadata.sh</code>
-					</div>
-				</div>
-			</div>
-
-			{{! ── STEP 3: Run ── }}
-			<div
-				class="step-card"
-				data-step-name="run usage path argument disk root"
-			>
-				<div class="step-header" onclick="toggleStep(this)">
-					<span class="step-badge">3</span>
-					<span class="step-title">Run the script</span>
-					<i class="fa-solid fa-chevron-down step-chevron"></i>
-				</div>
-				<div class="step-body">
-					<p>
-						Without an argument the script indexes the directory it lives in.
-						Pass any path to index an external disk or folder instead.
-					</p>
-					<div class="row g-3">
-						<div class="col-md-6">
-							<div class="card method-item h-100">
-								<div class="card-body">
-									<h6 class="mb-2">
-										<strong>Index the script's own directory</strong>
-									</h6>
-									<div class="command-block mb-0">
-										<button class="btn btn-sm copy-btn-block" onclick="copyCmd('./metadata.sh', this)" type="button">Copy</button>
-										<code>./metadata.sh</code>
-									</div>
-									<p class="small text-muted mt-2 mb-0">
-										Output is written as
-										<code>archive-metadata.csv</code>
-										in the same folder.
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="card method-item h-100">
-								<div class="card-body">
-									<h6 class="mb-2">
-										<strong>Index an external disk or folder</strong>
-									</h6>
-									<div class="command-block mb-0">
-										<button class="btn btn-sm copy-btn-block" onclick="copyCmd('./metadata.sh /Volumes/MyDisk', this)" type="button">Copy</button>
-										<code>./metadata.sh /Volumes/MyDisk</code>
-									</div>
-									<p class="small text-muted mt-2 mb-0">
-										Output is written as
-										<code>/Volumes/MyDisk/archive-metadata.csv</code>.
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-					<p class="small text-muted mt-3 mb-0">
-						Compatible with macOS (BSD
-						<code>stat</code>) and Ubuntu / Linux (GNU
-						<code>stat</code>). No additional dependencies required.
-					</p>
-				</div>
-			</div>
-
-			{{! ── STEP 4: Output ── }}
+			{{! ── OUTPUT ── }}
 			<div
 				class="step-card"
 				data-step-name="CSV output columns fields format size year category"
 			>
 				<div class="step-header" onclick="toggleStep(this)">
-					<span class="step-badge">4</span>
+					<span class="step-badge"><i class="fa-solid fa-table"></i></span>
 					<span class="step-title">Understanding the output CSV</span>
 					<i class="fa-solid fa-chevron-down step-chevron"></i>
 				</div>
 				<div class="step-body">
 					<p>
-						Every file found is written as one row in
-						<code>archive-metadata.csv</code>. The seven columns are:
+						The run finishes by writing
+						<code>metadata-archive-&lt;timestamp&gt;.csv</code>
+						next to the script, one row per file found. Because the name carries
+						a timestamp, repeated runs never overwrite earlier ones. The seven
+						columns are:
 					</p>
 					<table class="table table-bordered table-sm small">
 						<thead class="table-dark">
@@ -215,8 +408,8 @@
 								<td><code>filepath</code></td>
 								<td><code>2023/events</code></td>
 								<td>
-									Relative path from the disk root; empty for files at the
-									top level
+									Relative path from the disk root; empty for files at the top
+									level
 								</td>
 							</tr>
 							<tr>
@@ -232,7 +425,9 @@
 							<tr>
 								<td><code>format</code></td>
 								<td><code>jpg</code></td>
-								<td>Lowercased file extension; <code>(none)</code> if absent</td>
+								<td>Lowercased file extension;
+									<code>(none)</code>
+									if absent</td>
 							</tr>
 							<tr>
 								<td><code>size_mb</code></td>
@@ -242,7 +437,9 @@
 							<tr>
 								<td><code>date_modified</code></td>
 								<td><code>2023-08-15</code></td>
-								<td>Filesystem modification date in <code>YYYY-MM-DD</code> format</td>
+								<td>Filesystem modification date in
+									<code>YYYY-MM-DD</code>
+									format</td>
 							</tr>
 							<tr>
 								<td><code>category</code></td>
@@ -257,40 +454,39 @@
 
 					<div class="alert alert-secondary small mt-3 mb-0">
 						<strong>What gets skipped:</strong>
-						Tribe image resize variants
-						(<code>xs</code>,
+						Tribe image resize variants (<code>xs</code>,
 						<code>sm</code>,
 						<code>md</code>,
 						<code>lg</code>,
-						<code>xl</code>),
-						HLS video segments (<code>hls</code>),
+						<code>xl</code>), HLS video segments (<code>hls</code>),
 						<code>tribe-cache</code>,
 						<code>tribe-temp</code>,
 						<code>node_modules</code>,
 						<code>.git</code>,
 						<code>__MACOSX</code>,
-						<code>.DS_Store</code>, other hidden files, and the output CSV itself.
+						<code>.DS_Store</code>, other hidden files, the scripts themselves,
+						and the output CSV.
 					</div>
 				</div>
 			</div>
 
-			{{! ── STEP 5: Open in spreadsheet ── }}
+			{{! ── SPREADSHEET ── }}
 			<div
 				class="step-card"
 				data-step-name="CSV open spreadsheet Excel LibreOffice Numbers Google Sheets filter sort"
 			>
 				<div class="step-header" onclick="toggleStep(this)">
-					<span class="step-badge">5</span>
+					<span class="step-badge"><i
+							class="fa-solid fa-chart-simple"
+						></i></span>
 					<span class="step-title">Work with the CSV</span>
 					<i class="fa-solid fa-chevron-down step-chevron"></i>
 				</div>
 				<div class="step-body">
 					<p>
-						Open
-						<code>archive-metadata.csv</code>
-						in any spreadsheet application. From there you can filter by
-						format, sort by size, group by year or category, and build pivot
-						tables across an entire archive.
+						Open the CSV in any spreadsheet application. From there you can
+						filter by format, sort by size, group by year or category, and build
+						pivot tables across an entire archive.
 					</p>
 					<div class="row g-3">
 						<div class="col-md-4">
@@ -308,9 +504,13 @@
 						<div class="col-md-4">
 							<div class="card method-item h-100">
 								<div class="card-body">
-									<h6 class="mb-2"><strong>Ubuntu / Linux</strong></h6>
+									<h6 class="mb-2"><strong>Windows</strong></h6>
 									<ul class="small text-muted mb-0 ps-3">
-										<li>LibreOffice Calc — right-click → Open With</li>
+										<li>Excel — double-click the CSV</li>
+										<li>
+											For non-English locales, use Data → From Text/CSV so
+											commas parse correctly
+										</li>
 										<li>Google Sheets — File → Import</li>
 									</ul>
 								</div>
@@ -319,11 +519,11 @@
 						<div class="col-md-4">
 							<div class="card method-item h-100">
 								<div class="card-body">
-									<h6 class="mb-2"><strong>Command line</strong></h6>
-									<div class="command-block mb-0">
-										<button class="btn btn-sm copy-btn-block" onclick="copyCmd('# count by format\nawk -F, \'NR>1{print $4}\' archive-metadata.csv | sort | uniq -c | sort -rn', this)" type="button">Copy</button>
-										<code><span class="comment"># count by format</span><br />awk -F, 'NR>1{print $4}' archive-metadata.csv \<br />&nbsp;&nbsp;| sort | uniq -c | sort -rn</code>
-									</div>
+									<h6 class="mb-2"><strong>Ubuntu / Linux</strong></h6>
+									<ul class="small text-muted mb-0 ps-3">
+										<li>LibreOffice Calc — right-click → Open With</li>
+										<li>Google Sheets — File → Import</li>
+									</ul>
 								</div>
 							</div>
 						</div>
@@ -339,22 +539,39 @@
 		</div>
 
 		<div class="row g-3 mb-4">
-			<div class="col-md-6">
-				<div class="alert alert-dark mb-0">
-					<h5 class="mb-2">Usage</h5>
+			<div class="col-md-4">
+				<div class="alert alert-dark mb-0 h-100">
+					<h5 class="mb-2">Which file to run</h5>
 					<p class="mb-0">
-						<strong>Current dir:</strong>
-						<code>./metadata.sh</code><br />
-						<strong>Custom path:</strong>
-						<code>./metadata.sh /path/to/disk</code><br />
-						<strong>Output:</strong>
-						<code>archive-metadata.csv</code>
-						at the disk root
+						<strong>macOS:</strong>
+						<code>metadata.command</code>
+						(needs
+						<code>metadata.sh</code>)<br />
+						<strong>Windows:</strong>
+						<code>metadata.bat</code>
+						(needs
+						<code>metadata.ps1</code>)<br />
+						<strong>Linux:</strong>
+						<code>metadata.sh</code>
 					</p>
 				</div>
 			</div>
-			<div class="col-md-6">
-				<div class="alert alert-dark mb-0">
+			<div class="col-md-4">
+				<div class="alert alert-dark mb-0 h-100">
+					<h5 class="mb-2">Usage</h5>
+					<p class="mb-0">
+						<strong>Default:</strong>
+						indexes the script folder's parent<br />
+						<strong>Custom path:</strong>
+						pass it as the first argument<br />
+						<strong>Output:</strong>
+						<code>metadata-archive-&lt;timestamp&gt;.csv</code>
+						beside the script
+					</p>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="alert alert-dark mb-0 h-100">
 					<h5 class="mb-2">CSV Columns</h5>
 					<p class="mb-0">
 						<code>filename</code>,

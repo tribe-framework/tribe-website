@@ -63,7 +63,7 @@
               @route="metadata"
               class="dropdown-item {{if (eq @activePage 'metadata') 'active'}}"
             >
-              Uploads Metadata Generator
+              Metadata Generator
             </LinkTo>
           </li>
           <li>
@@ -122,11 +122,12 @@
               Upgrade Tribe
             </LinkTo>
           </li>
-          <li><hr class="dropdown-divider"></li>
+          <li><hr class="dropdown-divider" /></li>
           <li>
             <LinkTo
               @route="markdown-editor"
-              class="dropdown-item {{if (eq @activePage 'markdown-editor') 'active'}}"
+              class="dropdown-item
+                {{if (eq @activePage 'markdown-editor') 'active'}}"
             >
               Markdown Editor
             </LinkTo>
