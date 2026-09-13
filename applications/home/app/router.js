@@ -22,4 +22,5 @@ Router.map(function () {
   this.route('upgrade');
   this.route('backup');
   this.route('markdown-editor');
+  this.route('html-editor');
 });

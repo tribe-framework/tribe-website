@@ -821,3 +821,244 @@ $md-pane-height: calc(100vh - 340px);
   font-size: 0.75rem;
   color: #777;
 }
+
+// ============================================================
+// HTML Editor  —  reuses the markdown editor chrome
+// (.md-toolbar, .md-tool, .md-pane-head, .md-source-wrap,
+//  .md-highlight, .md-source, .md-statusbar) and only adds
+//  what the stacked head / body / tail layout needs
+// ============================================================
+
+$he-pane-sm: 180px;
+$he-pane-md: 300px;
+
+.he-editor {
+  border: 1px solid $md-border;
+  border-bottom: none;
+  background: #fff;
+}
+
+.he-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 14px;
+  background: $primary;
+  color: #fff;
+}
+
+.he-group-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.he-group-hint {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.he-pane {
+  border-bottom: 1px solid $md-border;
+
+  &.active .md-pane-head {
+    background: #f0f0f0;
+    box-shadow: inset 3px 0 0 $primary;
+  }
+}
+
+.he-pane-head {
+  gap: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.he-pane-toggle {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+
+  &:hover {
+    color: $primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+  }
+}
+
+.he-lang {
+  margin-left: 10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #999;
+}
+
+.he-lang-input {
+  width: 4.5rem;
+  border: 1px solid $md-border;
+  background: #fff;
+  padding: 1px 6px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: #444;
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+  }
+}
+
+.he-section-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  background: $primary;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.he-section-label {
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 1px 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #444;
+  min-width: 0;
+  flex: 0 1 260px;
+
+  &:hover {
+    border-color: $md-border;
+  }
+
+  &:focus {
+    outline: none;
+    background: #fff;
+    border-color: $primary;
+  }
+}
+
+.he-pane-section .md-tool {
+  padding: 3px 8px;
+  min-width: 28px;
+
+  &:disabled {
+    opacity: 0.35;
+  }
+}
+
+// Stacked panes carry several editors at once, so each one is
+// short and fixed rather than the markdown editor's full-height split.
+.he-source-wrap {
+  min-height: 0;
+
+  &.he-sm {
+    height: $he-pane-sm;
+  }
+
+  &.he-md {
+    height: $he-pane-md;
+  }
+
+  .md-highlight,
+  .md-source {
+    padding: 14px 16px;
+    line-height: 1.6;
+  }
+}
+
+.he-add-row {
+  padding: 10px 14px;
+  border-bottom: 1px solid $md-border;
+  background: $md-chrome;
+}
+
+// ---- Source tokens (HTML / CSS / JS) -------------------------
+
+.he-source-wrap .md-highlight {
+  .hl-tag-name {
+    color: #b3006b;
+    font-weight: 600;
+  }
+
+  .hl-attr {
+    color: #2b6cb0;
+  }
+
+  .hl-string {
+    color: #0a7d33;
+  }
+
+  .hl-punct {
+    color: #9a9a9a;
+  }
+
+  .hl-comment {
+    color: #8a8a8a;
+    font-style: italic;
+  }
+
+  .hl-doctype {
+    color: #7a3fa8;
+    font-weight: 600;
+  }
+
+  .hl-selector {
+    color: #b3006b;
+    font-weight: 600;
+  }
+
+  .hl-prop {
+    color: #2b6cb0;
+  }
+
+  .hl-value {
+    color: #1c1c1c;
+  }
+
+  .hl-at-rule {
+    color: #7a3fa8;
+    font-weight: 600;
+  }
+
+  .hl-keyword {
+    color: #7a3fa8;
+    font-weight: 600;
+  }
+
+  .hl-number {
+    color: #a35b00;
+  }
+
+  .hl-fn {
+    color: #2b6cb0;
+  }
+}
+
+// ---- Preview offcanvas ---------------------------------------
+
+.he-preview-canvas {
+  width: min(960px, 92vw);
+
+  .offcanvas-header {
+    background: $md-chrome;
+  }
+}
+
+.he-preview-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
