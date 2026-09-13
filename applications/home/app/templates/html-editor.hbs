@@ -1,0 +1,379 @@
+{{page-title "HTML Editor"}}
+
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="html" />
+
+  <div class="container pb-5">
+
+    <div class="alert alert-dark mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-7">
+          <h5 class="mb-1"><i
+              class="fa-solid fa-code me-2"
+            ></i>HTML Editor</h5>
+          <p class="mb-0 small text-muted">Bootstrap 5.3 document split into
+            <code>head</code>,
+            <code>body</code>
+            and
+            <code>tail</code>. Panes assemble top to bottom into one file;
+            preview opens in a side panel. Your work is kept in browser storage
+            until you clear it.</p>
+        </div>
+        <div class="col-md-5 text-md-end mt-3 mt-md-0">
+          <label
+            for="html-open"
+            class="btn btn-sm btn-outline-dark mb-0 me-1"
+            role="button"
+          >
+            <i class="fa-solid fa-folder-open me-1"></i>Open .html
+          </label>
+          <input
+            id="html-open"
+            type="file"
+            accept=".html,.htm,text/html"
+            class="d-none"
+            {{this.filePicker}}
+          />
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-dark me-1"
+            {{on "click" this.copySource}}
+          >
+            <i class="fa-solid fa-copy me-1"></i>Copy
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-dark me-1"
+            {{on "click" this.clearAll}}
+          >
+            <i class="fa-solid fa-trash me-1"></i>Clear
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-dark me-1"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#html-preview"
+            aria-controls="html-preview"
+          >
+            <i class="fa-solid fa-eye me-1"></i>Preview
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-dark"
+            {{on "click" this.download}}
+          >
+            <i class="fa-solid fa-download me-1"></i>Download
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! ------------------------------------------------------ toolbar ------ }}
+    <div class="md-toolbar mb-0" {{this.bootEditor}}>
+      {{#each this.snippets key="label" as |group|}}
+        <div class="md-toolbar-group">
+          {{#if this.showToolbarLabels}}
+            <span class="md-toolbar-label">{{group.label}}</span>
+          {{/if}}
+          <div class="btn-group" role="group" aria-label={{group.label}}>
+            {{#each group.buttons key="id" as |btn|}}
+              <button
+                type="button"
+                class="btn btn-sm md-tool"
+                title={{btn.title}}
+                {{on "click" (fn this.insertSnippet btn)}}
+              >
+                <i class="fa-solid {{btn.icon}}"></i>
+                {{#if btn.text}}<span class="md-tool-text">{{btn.text}}</span>{{/if}}
+              </button>
+            {{/each}}
+          </div>
+        </div>
+      {{/each}}
+
+      <div class="md-toolbar-group ms-auto">
+        {{#if this.showToolbarLabels}}
+          <span class="md-toolbar-label">Panes</span>
+        {{/if}}
+        <div class="btn-group" role="group">
+          <button
+            type="button"
+            class="btn btn-sm md-tool"
+            title="Collapse every pane"
+            {{on "click" (fn this.collapseAll true)}}
+          >
+            <i class="fa-solid fa-compress"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm md-tool"
+            title="Expand every pane"
+            {{on "click" (fn this.collapseAll false)}}
+          >
+            <i class="fa-solid fa-expand"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm md-tool {{if this.showToolbarLabels 'active'}}"
+            title="Show toolbar group labels"
+            {{on "click" this.toggleLabels}}
+          >
+            <i class="fa-solid fa-tag"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! --------------------------------------------------------- theme ------ }}
+    <div class="md-toolbar he-theme mb-0">
+      <div class="md-toolbar-group">
+        {{#if this.showToolbarLabels}}
+          <span class="md-toolbar-label">Font</span>
+        {{/if}}
+        <select
+          class="form-select form-select-sm w-auto"
+          aria-label="Typeface"
+          {{on "change" this.setFont}}
+        >
+          {{#each this.fontOptions key="id" as |font|}}
+            <option value={{font.id}} selected={{font.selected}}>{{font.label}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      <div class="md-toolbar-group">
+        {{#if this.showToolbarLabels}}
+          <span class="md-toolbar-label">Palette</span>
+        {{/if}}
+        {{#each this.palette key="name" as |swatch|}}
+          <input
+            type="color"
+            class="form-control form-control-color form-control-sm he-swatch"
+            title={{swatch.label}}
+            aria-label={{swatch.label}}
+            value={{swatch.value}}
+            {{on "input" (fn this.setColor swatch.name)}}
+          />
+        {{/each}}
+      </div>
+
+      <div class="md-toolbar-group ms-auto">
+        {{#if this.showToolbarLabels}}
+          <span class="md-toolbar-label">Flags</span>
+        {{/if}}
+        <div class="btn-group" role="group" aria-label="Theme flags">
+          {{#each this.themeFlags key="key" as |flag|}}
+            <button
+              type="button"
+              class="btn btn-sm md-tool {{if flag.on 'active'}}"
+              title={{flag.label}}
+              aria-pressed="{{if flag.on 'true' 'false'}}"
+              {{on "click" (fn this.toggleFlag flag.key)}}
+            >
+              <i class="fa-solid {{flag.icon}}"></i>
+              <span class="md-tool-text">{{flag.label}}</span>
+            </button>
+          {{/each}}
+          <button
+            type="button"
+            class="btn btn-sm md-tool"
+            title="Reset theme to defaults"
+            {{on "click" this.resetTheme}}
+          >
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! -------------------------------------------------------- panes ------ }}
+    <div class="he-editor">
+      {{#each this.groups key="key" as |group|}}
+
+        <div class="he-group-head">
+          <span class="he-group-label">{{group.label}}</span>
+          <span class="he-group-hint">{{group.hint}}</span>
+        </div>
+
+        {{#each group.panes key="key" as |pane|}}
+          <div class="he-pane {{if pane.active 'active'}}">
+            <div class="md-pane-head he-pane-head">
+              <button
+                type="button"
+                class="he-pane-toggle"
+                aria-expanded="{{if pane.collapsed 'false' 'true'}}"
+                {{on "click" (fn this.toggleCollapse pane.key)}}
+              >
+                <i
+                  class="fa-solid {{if pane.collapsed 'fa-chevron-right' 'fa-chevron-down'}} me-2"
+                ></i>
+                <i class="fa-solid {{pane.icon}} me-2"></i>{{pane.label}}
+              </button>
+              {{#if pane.showLang}}
+                <label class="he-lang" for="html-lang">lang</label>
+                <Input
+                  id="html-lang"
+                  @type="text"
+                  class="he-lang-input"
+                  @value={{this.lang}}
+                  size="4"
+                />
+              {{/if}}
+              <span class="md-pane-meta">{{pane.meta}}</span>
+            </div>
+            <div
+              class="md-source-wrap he-source-wrap he-{{pane.size}}
+                {{if pane.collapsed 'd-none'}}"
+            >
+              <pre
+                id="he-hl-{{pane.key}}"
+                class="md-highlight"
+                aria-hidden="true"
+              >{{pane.highlighted}}</pre>
+              <Textarea
+                id="he-src-{{pane.key}}"
+                class="md-source"
+                spellcheck="false"
+                data-lang={{pane.lang}}
+                @value={{pane.value}}
+              />
+            </div>
+          </div>
+        {{/each}}
+
+        {{#if group.hasSections}}
+          {{#each this.sectionPanes key="key" as |pane|}}
+            <div class="he-pane he-pane-section {{if pane.active 'active'}}">
+              <div class="md-pane-head he-pane-head">
+                <button
+                  type="button"
+                  class="he-pane-toggle"
+                  aria-expanded="{{if pane.collapsed 'false' 'true'}}"
+                  {{on "click" (fn this.toggleCollapse pane.key)}}
+                >
+                  <i
+                    class="fa-solid {{if pane.collapsed 'fa-chevron-right' 'fa-chevron-down'}} me-2"
+                  ></i>
+                  <span class="he-section-index">{{pane.position}}</span>
+                </button>
+                <Input
+                  @type="text"
+                  class="he-section-label"
+                  @value={{pane.label}}
+                  aria-label="Section name"
+                />
+                <div class="btn-group btn-group-sm ms-auto">
+                  <button
+                    type="button"
+                    class="btn md-tool"
+                    title="Move up"
+                    disabled={{pane.first}}
+                    {{on "click" (fn this.moveSection pane -1)}}
+                  ><i class="fa-solid fa-arrow-up"></i></button>
+                  <button
+                    type="button"
+                    class="btn md-tool"
+                    title="Move down"
+                    disabled={{pane.last}}
+                    {{on "click" (fn this.moveSection pane 1)}}
+                  ><i class="fa-solid fa-arrow-down"></i></button>
+                  <button
+                    type="button"
+                    class="btn md-tool"
+                    title="Duplicate section"
+                    {{on "click" (fn this.duplicateSection pane)}}
+                  ><i class="fa-solid fa-clone"></i></button>
+                  <button
+                    type="button"
+                    class="btn md-tool"
+                    title="Remove section"
+                    {{on "click" (fn this.removeSection pane)}}
+                  ><i class="fa-solid fa-xmark"></i></button>
+                </div>
+              </div>
+              <div
+                class="md-source-wrap he-source-wrap he-md
+                  {{if pane.collapsed 'd-none'}}"
+              >
+                <pre
+                  id="he-hl-{{pane.key}}"
+                  class="md-highlight"
+                  aria-hidden="true"
+                >{{pane.highlighted}}</pre>
+                <Textarea
+                  id="he-src-{{pane.key}}"
+                  class="md-source"
+                  spellcheck="false"
+                  data-lang="html"
+                  @value={{pane.value}}
+                />
+              </div>
+            </div>
+          {{/each}}
+
+          <div class="he-add-row">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-dark"
+              {{on "click" this.addSection}}
+            >
+              <i class="fa-solid fa-plus me-1"></i>Add section
+            </button>
+          </div>
+        {{/if}}
+
+      {{/each}}
+    </div>
+
+    <div class="md-statusbar">
+      <span><i class="fa-solid fa-floppy-disk me-1"></i>{{this.savedLabel}}</span>
+      <span class="ms-auto">{{this.sections.length}} sections</span>
+      <span class="ms-3">{{this.lineCount}} lines</span>
+      <span class="ms-3">{{this.sizeLabel}}</span>
+    </div>
+
+    <ManualFooter />
+
+  </div>
+
+  {{! ------------------------------------------------------- preview ------ }}
+  <div
+    id="html-preview"
+    class="offcanvas offcanvas-end he-preview-canvas"
+    tabindex="-1"
+    aria-labelledby="html-preview-title"
+    {{this.previewBridge}}
+  >
+    <div class="offcanvas-header border-bottom">
+      <h6 class="offcanvas-title mb-0" id="html-preview-title">
+        <i class="fa-solid fa-eye me-2"></i>Live preview
+      </h6>
+      <button
+        type="button"
+        class="btn btn-sm md-tool ms-auto me-2"
+        title="Re-render"
+        {{on "click" this.refreshPreview}}
+      >
+        <i class="fa-solid fa-rotate"></i>
+      </button>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="offcanvas"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="offcanvas-body p-0">
+      <iframe
+        title="Rendered document"
+        class="he-preview-frame"
+        sandbox="allow-scripts allow-popups allow-forms"
+        srcdoc={{this.previewSrc}}
+      ></iframe>
+    </div>
+  </div>
+</div>
+
+<ManualScripts />
