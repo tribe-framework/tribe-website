@@ -22,7 +22,7 @@ const DERIVED = {
   TIKA_HOST: (p) => p ? `${p}_tika`  : '',
 };
 
-// port suffix index — key → offset appended to the user-supplied prefix
+// key → offset added to the user-supplied base port
 const PORT_OFFSETS = {
   TRIBE_PORT:       0,
   PHPMYADMIN_PORT:  1,
@@ -79,6 +79,43 @@ const SCHEMAS = {
     { key: 'CENTRIFUGO_ADMIN_PASSWORD',              label: 'Centrifugo Admin Password', generate: password },
     { key: 'CENTRIFUGO_ADMIN_SECRET',                label: 'Centrifugo Admin Secret',   hide: true, generate: uuid },
   ],
+  thread: [
+    { key: 'PROJECT_NAME',                            label: 'Project Name',              placeholder: 'acme',                     comment: 'Project Identity' },
+    { key: 'SHARED_SERVICES_HOST',                    label: 'Shared Services Host',      placeholder: 'host-gateway',             comment: 'Shared Services (adjacent stack)' },
+    { key: 'SHARED_DB_PORT',                          label: 'Shared DB Port',            hide: true, placeholder: '3306' },
+    { key: 'SHARED_TIKA_PORT',                        label: 'Shared Tika Port',          hide: true, placeholder: '9998' },
+    { key: 'BARE_URL',                                label: 'Bare URL',                  placeholder: 'acme.example.com',         comment: 'Application' },
+    { key: 'ALLOW_ALL_CONNECTIONS_DANGEROUSLY',       label: 'Allow All Connections',     hide: true, placeholder: 'false' },
+    { key: 'DISPLAY_ERRORS',                          label: 'Display Errors',            hide: true, placeholder: 'false' },
+    { key: 'DEFAULT_TIMEZONE',                        label: 'Default Timezone',          hide: true, placeholder: 'Asia/Kolkata' },
+    { key: 'CONTACT_EMAIL',                           label: 'Contact Email',             placeholder: 'acme@example.com' },
+    { key: 'CACHE_WEBAPP_TOTAL_OBJECTS',              label: 'Cache Webapp Total Objects',hide: true, placeholder: 'false' },
+    { key: 'DB_ROOT_PASSWORD',                        label: 'DB Root Password',          comment: 'Database' },
+    { key: 'DB_NAME',                                 label: 'DB Name',                   hide: true },
+    { key: 'DB_USER',                                 label: 'DB User',                   hide: true },
+    { key: 'DB_PASS',                                 label: 'DB Password',               generate: password },
+    { key: 'TRIBE_PORT',                              label: 'Tribe Port',                hide: true,                              comment: 'Ports' },
+    { key: 'PHPMYADMIN_PORT',                         label: 'phpMyAdmin Port',           hide: true },
+    { key: 'JUNCTION_PORT',                           label: 'Junction Port',             hide: true },
+    { key: 'DIST_PORT',                               label: 'Dist Port',                 hide: true },
+    { key: 'DIST_PHP_PORT',                           label: 'Dist PHP Port',             hide: true },
+    { key: 'CRONICLE_PORT',                           label: 'Cronicle Port',             hide: true },
+    { key: 'CENTRIFUGO_PORT',                         label: 'Centrifugo Port',           hide: true },
+    { key: 'JUNCTION_SLUG',                           label: 'Junction Slug',             hide: true, placeholder: 'junction',     comment: 'Junction' },
+    { key: 'JUNCTION_PASSWORD',                       label: 'Junction Password',         generate: password },
+    { key: 'TRIBE_API_URL',                           label: 'Tribe API URL',             placeholder: 'https://acme.example.com' },
+    { key: 'TRIBE_API_KEY',                           label: 'Tribe API Key',             hide: true, placeholder: '' },
+    { key: 'PLAUSIBLE_AUTH',                          label: 'Plausible Auth',            hide: true,                              comment: 'Plausible Analytics (optional)' },
+    { key: 'PLAUSIBLE_DOMAIN',                        label: 'Plausible Domain',          hide: true },
+    { key: 'TRANSCRIBE_FILE_RECORDS',                 label: 'Transcribe File Records',   hide: true, placeholder: 'false',        comment: 'Search and Extraction' },
+    { key: 'HIDE_POSTCODE_ATTRIBUTION',               label: 'Hide Postcode Attribution', hide: true, placeholder: 'false',        comment: 'Hide Postcode Attribution' },
+    { key: 'CRONICLE_SECRET_KEY',                     label: 'Cronicle Secret Key',       hide: true, generate: uuid,              comment: 'Cronicle' },
+    { key: 'CRONICLE_LOG_KEEP_DAYS',                  label: 'Cronicle Log Keep Days',    hide: true, placeholder: '30' },
+    { key: 'CENTRIFUGO_CLIENT_TOKEN_HMAC_SECRET_KEY', label: 'Centrifugo HMAC Secret',    hide: true, generate: uuid,              comment: 'Centrifugo' },
+    { key: 'CENTRIFUGO_HTTP_API_KEY',                 label: 'Centrifugo HTTP API Key',   hide: true, generate: uuid },
+    { key: 'CENTRIFUGO_ADMIN_PASSWORD',               label: 'Centrifugo Admin Password', generate: password },
+    { key: 'CENTRIFUGO_ADMIN_SECRET',                 label: 'Centrifugo Admin Secret',   hide: true, generate: uuid },
+  ],
   junction: [
     { key: 'TRIBE_API_URL',              label: 'Tribe API URL',             placeholder: 'https://tribe.example.com' },
     { key: 'TRIBE_API_KEY',              label: 'Tribe API Key',             placeholder: '' },
@@ -104,7 +141,7 @@ function seedValues(schema) {
 
 export default class EnvController extends Controller {
   @tracked activeTarget = 'tribe';
-  @tracked portPrefix = '120';
+  @tracked portBase = '12000';
   @tracked values = seedValues(SCHEMAS['tribe']);
   @tracked generated = null;
 
@@ -121,13 +158,20 @@ export default class EnvController extends Controller {
   }
 
   get targets() {
-    return ['tribe', 'junction', 'ember-tribe'];
+    return ['tribe', 'thread', 'junction', 'ember-tribe'];
+  }
+
+  get portBaseHint() {
+    return this.activeTarget === 'thread'
+      ? 'Threads use blocks of 10 from 13000 — 13000, 13010, 13020 …'
+      : '12000 → 12000, 12001 … 12009';
   }
 
   @action
   selectTarget(target) {
     this.activeTarget = target;
     this.values = seedValues(SCHEMAS[target]);
+    this.portBase = target === 'thread' ? '13000' : '12000';
     this.generated = null;
   }
 
@@ -137,8 +181,8 @@ export default class EnvController extends Controller {
   }
 
   @action
-  updatePortPrefix(event) {
-    this.portPrefix = event.target.value.trim();
+  updatePortBase(event) {
+    this.portBase = event.target.value.trim();
   }
 
   @action
@@ -158,7 +202,8 @@ export default class EnvController extends Controller {
       if (DERIVED[field.key]) {
         val = DERIVED[field.key](projectName);
       } else if (field.key in PORT_OFFSETS) {
-        val = this.portPrefix ? `${this.portPrefix}0${PORT_OFFSETS[field.key]}` : '';
+        const base = parseInt(this.portBase, 10);
+        val = Number.isNaN(base) ? '' : base + PORT_OFFSETS[field.key];
       } else {
         val = this.values[field.key] ?? field.placeholder ?? '';
       }
