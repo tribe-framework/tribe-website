@@ -14,12 +14,12 @@ function password() {
   return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 }
 
-// derived(projectName) → value
+// derived(projectName, loomProjectName) → value
 const DERIVED = {
   DB_NAME:   (p) => p ? `${p}_db`    : '',
   DB_USER:   (p) => p ? `${p}_user`  : '',
-  DB_HOST:   (p) => p ? `${p}_mysql` : '',
-  TIKA_HOST: (p) => p ? `${p}_tika`  : '',
+  DB_HOST:   (p, l) => l ? `${l}_mysql` : (p ? `${p}_mysql` : ''),
+  TIKA_HOST: (p, l) => l ? `${l}_tika`  : (p ? `${p}_tika`  : ''),
 };
 
 // key → offset added to the user-supplied base port
@@ -40,7 +40,7 @@ const SCHEMAS = {
     { key: 'PROJECT_NAME',                           label: 'Project Name',              placeholder: 'tribe_project',                comment: 'Project Identity' },
     { key: 'BARE_URL',                               label: 'Bare URL',                  placeholder: 'tribe.example.com',               comment: 'Application' },
     { key: 'TRIBE_API_URL',                          label: 'Tribe API URL',             placeholder: 'https://tribe.example.com' },
-    { key: 'ALLOW_ALL_CONNECTIONS_DANGEROUSLY',      label: 'Allow All Connections', 		 hide: true, placeholder: 'false' },
+    { key: 'ALLOW_ALL_CONNECTIONS_DANGEROUSLY',      label: 'Allow All Connections',     hide: true, placeholder: 'false' },
     { key: 'DISPLAY_ERRORS',                         label: 'Display Errors',            hide: true, placeholder: 'false' },
     { key: 'DEFAULT_TIMEZONE',                       label: 'Default Timezone',          hide: true, placeholder: 'Asia/Kolkata' },
     { key: 'CONTACT_EMAIL',                          label: 'Contact Email',             placeholder: 'tribe@example.com' },
@@ -81,9 +81,7 @@ const SCHEMAS = {
   ],
   thread: [
     { key: 'PROJECT_NAME',                            label: 'Project Name',              placeholder: 'acme',                     comment: 'Project Identity' },
-    { key: 'SHARED_SERVICES_HOST',                    label: 'Shared Services Host',      placeholder: 'host-gateway',             comment: 'Shared Services (adjacent stack)' },
-    { key: 'SHARED_DB_PORT',                          label: 'Shared DB Port',            hide: true, placeholder: '3306' },
-    { key: 'SHARED_TIKA_PORT',                        label: 'Shared Tika Port',          hide: true, placeholder: '9998' },
+    { key: 'LOOM_PROJECT_NAME',                       label: 'Loom Project Name',         placeholder: 'tribe',                    comment: 'Shared Services' },
     { key: 'BARE_URL',                                label: 'Bare URL',                  placeholder: 'acme.example.com',         comment: 'Application' },
     { key: 'ALLOW_ALL_CONNECTIONS_DANGEROUSLY',       label: 'Allow All Connections',     hide: true, placeholder: 'false' },
     { key: 'DISPLAY_ERRORS',                          label: 'Display Errors',            hide: true, placeholder: 'false' },
@@ -94,8 +92,9 @@ const SCHEMAS = {
     { key: 'DB_NAME',                                 label: 'DB Name',                   hide: true },
     { key: 'DB_USER',                                 label: 'DB User',                   hide: true },
     { key: 'DB_PASS',                                 label: 'DB Password',               generate: password },
+    { key: 'DB_PORT',                                 label: 'DB Port',                   hide: true, placeholder: '3306' },
+    { key: 'DB_HOST',                                 label: 'DB Host',                   hide: true },
     { key: 'TRIBE_PORT',                              label: 'Tribe Port',                hide: true,                              comment: 'Ports' },
-    { key: 'PHPMYADMIN_PORT',                         label: 'phpMyAdmin Port',           hide: true },
     { key: 'JUNCTION_PORT',                           label: 'Junction Port',             hide: true },
     { key: 'DIST_PORT',                               label: 'Dist Port',                 hide: true },
     { key: 'DIST_PHP_PORT',                           label: 'Dist PHP Port',             hide: true },
@@ -108,6 +107,8 @@ const SCHEMAS = {
     { key: 'PLAUSIBLE_AUTH',                          label: 'Plausible Auth',            hide: true,                              comment: 'Plausible Analytics (optional)' },
     { key: 'PLAUSIBLE_DOMAIN',                        label: 'Plausible Domain',          hide: true },
     { key: 'TRANSCRIBE_FILE_RECORDS',                 label: 'Transcribe File Records',   hide: true, placeholder: 'false',        comment: 'Search and Extraction' },
+    { key: 'TIKA_HOST',                               label: 'Tika Host',                 hide: true },
+    { key: 'TIKA_PORT',                               label: 'Tika Port',                 hide: true, placeholder: '9998' },
     { key: 'HIDE_POSTCODE_ATTRIBUTION',               label: 'Hide Postcode Attribution', hide: true, placeholder: 'false',        comment: 'Hide Postcode Attribution' },
     { key: 'CRONICLE_SECRET_KEY',                     label: 'Cronicle Secret Key',       hide: true, generate: uuid,              comment: 'Cronicle' },
     { key: 'CRONICLE_LOG_KEEP_DAYS',                  label: 'Cronicle Log Keep Days',    hide: true, placeholder: '30' },
@@ -164,7 +165,7 @@ export default class EnvController extends Controller {
   get portBaseHint() {
     return this.activeTarget === 'thread'
       ? 'Threads use blocks of 10 from 13000 — 13000, 13010, 13020 …'
-      : '12000 → 12000, 12001 … 12009';
+      : '12000 → 12000, 12001 … 12009 (shared services stack)';
   }
 
   @action
@@ -188,6 +189,7 @@ export default class EnvController extends Controller {
   @action
   generate() {
     const projectName = (this.values['PROJECT_NAME'] ?? 'tribe_project').trim();
+    const loomProjectName = (this.values['LOOM_PROJECT_NAME'] ?? '').trim();
     const lines = [];
     let lastComment = null;
 
@@ -200,7 +202,7 @@ export default class EnvController extends Controller {
 
       let val;
       if (DERIVED[field.key]) {
-        val = DERIVED[field.key](projectName);
+        val = DERIVED[field.key](projectName, loomProjectName);
       } else if (field.key in PORT_OFFSETS) {
         const base = parseInt(this.portBase, 10);
         val = Number.isNaN(base) ? '' : base + PORT_OFFSETS[field.key];
