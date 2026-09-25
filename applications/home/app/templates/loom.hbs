@@ -90,13 +90,12 @@
             container name (<code>DB_HOST</code>,
             <code>TIKA_HOST</code>), no published host ports required.
           </div>
-          <div class="alert alert-light mb-0">
+          <div class="alert alert-light mb-3">
             <strong>Setup:</strong>
             generate the shared stack's and each Thread's
             <code>.env</code>
             with the
-            <LinkTo @route="env">Env File Maker</LinkTo>. In the shared
-            stack's
+            <LinkTo @route="env">Env File Maker</LinkTo>. In the shared stack's
             <code>docker-compose.yml</code>, uncomment
             <code>external: true</code>
             under
@@ -104,6 +103,21 @@
             <code>docker-compose.thread.yml</code>
             as each Thread's
             <code>docker-compose.yml</code>.
+          </div>
+          <div class="alert alert-warning mb-0">
+            <strong>Create the shared network first:</strong>
+            because the network is declared
+            <code>external: true</code>, Docker Compose expects it to already
+            exist and will refuse to start any stack — shared services or
+            Threads — until it does. Before running
+            <code>docker compose up -d</code>
+            for the first time, create it manually with the shared stack's
+            <code>PROJECT_NAME</code>:
+            <pre class="mb-0 mt-2"><code>docker network create
+                &lt;PROJECT_NAME&gt;_network</code></pre>
+            <p class="small text-muted mt-2 mb-0">This only needs to be done
+              once per server. Every Thread and the shared stack then join this
+              same network by name.</p>
           </div>
         </div>
       </div>
