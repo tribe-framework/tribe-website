@@ -147,16 +147,37 @@
         {{#if this.showToolbarLabels}}
           <span class="md-toolbar-label">Palette</span>
         {{/if}}
-        {{#each this.palette key="name" as |swatch|}}
-          <input
-            type="color"
-            class="form-control form-control-color form-control-sm he-swatch"
-            title={{swatch.label}}
-            aria-label={{swatch.label}}
-            value={{swatch.value}}
-            {{on "input" (fn this.setColor swatch.name)}}
-          />
-        {{/each}}
+        <div class="dropdown">
+          <button
+            type="button"
+            class="form-select form-select-sm w-auto text-start"
+            aria-label="Palette"
+            aria-expanded="false"
+            data-bs-toggle="dropdown"
+            data-bs-auto-close="outside"
+          >
+            Colors
+          </button>
+          <ul class="dropdown-menu p-2">
+            {{#each this.palette key="name" as |swatch|}}
+              <li>
+                <label
+                  class="d-flex align-items-center justify-content-between gap-3 px-1 py-1 small mb-0"
+                >
+                  <span>{{swatch.label}}</span>
+                  <input
+                    type="color"
+                    class="form-control form-control-color form-control-sm he-swatch"
+                    title={{swatch.label}}
+                    aria-label={{swatch.label}}
+                    value={{swatch.value}}
+                    {{on "input" (fn this.setColor swatch.name)}}
+                  />
+                </label>
+              </li>
+            {{/each}}
+          </ul>
+        </div>
       </div>
 
       <div class="md-toolbar-group ms-auto">
