@@ -173,10 +173,93 @@
 
 			<div
 				class="step-card"
-				data-step-name="types.json blueprint AI context data architecture Junction"
+				data-step-name="HTML-only websites Flame README AI context HTML Editor Bootstrap"
 			>
 				<div class="step-header" onclick="toggleStep(this)">
 					<span class="step-badge">3</span>
+					<span class="step-title">HTML-only Websites — attach Flame's README</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>
+						When building a single-file website with no Ember app and no
+						backend, attach
+						<strong>Flame's README</strong>. It teaches the AI the exact
+						document structure the
+						<LinkTo @route="html-editor">HTML Editor</LinkTo>
+						expects, so the generated file opens cleanly and round-trips
+						without losing anything.
+					</p>
+					<div class="row g-3">
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>What Flame's README covers</strong></h6>
+									<ul class="small text-muted mb-0 ps-3">
+										<li>Document anatomy:
+											<code>head</code>,
+											<code>body</code>
+											and
+											<code>tail</code>
+											panes and their assembly order</li>
+										<li>Default stack: Bootstrap 5.3.3, FontAwesome 6.5.2,
+											animate.css 4.1.1 via jsDelivr</li>
+										<li>Theme tokens: fonts, palette, rounded edges, CSS grid,
+											negative margins and extended spacers</li>
+										<li>Code rules: one top-level
+											<code>&lt;nav&gt;</code>, numbered
+											<code>&lt;section&gt;</code>
+											blocks, one
+											<code>&lt;footer&gt;</code>, scripts last</li>
+										<li>How an opened
+											<code>.html</code>
+											file is mapped back into panes</li>
+										<li>Starter document and toolbar snippet patterns</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6 class="mb-2"><strong>Ideal prompt structure</strong></h6>
+									<p class="small text-muted mb-2">After attaching the README,
+										structure your prompt like this:</p>
+									<div class="bg-light p-2 rounded small font-monospace">
+										[Paste Flame README]<br /><br />
+										Here is my index.html: [paste]<br /><br />
+										Add a pricing section with three cards after
+										section-2. Return the complete updated index.html.
+									</div>
+									<p class="small text-muted mt-2 mb-0">
+										Load the result with
+										<strong>Open .html</strong>
+										in the HTML Editor.
+									</p>
+									<div class="mt-3">
+										<a
+											href="https://raw.githubusercontent.com/tribe-framework/flame/refs/heads/master/README.md"
+											target="_blank"
+											class="btn btn-sm btn-outline-dark"
+											rel="noopener noreferrer"
+										>
+											<i class="fa-solid fa-file-lines me-1"></i>Flame README
+											(raw)
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="types.json blueprint AI context data architecture Junction"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">4</span>
 					<span class="step-title">Data Architecture — attach the types.json
 						README</span>
 					<i class="fa-solid fa-chevron-down step-chevron"></i>
@@ -254,7 +337,7 @@
 				data-step-name="storylang.json AI spec full-stack frontend specification"
 			>
 				<div class="step-header" onclick="toggleStep(this)">
-					<span class="step-badge">4</span>
+					<span class="step-badge">5</span>
 					<span class="step-title">Use storylang.json as your AI Frontend Spec</span>
 					<i class="fa-solid fa-chevron-down step-chevron"></i>
 				</div>
@@ -323,7 +406,7 @@
 				data-step-name="Tribe README infrastructure Docker multi-tenant AI context"
 			>
 				<div class="step-header" onclick="toggleStep(this)">
-					<span class="step-badge">5</span>
+					<span class="step-badge">6</span>
 					<span class="step-title">Infrastructure Work — attach the Tribe &amp;
 						Loom READMEs</span>
 					<i class="fa-solid fa-chevron-down step-chevron"></i>
@@ -390,7 +473,7 @@
 				data-step-name="AI prompting quick reference cheat sheet tribe"
 			>
 				<div class="step-header" onclick="toggleStep(this)">
-					<span class="step-badge">6</span>
+					<span class="step-badge">7</span>
 					<span class="step-title">Quick Reference — What to attach for each
 						task</span>
 					<i class="fa-solid fa-chevron-down step-chevron"></i>
@@ -421,6 +504,11 @@
 									<code>types.json</code>
 									+
 									<code>storylang.json</code></td>
+							</tr>
+							<tr>
+								<td>Build or edit an HTML-only website</td>
+								<td><code>flame</code> README</td>
+								<td>Your <code>index.html</code> from the HTML Editor</td>
 							</tr>
 							<tr>
 								<td>Design a new data model / generate
