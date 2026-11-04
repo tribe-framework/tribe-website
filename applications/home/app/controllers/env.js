@@ -131,7 +131,6 @@ const SCHEMAS = {
     ...PORT_FIELDS,
     ...DIST_FIELDS,
     ...JUNCTION_FIELDS('https://acme.example.com'),
-    ...PLAUSIBLE_FIELDS,
     ...TIKA_FIELDS('Transcribe for Search'),
     ...TAIL_FIELDS,
   ],
