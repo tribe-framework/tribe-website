@@ -1,0 +1,3 @@
+**/*.sock
+**/lost+found
+**/*.tmp

@@ -12,7 +12,7 @@
 
 :80 {
     # Root directory for single static site
-    root * /srv
+    root * /srv/sites/dist
     
     # Enable file server
     file_server {
@@ -40,7 +40,7 @@
         file
         path *.css *.js *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
     }
-    header @static Cache-Control "public, max-age=31536000, immutable"
+    header @static Cache-Control "no-cache"
     
     # Log to file
     log {

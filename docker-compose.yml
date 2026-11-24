@@ -1,26 +1,4 @@
 services:
-  # MySQL 9 Database - System-wide
-  mysql:
-    image: mysql:9
-    container_name: ${DB_HOST}
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
-    ports:
-      - "${DB_PORT:-3306}:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./config/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-    networks:
-      - tribe_network
-
-  # config/setup.sh
   setup:
     image: alpine:3
     container_name: ${PROJECT_NAME}_setup
@@ -28,8 +6,9 @@ services:
       - ./config:/config
       - ./applications:/applications
       - ./uploads:/uploads
+      - ./logs:/logs
       - .:/workdir
-      - /var/run/docker.sock:/var/run/docker.sock # Mount Docker socket
+      - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /workdir
     command: sh -c "apk add --no-cache curl unzip bash docker-cli && bash ./config/setup.sh && touch /tmp/setup_complete && tail -f /dev/null"
     healthcheck:
@@ -38,43 +17,43 @@ services:
       timeout: 3s
       retries: 10
       start_period: 30s
-    depends_on:
-      mysql:
-        condition: service_healthy
     networks:
       - tribe_network
 
-  # PHP 8 with FPM for Tribe
   php_tribe:
-    image: tribeframework/tribe-core:v1.0
-    platform: linux/amd64
+    image: tribeframework/tribe-core:v1.6
     container_name: ${PROJECT_NAME}_php_tribe
     restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME}
+      - TIKA_HOST=${TIKA_HOST}
+      - TIKA_PORT=9998
     volumes:
       - ./applications/tribe:/var/www/html
       - ./uploads:/var/www/html/uploads
-      - ./.env:/var/www/html/.env
       - ./logs:/var/log
       - ./applications/tribe/index.php:/var/www/html/index.php
     command: >
       sh -c "composer install --no-interaction --optimize-autoloader &&
-           php-fpm"
+           php-fpm
+      "
     depends_on:
       setup:
         condition: service_healthy
     networks:
       - tribe_network
 
-  # PHP 8 with FPM for Junction
   php_junction:
-    image: tribeframework/tribe-core:v1.0
-    platform: linux/amd64
+    image: tribeframework/tribe-core:v1.6
     container_name: ${PROJECT_NAME}_php_junction
     restart: unless-stopped
+    env_file:
+      - .env
     volumes:
       - ./applications/junction/dist:/var/www/html
       - ./uploads:/var/www/html/uploads
-      - ./.env:/var/www/html/.env
       - ./logs:/var/log
     command: >
       sh -c "composer install --no-interaction --optimize-autoloader &&
@@ -85,16 +64,15 @@ services:
     networks:
       - tribe_network
 
-  # PHP 8 with FPM for Dist PHP
   php_dist:
-    image: tribeframework/tribe-core:v1.0
-    platform: linux/amd64
+    image: tribeframework/tribe-core:v1.6
     container_name: ${PROJECT_NAME}_php_dist
     restart: unless-stopped
+    env_file:
+      - .env
+    working_dir: /var/www/html/uploads/sites/dist-php
     volumes:
-      - ./uploads/sites/dist-php:/var/www/html
       - ./uploads:/var/www/html/uploads
-      - ./.env:/var/www/html/.env
       - ./logs:/var/log
     command: >
       sh -c "if [ -f composer.json ]; then composer install --no-interaction --optimize-autoloader; fi &&
@@ -105,39 +83,19 @@ services:
     networks:
       - tribe_network
 
-  # MySQL Daily Backup Service
-  mysql_backup:
-    image: mysql:9
-    container_name: ${PROJECT_NAME}_mysql_backup
-    restart: unless-stopped
-    volumes:
-      - ./uploads/backups:/backups
-      - ./config/backup.sh:/backup.sh:ro
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      - MYSQL_PWD=${DB_ROOT_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - PROJECT_NAME=${PROJECT_NAME}
-    command: ["bash", "/backup.sh"]
-    depends_on:
-      setup:
-        condition: service_healthy
-    networks:
-      - tribe_network
-
-  # Caddy Web Server (Tribe) with SSL
   caddy_tribe:
     image: caddy:2-alpine
     container_name: ${PROJECT_NAME}_caddy_tribe
     restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME}
     ports:
-      - "${TRIBE_PORT:-12000}:80"
+      - "${BIND_ADDRESS:-0.0.0.0}:${TRIBE_PORT:-13000}:80"
     volumes:
       - ./applications/tribe:/var/www/html
       - ./uploads:/var/www/html/uploads
-      - ./.env:/var/www/html/.env
       - ./applications/tribe/index.php:/var/www/html/index.php
       - ./config/tribe/Caddyfile:/etc/caddy/Caddyfile
       - ./logs:/var/log/caddy
@@ -151,35 +109,19 @@ services:
     networks:
       - tribe_network
 
-  # phpMyAdmin for database management
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:5
-    platform: linux/amd64
-    container_name: ${PROJECT_NAME}_phpmyadmin
-    restart: unless-stopped
-    ports:
-      - "${PHPMYADMIN_PORT:-12001}:80"
-    environment:
-      PMA_HOST: ${DB_HOST}
-      PMA_PORT: 3306
-      UPLOAD_LIMIT: 2G
-    depends_on:
-      setup:
-        condition: service_healthy
-    networks:
-      - tribe_network
-
-  # Caddy Web Server (Junction) with SSL
   caddy_junction:
     image: caddy:2-alpine
     container_name: ${PROJECT_NAME}_caddy_junction
     restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME}
     ports:
-      - "${JUNCTION_PORT:-12002}:80"
+      - "${BIND_ADDRESS:-0.0.0.0}:${JUNCTION_PORT:-13002}:80"
     volumes:
       - ./applications/junction/dist:/var/www/html
       - ./uploads:/var/www/html/uploads
-      - ./.env:/var/www/html/.env
       - ./config/junction/Caddyfile:/etc/caddy/Caddyfile
       - ./logs:/var/log/caddy
       - junction_caddy_data:/data
@@ -192,15 +134,14 @@ services:
     networks:
       - tribe_network
 
-  # Caddy Static Site Server - Single site from uploads/sites/dist
   caddy_dist:
     image: caddy:2-alpine
     container_name: ${PROJECT_NAME}_caddy_dist
     restart: unless-stopped
     ports:
-      - "${DIST_PORT:-12003}:80"
+      - "${BIND_ADDRESS:-0.0.0.0}:${DIST_PORT:-13003}:80"
     volumes:
-      - ./uploads/sites/dist:/srv
+      - ./uploads/sites:/srv/sites:ro
       - ./config/dist/Caddyfile:/etc/caddy/Caddyfile
       - ./logs:/var/log/caddy
     depends_on:
@@ -209,17 +150,18 @@ services:
     networks:
       - tribe_network
 
-  # Caddy Web Server (Dist PHP) with SSL
   caddy_php_dist:
     image: caddy:2-alpine
     container_name: ${PROJECT_NAME}_caddy_php_dist
     restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME}
     ports:
-      - "${DIST_PHP_PORT:-12004}:80"
+      - "${BIND_ADDRESS:-0.0.0.0}:${DIST_PHP_PORT:-13004}:80"
     volumes:
-      - ./uploads/sites/dist-php:/var/www/html
       - ./uploads:/var/www/html/uploads
-      - ./.env:/var/www/html/.env
       - ./config/dist-php/Caddyfile:/etc/caddy/Caddyfile
       - ./logs:/var/log/caddy
       - dist_php_caddy_data:/data
@@ -232,67 +174,77 @@ services:
     networks:
       - tribe_network
 
-  # FileBrowser for file management
-  filebrowser:
-    image: filebrowser/filebrowser:latest
-    container_name: ${PROJECT_NAME}_filebrowser
+  cronicle:
+    image: soulteary/cronicle:latest
+    container_name: ${PROJECT_NAME}_cronicle
     restart: unless-stopped
     ports:
-      - "${FILEBROWSER_PORT:-12005}:80"
+      - "${CRONICLE_PORT:-13007}:3012"
     volumes:
-      - ./uploads:/srv
-      - ./uploads/filebrowser:/database
+      - ./uploads/cronicle/data:/opt/cronicle/data
+      - ./uploads/cronicle/logs:/opt/cronicle/logs
+      - ./uploads/cronicle/plugins:/opt/cronicle/plugins
     environment:
-      - FB_DATABASE=/database/filebrowser.db
-      - FB_ROOT=/srv
-      - FB_PORT=80
-      - FB_ADDRESS=0.0.0.0
+      - CRONICLE_base_app_url=http://${BARE_URL:-localhost}:${CRONICLE_PORT:-13007}
+      - CRONICLE_secret_key=${CRONICLE_SECRET_KEY:-changeme_cronicle_key}
+      - CRONICLE_log_dir=/opt/cronicle/logs
+      - CRONICLE_log_keep_days=${CRONICLE_LOG_KEEP_DAYS:-30}
+      - TZ=${DEFAULT_TIMEZONE:-Asia/Kolkata}
     depends_on:
       setup:
         condition: service_healthy
     networks:
       - tribe_network
 
-  # Typesense Search Engine
-  typesense:
-    image: typesense/typesense:29.0
-    container_name: ${PROJECT_NAME}_typesense
+  centrifugo:
+    image: centrifugo/centrifugo:latest
+    container_name: ${PROJECT_NAME}_centrifugo
     restart: unless-stopped
     ports:
-      - "${TYPESENSE_PORT:-12006}:8108"
+      - "${CENTRIFUGO_PORT:-13008}:8000"
     volumes:
-      - ./uploads/typesense:/data
+      - ./uploads/centrifugo:/centrifugo/data
+      - ./config/centrifugo/config.json:/centrifugo/data/config.json
+    command: centrifugo --config=/centrifugo/data/config.json
     environment:
-      - TYPESENSE_DATA_DIR=/data
-      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY:-xyz}
-      - TYPESENSE_ENABLE_CORS=true
-    command: >
-      sh -c "
-        mkdir -p /data &&
-        /opt/typesense-server --data-dir /data --api-key \$TYPESENSE_API_KEY --enable-cors
-      "
+      - CENTRIFUGO_CLIENT_TOKEN_HMAC_SECRET_KEY=${CENTRIFUGO_CLIENT_TOKEN_HMAC_SECRET_KEY:-changeme_centrifugo_secret}
+      - CENTRIFUGO_HTTP_API_KEY=${CENTRIFUGO_HTTP_API_KEY:-changeme_centrifugo_api_key}
+      - CENTRIFUGO_ADMIN=true
+      - CENTRIFUGO_ADMIN_PASSWORD=${CENTRIFUGO_ADMIN_PASSWORD:-changeme_admin_password}
+      - CENTRIFUGO_ADMIN_SECRET=${CENTRIFUGO_ADMIN_SECRET:-changeme_admin_secret}
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
     depends_on:
       setup:
         condition: service_healthy
     networks:
       - tribe_network
 
-# Tribe Network
 networks:
   tribe_network:
     driver: bridge
-    name: tribe_network
-    #external: true
+    ## To activate loom, use loom's project name for network
+    name: ${LOOM_PROJECT_NAME}_network
+    external: true
+
+##  for server with multiple dockers, manage IP manually
+#   ipam:
+#     config:
+#       - subnet: 172.30.0.0/24
+#         gateway: 172.30.0.1
 
 volumes:
   junction_caddy_data:
+    name: ${PROJECT_NAME}_junction_caddy_data
   junction_caddy_config:
+    name: ${PROJECT_NAME}_junction_caddy_config
   tribe_caddy_data:
+    name: ${PROJECT_NAME}_tribe_caddy_data
   tribe_caddy_config:
+    name: ${PROJECT_NAME}_tribe_caddy_config
   dist_php_caddy_data:
+    name: ${PROJECT_NAME}_dist_php_caddy_data
   dist_php_caddy_config:
-  filebrowser_data:
-  mysql_data:
-    driver: local
-  whisper_models:
-    driver: local
+    name: ${PROJECT_NAME}_dist_php_caddy_config

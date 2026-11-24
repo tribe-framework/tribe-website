@@ -1,3 +1,5 @@
+# Called from https://tribe-framework.org documentation
+
 $FILE = ".flame"
 
 # Prompt for input
@@ -17,7 +19,7 @@ if (Test-Path $FILE) {
         ember init
 
         # Automatically confirm installation prompts
-        echo "y" | ember install ember-tribe
+        echo "y" | ember install ember-tribe@latest
     } else {
         Write-Host "A directory already exists at $DIRECTORY. You cannot overwrite existing application."
     }

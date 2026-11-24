@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+const { execSync } = require("child_process");
+
+const raw = execSync(`docker ps --format '{{.Names}}\t{{.Ports}}'`).toString().trim();
+
+if (!raw) {
+  console.log("No running containers found.");
+  process.exit(0);
+}
+
+const rows = [];
+
+for (const line of raw.split("\n")) {
+  const [name, ports] = line.split("\t");
+  if (!ports) continue;
+
+  for (const port of ports.split(", ")) {
+    const hostMatch = port.match(/0\.0\.0\.0:(\d+)/);
+    const destMatch = port.match(/->(\d+)/);
+    if (hostMatch && destMatch) {
+      rows.push({
+        name,
+        hostPort: parseInt(hostMatch[1]),
+        containerPort: parseInt(destMatch[1]),
+      });
+    }
+  }
+}
+
+rows.sort((a, b) => a.hostPort - b.hostPort);
+
+const col1 = 40, col2 = 20, col3 = 14;
+
+const pad = (str, len) => str.toString().padEnd(len);
+const line = `${"-".repeat(col1)} ${"-".repeat(col2)} ${"-".repeat(col3)}`;
+
+console.log();
+console.log(`${pad("CONTAINER", col1)} ${pad("HOST PORT", col2)} ${pad("CONTAINER PORT", col3)}`);
+console.log(line);
+for (const r of rows) {
+  console.log(`${pad(r.name, col1)} ${pad(r.hostPort, col2)} :${r.containerPort}`);
+}
+console.log();

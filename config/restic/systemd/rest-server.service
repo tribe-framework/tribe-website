@@ -1,0 +1,15 @@
+[Unit]
+Description=restic REST server
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/rest-server \
+  --path /media/cityowl/WD-Internal/restic \
+  --listen 100.x.y.z:8000 \
+  --no-auth
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -12,7 +12,7 @@
 
 # HTTP configuration
 :80 {
-    root * /var/www/html
+    root * /var/www/html/uploads/sites/dist-php
     
     # Security headers (excluding HSTS for HTTP)
     header {
@@ -24,7 +24,7 @@
     }
 
     # PHP-FPM configuration
-    php_fastcgi php_dist:9000 {
+    php_fastcgi {$PROJECT_NAME}_php_dist:9000 {
         trusted_proxies private_ranges
     }
 
@@ -41,6 +41,18 @@
     }
     respond @mysql_uploads 403
 
+    @uploads_file {
+        path /uploads/*
+        not path /uploads/mysql/* */.*
+        file {
+            root /var/www/html
+        }
+    }
+    handle @uploads_file {
+        root * /var/www/html
+        file_server
+    }
+
     # Handle uploads directory
     @uploads {
         path /uploads/*
@@ -55,7 +67,7 @@
         path *.css *.gif *.ico *.webp *.jpeg *.jpg *.js *.png *.woff *.woff2 *.ttf *.eot
     }
     header @static {
-        Cache-Control "public, max-age=31536000, immutable"
+        Cache-Control "no-cache"
         Vary "Accept-Encoding"
     }
 

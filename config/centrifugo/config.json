@@ -1,0 +1,28 @@
+{
+  "client": {
+    "token": {
+      "hmac_secret_key": "${CENTRIFUGO_CLIENT_TOKEN_HMAC_SECRET_KEY}"
+    }
+  },
+  "http_api": {
+    "key": "${CENTRIFUGO_HTTP_API_KEY}"
+  },
+  "admin": {
+    "enabled": true,
+    "password": "${CENTRIFUGO_ADMIN_PASSWORD}",
+    "secret": "${CENTRIFUGO_ADMIN_SECRET}"
+  },
+  "allowed_origins": [],
+  "address": "0.0.0.0",
+  "port": 8000,
+  "log_level": "info",
+  "log_file": "/centrifugo/data/centrifugo.log",
+  "channel": {
+    "history": {
+      "size": 10,
+      "ttl": "300s"
+    },
+    "presence": true,
+    "join_leave": true
+  }
+}

@@ -1,0 +1,66 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Tor overlay — use with:
+#   docker compose -f docker-compose.yml -f docker-compose.tor.yml up -d
+#
+# What this file does:
+#   • Adds the `tor` hidden-service daemon
+#   • Removes all host port bindings from every service (nothing on clearnet)
+#   • Caddy instances stay on the internal Docker network only
+#   • Tor proxies inbound .onion traffic → each Caddy container on port 80
+#
+# .onion hostnames are written to ./uploads/tor/ on first start.
+# Run:  cat uploads/tor/tribe/hostname      → your Tribe .onion address
+# ══════════════════════════════════════════════════════════════════════════════
+
+services:
+
+  # ─── Tor daemon ─────────────────────────────────────────────────────────────
+  tor:
+    image: torproject/tor:latest
+    container_name: ${PROJECT_NAME}_tor
+    restart: unless-stopped
+    user: root
+    volumes:
+      - ./uploads/tor:/var/lib/tor/hidden_services
+      - ./config/tor/torrc:/etc/tor/torrc:ro
+    command: >
+      sh -c "
+        mkdir -p
+          /var/lib/tor/hidden_services/tribe
+          /var/lib/tor/hidden_services/junction
+          /var/lib/tor/hidden_services/dist
+          /var/lib/tor/hidden_services/dist-php
+          /var/lib/tor/hidden_services/phpmyadmin &&
+        chmod 700
+          /var/lib/tor/hidden_services/tribe
+          /var/lib/tor/hidden_services/junction
+          /var/lib/tor/hidden_services/dist
+          /var/lib/tor/hidden_services/dist-php
+          /var/lib/tor/hidden_services/phpmyadmin &&
+        chown -R tor:tor /var/lib/tor/hidden_services 2>/dev/null || true &&
+        tor -f /etc/tor/torrc
+      "
+    depends_on:
+      setup:
+        condition: service_healthy
+    networks:
+      - tribe_network
+
+  # ─── Remove ALL host port bindings ──────────────────────────────────────────
+  # Each service override nulls out ports[]. Tor reaches them by container name
+  # on port 80 (Caddy) or 80 (phpMyAdmin) inside the Docker network.
+
+  caddy_tribe:
+    ports: []
+
+  caddy_junction:
+    ports: []
+
+  caddy_dist:
+    ports: []
+
+  caddy_php_dist:
+    ports: []
+
+  phpmyadmin:
+    ports: []

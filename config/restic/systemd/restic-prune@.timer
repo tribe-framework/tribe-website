@@ -1,0 +1,9 @@
+[Unit]
+Description=Weekly restic forget+prune for %f
+
+[Timer]
+OnCalendar=Sun *-*-* 08:00:00 Asia/Kolkata
+Persistent=true
+
+[Install]
+WantedBy=timers.target

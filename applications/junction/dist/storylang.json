@@ -1,0 +1,582 @@
+{
+  "routes": [
+    {
+      "slug": "application",
+      "tracked_vars": [{ "current-route-name": "string" }, { "current-slug-name": "string" }],
+      "actions": ["did-transition", "will-transition", "before-model", { "model": ["webapp"] }],
+      "functions": ["after-model"],
+      "services": ["store", "types", "type", "auth", "router", "blueprints"],
+      "components": ["loading", "basic-dropdown-wormhole", "types/webapp", "types/new-model", "types/edit-model", "types/delete-model", "types/list-table/csv-import-export", "types/blueprint-object-modal", "types/edit-object-modal", "types/copy-object-modal", "types/modules/modal", "types/track-api-modal", "types/modules/new", "types/public/modal", "types/list-table/find-duplicates"]
+    },
+    {
+      "slug": "auth",
+      "services": ["auth", "router"],
+      "components": ["logo/full", "input"]
+    },
+    {
+      "slug": "dist",
+      "components": ["header", "page-summary-card", "files/dist", "footer"]
+    },
+    {
+      "slug": "docs"
+    },
+    {
+      "slug": "files",
+      "components": ["header", "input", "x-toggle", "footer"]
+    },
+    {
+      "slug": "index",
+      "functions": ["before-model"],
+      "services": ["type"],
+      "components": ["header", "page-summary-card", "footer"]
+    },
+    {
+      "slug": "public",
+      "components": ["header", "logo/arrows", "logo/wordmark"]
+    },
+    {
+      "slug": "type",
+      "actions": ["model"],
+      "functions": ["after-model"],
+      "services": ["types", "type", "editorjs"],
+      "components": ["header", "page-summary-card", "files/uploader", "api/auth-reference", "types/list-table/title-bar", "types/modules/list", "types/list-table/pagination", "types/list-table", "types/list-table/head", "types/list-table/row", "types/list-table/loading-table-row", "types/list-table/empty-table-row", "go-to-top", "footer"]
+    },
+    {
+      "slug": "types"
+    }
+  ],
+  "services": [
+    {
+      "slug": "auth",
+      "tracked_vars": [{ "input-password": "string" }, { "is-logged-in": "bool" }, { "junction-password": "string" }, { "go-to-route-after-login": "string" }, { "go-to-slug-after-login": "string" }, { "project-description": "string" }, { "implementation-summary": "string" }, { "blueprint-link": "string" }],
+      "actions": [{ "submit-password": ["custom/auth/access.php"] }, "just-go-to-route-after-login", "logout", { "get-junction-password": ["custom/auth/access.php"] }],
+      "services": ["router", "cookies", "type", "types", "blueprints"]
+    },
+    {
+      "slug": "billing",
+      "getters": ["total-objects", "size-in-gb"],
+      "services": ["types"]
+    },
+    {
+      "slug": "blueprints",
+      "tracked_vars": [{ "my-blueprints": "array" }],
+      "actions": ["download-current-blueprint", "download-current-simplified-blueprint", "change-blueprint", "clear-blueprint", { "get-blueprints": ["blueprint_record"] }],
+      "services": ["colormodes", "types", "store", "type", "auth"]
+    },
+    {
+      "slug": "colormodes",
+      "tracked_vars": [{ "mode": "string" }, { "inner-html": "string" }],
+      "getters": ["inverse-mode-extreme", "mode-extreme", "inverse-mode"],
+      "actions": ["change-mode", "init-mode", "button-loading", "button-unloading"],
+      "services": ["cookies"]
+    },
+    {
+      "slug": "cookies",
+      "tracked_vars": [{ "days": "int" }],
+      "actions": ["set-cookie", "get-cookie", "erase-cookie"]
+    },
+    {
+      "slug": "editorjs",
+      "tracked_vars": [{ "instances": "object" }]
+    },
+    {
+      "slug": "gzip",
+      "tracked_vars": [{ "last-compressed-data": "string" }, { "last-error": "string" }],
+      "actions": ["compress-and-encode", "decode-and-decompress"]
+    },
+    {
+      "slug": "interfaces"
+    },
+    {
+      "slug": "module",
+      "tracked_vars": [{ "current-module": "string" }, { "model-box": "string" }, { "selected-input-type": "string" }, { "list-field": "string" }, { "list-searchable": "string" }, { "list-sortable": "string" }, { "linked-type": "string" }, { "linked-types-available": "array" }, { "input-options": "array" }, { "input-multiple": "bool" }, { "input-required": "bool" }, { "input-primary": "bool" }, { "input-unique": "bool" }, { "restrict-to-linked-only": "bool" }],
+      "actions": ["change-to-restrict-to-linked-only", "change-linked-type", "change-module", "change-input-type", "save", "add-option", "update-option", "remove-option", "init-model", "delete"],
+      "services": ["type", "colormodes", "types"]
+    },
+    {
+      "slug": "object",
+      "tracked_vars": [{ "current-type": "string" }, { "current-object": "string" }, { "reloading-vars": "bool" }, { "via-public-form": "bool" }],
+      "actions": ["activate-current-object"],
+      "services": ["type", "types"]
+    },
+    {
+      "slug": "store",
+      "functions": ["find-record", "find-all", "query", "query-record", "peek-record", "peek-all", "create-record", "unload-all"]
+    },
+    {
+      "slug": "type",
+      "tracked_vars": [{ "current-type": "string" }, { "api-url": "string" }, { "csv-data": "string" }, { "show-csv-save": "bool" }, { "search-query": "string" }, { "advanced-search-query": "array" }, { "is-advanced-search": "bool" }, { "objects-in-type": "string" }, { "page-links": "string" }, { "selected-row-i-ds": "string" }, { "loading-search-results": "bool" }, { "current-page-number": "string" }, { "current-page-offset": "string" }, { "current-number-of-pages": "string" }, { "current-page-length": "string" }, { "sort-field": "string" }, { "sort-field-query": "string" }, { "sort-order": "string" }, { "show-clear-search-button": "bool" }, { "total-objects": "string" }, { "edit-object-modal": "string" }, { "show-modal-events": "string" }, { "hide-modal-events": "string" }, { "title": "string" }, { "is-live": "bool" }, { "description": "string" }, { "cover-url": "string" }, { "button-text": "string" }, { "thankyou-text": "string" }, { "modules": "object" }],
+      "getters": ["modules-that-will-be-listed"],
+      "actions": ["update-sort-field", "editor-js-on-type-change", "save-public-form", "init-public-form", "load-type-objects", "add-to-selected-row-i-ds", "remove-from-selected-row-i-ds", "empty-selected-rows-in-type", "update-page-length", "update-page-offset", "select-none-searched-i-ds", "select-all-searched-i-ds", "search", "clear-search", "advanced-search", "clear-search-query", "update-page-links", "change-page-number", "change-type"],
+      "services": ["store", "types", "router"]
+    },
+    {
+      "slug": "types",
+      "tracked_vars": [{ "json": "string" }],
+      "actions": [{ "fetch-again": ["webapp"] }],
+      "services": ["store"]
+    }
+  ],
+  "types": [{ "slug": "blueprint_record" }, { "slug": "file_record" }, { "slug": "webapp" }],
+  "modifiers": [{ "slug": "did-insert" }, { "slug": "popover" }, { "slug": "ripple" }, { "slug": "tooltip" }],
+  "components": [
+    {
+      "slug": "api/auth-reference",
+      "tracked_vars": [{ "api-url": "string" }, { "copied-url": "bool" }, { "copied-webapp-url": "bool" }, { "copied-js": "bool" }, { "copied-curl": "bool" }],
+      "getters": ["javascript-snippet", "curl-snippet"],
+      "actions": ["copy-api-webapp-url", "copy-api-url", "copy-js-snippet", "copy-curl-snippet"],
+      "functions": ["constructor", "set-api-url"],
+      "services": ["session", "colormodes", "store"]
+    },
+    {
+      "slug": "api/code-reference",
+      "tracked_vars": [{ "copied-js": "bool" }, { "copied-curl": "bool" }, { "copied-url": "bool" }],
+      "getters": ["javascript-snippet", "curl-snippet"],
+      "actions": ["copy-api-url", "copy-js-snippet", "copy-curl-snippet"],
+      "functions": ["if"],
+      "services": ["type", "colormodes"]
+    },
+    {
+      "slug": "billing/modal"
+    },
+    {
+      "slug": "files/csv-uploader",
+      "tracked_vars": [{ "is-processing": "bool" }, { "processing-progress": "int" }, { "processing-errors": "array" }, { "headers": "array" }, { "row-count": "int" }],
+      "inherited_args": [{ "placeholder": "var" }],
+      "actions": ["trigger-select-file", "process-file", "handle-file-select", "handle-file-drop"],
+      "services": ["store", "colormodes", "type"]
+    },
+    {
+      "slug": "files/dist",
+      "tracked_vars": [{ "target": "string" }, { "is-dragging": "bool" }, { "is-uploading": "bool" }, { "upload-progress": "int" }, { "deployed-ok": "bool" }, { "error-message": "string" }, { "versions": "array" }, { "is-loading-versions": "bool" }, { "is-reverting": "bool" }],
+      "getters": ["api-base"],
+      "actions": ["set-target", "load-versions", "on-drag-over", "on-drag-leave", "on-drop", "trigger-select-zip", "trigger-select-folder", "on-zip-selected", "on-folder-selected", "revert-to-version", "reset", "upload-zip", "upload-folder", "_send-with-progress", "_collect-entries"],
+      "functions": ["constructor", "_entry-to-file"],
+      "services": ["colormodes"]
+    },
+    {
+      "slug": "files/uploader",
+      "inherited_args": [{ "queue": "var" }, { "placeholder": "var" }],
+      "getters": ["queue"],
+      "actions": ["trigger-select-file", { "upload-file": ["file_record"] }],
+      "services": ["file-queue", "store", "colormodes", "type"]
+    },
+    {
+      "slug": "footer",
+      "tracked_vars": [{ "year-now": "string" }],
+      "inherited_args": [{ "index": "var" }, { "width": "var" }, { "color": "var" }],
+      "getters": ["hide-postcode-attribution"],
+      "services": ["colormodes"]
+    },
+    {
+      "slug": "go-to-top",
+      "actions": ["go-to-top"],
+      "services": ["colormodes"]
+    },
+    {
+      "slug": "header-nav-item",
+      "inherited_args": [{ "navtitle": "var" }, { "collapse-menu": "var" }, { "route": "var" }, { "navroute": "var" }]
+    },
+    {
+      "slug": "header",
+      "inherited_args": [{ "public": "var" }, { "width": "var" }, { "color": "var" }, { "route": "var" }],
+      "actions": ["blueprints-dropdown", "change-type", "toggle-bars-icon", "collapse-menu"],
+      "modifiers": ["did-insert"],
+      "services": ["auth", "colormodes", "blueprints", "types", "router", "type"]
+    },
+    {
+      "slug": "hooks/row-options"
+    },
+    {
+      "slug": "input-fields/checkbox",
+      "inherited_args": [{ "value": "var" }, { "object": "var" }, { "module": "var" }, { "on-toggle": "var" }, { "theme": "var" }, { "variant": "var" }],
+      "services": ["colormodes"]
+    },
+    {
+      "slug": "input-fields/color",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }]
+    },
+    {
+      "slug": "input-fields/date",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }]
+    },
+    {
+      "slug": "input-fields/datetime-local",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }]
+    },
+    {
+      "slug": "input-fields/editorjs",
+      "inherited_args": [{ "type": "var" }, { "module": "var" }],
+      "actions": ["load-editor-js"],
+      "functions": ["unload-editor-js"],
+      "services": ["object", "type", "editorjs"]
+    },
+    {
+      "slug": "input-fields/email",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }]
+    },
+    {
+      "slug": "input-fields/file-uploader",
+      "inherited_args": [{ "module": "var" }, { "type": "var" }, { "id": "var" }, { "queue": "var" }, { "object": "var" }],
+      "getters": ["queue"],
+      "actions": ["trigger-select-file", { "upload-file": ["file_record"] }, "delete-file", "copy-link"],
+      "services": ["file-queue", "store", "colormodes"]
+    },
+    {
+      "slug": "input-fields/hidden",
+      "inherited_args": [{ "type": "var" }, { "module": "var" }, { "id": "var" }, { "value": "var" }, { "object": "var" }]
+    },
+    {
+      "slug": "input-fields/json",
+      "inherited_args": [{ "type": "var" }, { "module": "var" }, { "id": "var" }, { "value": "var" }, { "object": "var" }]
+    },
+    {
+      "slug": "input-fields/multi/input",
+      "inherited_args": [{ "is-textarea": "var" }, { "value": "var" }, { "module": "var" }, { "index": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }],
+      "getters": ["length-minus-one"],
+      "services": ["object"]
+    },
+    {
+      "slug": "input-fields/number",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }]
+    },
+    {
+      "slug": "input-fields/password",
+      "inherited_args": [{ "type": "var" }, { "module": "var" }, { "id": "var" }, { "value": "var" }, { "object": "var" }]
+    },
+    {
+      "slug": "input-fields/select",
+      "tracked_vars": [{ "options": "string" }, { "input-options": "string" }, { "type-options": "string" }, { "selected-option": "string" }, { "selected-multi-options": "string" }, { "moduleis-also-a-type": "bool" }, { "selected-multi-option-slugs": "string" }, { "title-slug": "string" }],
+      "inherited_args": [{ "multi-edit": "var" }, { "module": "var" }, { "multiple": "var" }, { "selected": "var" }, { "search-enabled": "var" }, { "search-field": "var" }, { "placeholder": "var" }, { "options": "var" }, { "dropdown-class": "var" }, { "on-change": "var" }, { "allow-clear": "var" }, { "render-in-place": "var" }, { "vertical-position": "var" }],
+      "actions": ["clean-vars-on-new-modal-open", "clean-vars-on-multi-modal-open", "update-value", "update-multi-value", "is-module-also-a-type-modal", "is-module-also-a-type"],
+      "modifiers": ["did-insert"],
+      "services": ["store", "types"]
+    },
+    {
+      "slug": "input-fields/storylang-stack",
+      "inherited_args": [{ "module": "var" }, { "value": "var" }],
+      "getters": ["obj"],
+      "actions": ["update-object", { "get-ai": ["custom/anthropic/get-storylang.php"] }],
+      "services": ["object", "colormodes", "types", "type"]
+    },
+    {
+      "slug": "input-fields/tel",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }]
+    },
+    {
+      "slug": "input-fields/text",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }],
+      "actions": ["generate-title"],
+      "services": ["object"]
+    },
+    {
+      "slug": "input-fields/textarea",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "is-textarea": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }]
+    },
+    {
+      "slug": "input-fields/typeout",
+      "tracked_vars": [{ "t": "string" }, { "disabled": "bool" }],
+      "inherited_args": [{ "value": "var" }, { "object": "var" }, { "module": "var" }, { "type": "var" }, { "id": "var" }],
+      "actions": ["init-typeout", "save-typeout"]
+    },
+    {
+      "slug": "input-fields/url",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }]
+    },
+    {
+      "slug": "input-fields/uuid-v4",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }],
+      "actions": ["generate-uui-dv4"]
+    },
+    {
+      "slug": "input-fields/uuidv4",
+      "inherited_args": [{ "module": "var" }, { "object": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "id": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }, { "index": "var" }, { "value": "var" }]
+    },
+    {
+      "slug": "input-fields/visual-guide",
+      "inherited_args": [{ "module": "var" }, { "type": "var" }, { "id": "var" }, { "value": "var" }, { "on-toggle": "var" }, { "theme": "var" }, { "variant": "var" }],
+      "getters": ["obj", "scss"],
+      "actions": ["update-object", "copy-scss"],
+      "services": ["object", "colormodes"]
+    },
+    {
+      "slug": "interfaces/new-modal"
+    },
+    {
+      "slug": "loading",
+      "services": ["type", "colormodes", "blueprints"]
+    },
+    {
+      "slug": "logo/arrows",
+      "inherited_args": [{ "width": "var" }, { "color": "var" }]
+    },
+    {
+      "slug": "logo/center",
+      "inherited_args": [{ "width": "var" }, { "color": "var" }]
+    },
+    {
+      "slug": "logo/flame",
+      "inherited_args": [{ "width": "var" }, { "color": "var" }]
+    },
+    {
+      "slug": "logo/full",
+      "inherited_args": [{ "width": "var" }, { "color": "var" }]
+    },
+    {
+      "slug": "logo/icon",
+      "inherited_args": [{ "width": "var" }, { "color": "var" }]
+    },
+    {
+      "slug": "logo/wordmark",
+      "inherited_args": [{ "width": "var" }, { "color": "var" }]
+    },
+    {
+      "slug": "page-summary-card",
+      "tracked_vars": [{ "sortable": "string" }, { "activate-reordering": "bool" }, { "modules": "string" }, { "reload-types": "bool" }],
+      "getters": ["types-count"],
+      "actions": ["change-type", "start-wobble", "stop-wobble", "stop-drag-drop", "init-drag-drop", "ignore-reordering", "save-reordering"],
+      "services": ["types", "type", "router", "store", "colormodes", "blueprints"]
+    },
+    {
+      "slug": "storylang/arc-diagram",
+      "tracked_vars": [{ "rotation-deg": "int" }, { "zoom-scale": "int" }],
+      "getters": ["nodes", "edges", "selected-slug", "view-box", "ring-transform", "zoom-transform", "angle-step", "node-angles", "type-groups", "type-group-arcs", "node-display-list", "arc-display-list", "cx", "cy"],
+      "actions": ["zoom-in", "zoom-out", "zoom-reset", "register-svg", "handle-pointer-down", "handle-pointer-move", "handle-pointer-up"],
+      "functions": ["_apply-zoom", "_cancel-inertia", "_start-inertia"],
+      "modifiers": ["did-insert"]
+    },
+    {
+      "slug": "storylang/index",
+      "tracked_vars": [{ "selected-node": "string" }, { "model": "string" }, { "is-loading": "bool" }, { "is-empty": "bool" }],
+      "inherited_args": [{ "nodes": "var" }, { "edges": "var" }, { "selected-node": "var" }, { "on-select-node": "var" }, { "node": "var" }, { "on-close": "var" }, { "on-navigate": "var" }, { "all-nodes": "var" }],
+      "getters": ["legend-items", "all-nodes", "filtered-nodes", "all-edges", "selected-node-edges"],
+      "actions": ["load-model", "select-node", "clear-selection"],
+      "modifiers": ["did-insert"]
+    },
+    {
+      "slug": "storylang/node-detail",
+      "inherited_args": [{ "node": "var" }],
+      "getters": ["type-color", "outgoing-edges", "incoming-edges", "has-connections", "sections"],
+      "actions": ["navigate-to", "close"]
+    },
+    {
+      "slug": "types/blueprint/json-display"
+    },
+    {
+      "slug": "types/blueprint-consultation-modal",
+      "services": ["types"]
+    },
+    {
+      "slug": "types/blueprint-object-modal",
+      "inherited_args": [{ "jsondata": "var" }],
+      "actions": ["copy-json", "copy-api-link"],
+      "services": ["object"]
+    },
+    {
+      "slug": "types/blueprints/ai-prompt",
+      "inherited_args": [{ "value": "var" }],
+      "services": ["blueprints", "colormodes"]
+    },
+    {
+      "slug": "types/blueprints/json-editor"
+    },
+    {
+      "slug": "types/blueprints/sample-data",
+      "services": ["blueprints", "colormodes", "type"]
+    },
+    {
+      "slug": "types/copy-object-modal",
+      "actions": ["push-object"],
+      "services": ["store", "types", "type", "object"]
+    },
+    {
+      "slug": "types/delete-model",
+      "tracked_vars": [{ "model-box": "string" }],
+      "actions": ["init-model", "delete"],
+      "modifiers": ["did-insert"],
+      "services": ["type", "types", "router"]
+    },
+    {
+      "slug": "types/edit-model",
+      "tracked_vars": [{ "track-name": "string" }, { "track-plural": "string" }, { "track-url": "string" }, { "track-description": "string" }, { "api-hooks": "array" }, { "sendable": "bool" }, { "readonly": "bool" }, { "editable": "bool" }, { "track-primary": "string" }, { "model-box": "string" }],
+      "inherited_args": [{ "type": "var" }, { "value": "var" }, { "theme": "var" }, { "variant": "var" }, { "on-toggle": "var" }],
+      "getters": ["initiated-type"],
+      "actions": ["init-model", "save"],
+      "modifiers": ["did-insert"],
+      "services": ["types", "colormodes", "type"]
+    },
+    {
+      "slug": "types/edit-object-modal",
+      "tracked_vars": [{ "object-modules": "string" }, { "object-id": "string" }, { "editorjs-instances": "object" }, { "do-update-slug": "bool" }, { "delete-surity": "string" }],
+      "inherited_args": [{ "multi-edit": "var" }, { "mut-object-module-value": "var" }, { "type": "var" }, { "module": "var" }, { "id": "var" }, { "object": "var" }, { "add-to-multi-field": "var" }, { "remove-from-multi-field": "var" }],
+      "actions": ["push-objects", "delete-objects", "push-object", "delete-object", "not-so-sure", "are-you-sure", "uninit-editor-js", "init-editor-js", "save-editor-data", "mut-object-module-value", "add-to-multi-field", "remove-from-multi-field", "clean-vars-if-new", "clean-vars-on-modal-open", "update-slug"],
+      "services": ["store", "router", "types", "type", "colormodes", "object", "editorjs"]
+    },
+    {
+      "slug": "types/editor/checkbox",
+      "inherited_args": [{ "type-key": "var" }, { "value": "var" }, { "type-slug": "var" }, { "on-toggle": "var" }, { "theme": "var" }, { "variant": "var" }, { "help-text": "var" }],
+      "services": ["types", "colormodes"]
+    },
+    {
+      "slug": "types/editor/multi-select"
+    },
+    {
+      "slug": "types/editor/row"
+    },
+    {
+      "slug": "types/editor/select"
+    },
+    {
+      "slug": "types/editor/text",
+      "inherited_args": [{ "type-key": "var" }, { "type": "var" }, { "value": "var" }, { "type-slug": "var" }, { "help-text": "var" }],
+      "services": ["types"]
+    },
+    {
+      "slug": "types/editor/textarea",
+      "inherited_args": [{ "type-key": "var" }, { "value": "var" }, { "type-slug": "var" }, { "help-text": "var" }],
+      "services": ["types"]
+    },
+    {
+      "slug": "types/list-table/csv-import-export",
+      "tracked_vars": [{ "records": "array" }, { "saving": "bool" }, { "csv-record-length": "string" }, { "csv-save-success-count": "int" }],
+      "inherited_args": [{ "placeholder": "var" }, { "on-csv-processed": "var" }],
+      "getters": ["percentage"],
+      "actions": ["handle-processed-csv-data", "save-all-records", "papa-unparse-format", "papa-unparse"],
+      "services": ["colormodes", "object", "type", "types", "store", "gzip"]
+    },
+    {
+      "slug": "types/list-table/empty-table-row",
+      "inherited_args": [{ "type": "var" }]
+    },
+    {
+      "slug": "types/list-table/find-duplicates",
+      "tracked_vars": [{ "selected-fields": "array" }, { "duplicate-groups": "array" }, { "has-scanned": "bool" }, { "scanning": "bool" }, { "expanded-record-id": "string" }, { "current-page": "int" }],
+      "inherited_args": [{ "type": "var" }, { "checked": "var" }, { "jsondata": "var" }],
+      "getters": ["comparable-modules", "total-duplicate-objects", "total-pages", "paginated-groups", "paginated-group-offset", "has-prev-page", "has-next-page", "no-duplicates-found", "detail-colspan"],
+      "actions": ["toggle-field", "select-all-fields", "clear-all-fields", "run-scan", "toggle-details", "delete-record", "prev-page", "next-page", "reset"],
+      "services": ["colormodes", "type", "store"]
+    },
+    {
+      "slug": "types/list-table/head",
+      "inherited_args": [{ "update-sort-field": "var" }, { "sort-field": "var" }, { "type": "var" }, { "sort-order": "var" }]
+    },
+    {
+      "slug": "types/list-table/loading-table-row",
+      "inherited_args": [{ "type": "var" }]
+    },
+    {
+      "slug": "types/list-table/page-length-selector",
+      "tracked_vars": [{ "options": "string" }, { "selected-option": "string" }],
+      "inherited_args": [{ "placeholder": "var" }, { "sec": "var" }, { "options": "var" }, { "on-change": "var" }, { "selected": "var" }],
+      "actions": ["update-page-length"],
+      "services": ["colormodes"]
+    },
+    {
+      "slug": "types/list-table/pagination",
+      "inherited_args": [{ "selected-row-i-ds": "var" }, { "type": "var" }, { "total-objects": "var" }, { "current-page-number": "var" }, { "change-page-number": "var" }, { "page-links": "var" }, { "number-of-pages": "var" }],
+      "services": ["type"]
+    },
+    {
+      "slug": "types/list-table/row-options",
+      "inherited_args": [{ "object": "var" }, { "type": "var" }, { "module": "var" }],
+      "actions": ["open-blueprint-modal", "open-edit-modal", "open-copy-modal", "restore-record"],
+      "services": ["object", "type", "colormodes", "blueprints"]
+    },
+    {
+      "slug": "types/list-table/row",
+      "tracked_vars": [{ "is-showing": "bool" }, { "is-selected": "bool" }],
+      "inherited_args": [{ "object": "var" }, { "selected-row-i-ds": "var" }, { "type": "var" }, { "module": "var" }],
+      "actions": ["show-blueprint-object-modal", "show-options", "hide-options", "toggle-selection", "toggle-options"],
+      "functions": ["is-array", "is-csv", "split", "trim"],
+      "services": ["colormodes", "object", "store"]
+    },
+    {
+      "slug": "types/list-table/search-box",
+      "inherited_args": [{ "type": "var" }, { "value": "var" }, { "search-query": "var" }, { "enter": "var" }, { "search": "var" }, { "escape": "var" }, { "clear-search": "var" }, { "show-clear-search-button": "var" }, { "clear-search-query": "var" }, { "advanced-search-query": "var" }],
+      "actions": ["advanced-search", "search"],
+      "services": ["colormodes", "store", "type", "types"]
+    },
+    {
+      "slug": "types/list-table/title-bar",
+      "inherited_args": [{ "type": "var" }, { "update-page-length": "var" }, { "current-page-length": "var" }, { "search": "var" }, { "clear-search": "var" }, { "advanced-search": "var" }, { "show-clear-search-button": "var" }, { "search-query": "var" }, { "advanced-search-query": "var" }, { "clear-search-query": "var" }, { "change-page-number": "var" }, { "selected-row-i-ds": "var" }],
+      "actions": ["open-multi-modal", "open-new-modal"],
+      "services": ["colormodes", "object", "type", "types", "store"]
+    },
+    {
+      "slug": "types/list-table",
+      "inherited_args": [{ "multi-edit": "var" }],
+      "getters": ["count-listable-modules"]
+    },
+    {
+      "slug": "types/modules/input-option",
+      "tracked_vars": [{ "clicked-outside": "bool" }, { "option": "string" }],
+      "inherited_args": [{ "type": "var" }, { "value": "var" }, { "index": "var" }],
+      "actions": ["validate-option", "clicked-inside"],
+      "services": ["module"]
+    },
+    {
+      "slug": "types/modules/input-options",
+      "inherited_args": [{ "index": "var" }, { "option": "var" }],
+      "services": ["module"]
+    },
+    {
+      "slug": "types/modules/list",
+      "tracked_vars": [{ "reload-types": "bool" }],
+      "inherited_args": [{ "activate-reordering": "var" }],
+      "actions": ["highlight-linkages", "unhighlight-linkages", "ignore-reordering", "save-reordering"],
+      "services": ["type", "colormodes", "module", "store", "types"]
+    },
+    {
+      "slug": "types/modules/modal",
+      "inherited_args": [{ "type": "var" }, { "value": "var" }, { "theme": "var" }, { "variant": "var" }, { "on-toggle": "var" }, { "selected": "var" }, { "options": "var" }, { "on-change": "var" }, { "dropdown-class": "var" }, { "placeholder": "var" }],
+      "modifiers": ["did-insert"],
+      "services": ["type", "types", "module", "colormodes"]
+    },
+    {
+      "slug": "types/modules/new",
+      "tracked_vars": [{ "module-name": "string" }, { "model-box": "string" }],
+      "inherited_args": [{ "type": "var" }, { "value": "var" }],
+      "actions": ["init-model", "save"],
+      "modifiers": ["did-insert"],
+      "services": ["type", "module", "colormodes", "types"]
+    },
+    {
+      "slug": "types/new-model",
+      "tracked_vars": [{ "track-name": "string" }, { "track-plural": "string" }, { "track-description": "string" }, { "track-primary": "string" }, { "model-box": "string" }],
+      "inherited_args": [{ "type": "var" }, { "value": "var" }],
+      "getters": ["initiated-type"],
+      "actions": ["init-model", "save"],
+      "modifiers": ["did-insert"],
+      "services": ["types", "router", "colormodes"]
+    },
+    {
+      "slug": "types/public/modal",
+      "inherited_args": [{ "value": "var" }, { "on-toggle": "var" }, { "theme": "var" }, { "variant": "var" }, { "type": "var" }, { "update-on-upload": "var" }, { "placeholder": "var" }],
+      "actions": ["update-on-upload", "copy-form-link"],
+      "services": ["type", "types", "colormodes"]
+    },
+    {
+      "slug": "types/track-api-modal",
+      "inherited_args": [{ "type-slug": "var" }],
+      "actions": ["copy-api-link"],
+      "services": ["type", "colormodes", "types"]
+    },
+    {
+      "slug": "types/webapp",
+      "tracked_vars": [{ "webapp-box": "string" }],
+      "inherited_args": [{ "type": "var" }, { "value": "var" }, { "type-key": "var" }, { "type-slug": "var" }, { "help-text": "var" }],
+      "getters": ["is-junction-express"],
+      "actions": ["init-webapp", "save"],
+      "modifiers": ["did-insert"],
+      "services": ["types", "colormodes"]
+    },
+    {
+      "slug": "welcome-flame"
+    },
+    {
+      "slug": "x-toggle",
+      "inherited_args": [{ "size": "var" }, { "value": "var" }, { "disabled": "var" }, { "on-toggle": "var" }],
+      "functions": ["is-small"]
+    }
+  ]
+}

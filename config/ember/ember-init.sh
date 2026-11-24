@@ -1,3 +1,5 @@
+# Called from https://tribe-framework.org documentation
+
 FILE=.flame
 
 echo "Please enter the name of the Ember directory:"
@@ -10,7 +12,7 @@ if test -f "$FILE"; then
         mkdir -p "$DIRECTORY";  # Use -p to create parent directories if needed
         cd "$DIRECTORY" || exit; # Change to the directory, exit if it fails
         ember init;
-        yes | ember install ember-tribe;
+        yes | ember install ember-tribe@latest;
     else
         echo "A directory already exists at $DIRECTORY. You cannot overwrite existing application."
     fi

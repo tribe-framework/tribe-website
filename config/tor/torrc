@@ -1,0 +1,38 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Tor configuration for Tribe Framework hidden services
+# All 6 services are exposed as v3 onion addresses.
+# Keys persist in ./uploads/tor/<service>/  — back this directory up.
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ─── Core ─────────────────────────────────────────────────────────────────────
+DataDirectory /var/lib/tor
+Log notice stdout
+
+# Disable relay/exit — this node is a client + hidden service only
+SocksPort 0
+ExitPolicy reject *:*
+
+# ─── Hidden service: Tribe (main app) ─────────────────────────────────────────
+HiddenServiceDir /var/lib/tor/hidden_services/tribe
+HiddenServicePort 80 caddy_tribe:80
+HiddenServiceVersion 3
+
+# ─── Hidden service: Junction ─────────────────────────────────────────────────
+HiddenServiceDir /var/lib/tor/hidden_services/junction
+HiddenServicePort 80 caddy_junction:80
+HiddenServiceVersion 3
+
+# ─── Hidden service: Dist (static) ────────────────────────────────────────────
+HiddenServiceDir /var/lib/tor/hidden_services/dist
+HiddenServicePort 80 caddy_dist:80
+HiddenServiceVersion 3
+
+# ─── Hidden service: Dist PHP ─────────────────────────────────────────────────
+HiddenServiceDir /var/lib/tor/hidden_services/dist-php
+HiddenServicePort 80 caddy_php_dist:80
+HiddenServiceVersion 3
+
+# ─── Hidden service: phpMyAdmin (admin — Tor only) ────────────────────────────
+HiddenServiceDir /var/lib/tor/hidden_services/phpmyadmin
+HiddenServicePort 80 phpmyadmin:80
+HiddenServiceVersion 3

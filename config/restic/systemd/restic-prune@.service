@@ -1,0 +1,7 @@
+[Unit]
+Description=restic forget+prune for %f
+Documentation=https://tribe-framework.org/backup
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/restic-prune.sh %f
