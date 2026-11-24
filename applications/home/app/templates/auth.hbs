@@ -1,0 +1,600 @@
+<div class="tribe-manual">
+  <ManualHeader />
+
+  <ManualPageNav @activePage="auth" />
+
+  <div class="container pb-5">
+
+    <div class="steps-container mb-5">
+
+      <div
+        class="step-card"
+        data-step-name="Overview access levels none read full Junction frontend server"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">1</span>
+          <span class="step-title">Overview</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Tribe decides an access level for every request to
+            <code>api.php</code>,
+            <code>search.php</code>
+            and
+            <code>uploads.php</code>. There are three levels.</p>
+          <div class="table-responsive">
+            <table class="table table-sm small">
+              <thead>
+                <tr>
+                  <th>Level</th>
+                  <th>How a request gets it</th>
+                  <th>What it allows</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>None</strong></td>
+                  <td>No key, an unknown key, or a key used from a domain that is
+                    not whitelisted.</td>
+                  <td>Read public objects. Submit live public forms.</td>
+                </tr>
+                <tr>
+                  <td><strong>Read</strong></td>
+                  <td>A read-only API key.</td>
+                  <td>Read public and private objects.</td>
+                </tr>
+                <tr>
+                  <td><strong>Full</strong></td>
+                  <td>A full-access API key, or a Junction session.</td>
+                  <td>Read, create, update and delete. Run
+                    <code>?sql=</code>
+                    queries. Upload files.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mb-0">Each kind of client reaches these levels in its own
+            way:</p>
+          <ul class="mb-0">
+            <li><strong>Junction</strong>
+              logs in with a password and gets a session cookie.</li>
+            <li><strong>Frontend apps</strong>
+              send a read-only API key.</li>
+            <li><strong>Server-side code</strong>
+              sends a full-access API key from its own
+              <code>.env</code>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Junction login session cookie auth.php backend-for-frontend password"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">2</span>
+          <span class="step-title">Junction Login (Session)</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Junction uses a backend-for-frontend login. The browser holds only
+            an HttpOnly session cookie. Tribe holds the API key and uses it on
+            the browser's behalf.</p>
+
+          <h6 class="mt-3"><strong>Login flow</strong></h6>
+          <ol class="small">
+            <li>Junction sends the password to
+              <code>auth.php?action=login</code>.</li>
+            <li>Tribe compares it with
+              <code>JUNCTION_PASSWORD</code>
+              on the server.</li>
+            <li>On a match, Tribe starts a
+              <code>tribe_session</code>
+              cookie and stores a full-access key in the session.</li>
+            <li>Every later Junction request carries the cookie, and Tribe
+              gives it full access.</li>
+          </ol>
+
+          <h6 class="mt-3"><strong>Endpoints</strong></h6>
+          <div class="table-responsive">
+            <table class="table table-sm small">
+              <thead>
+                <tr>
+                  <th>Request</th>
+                  <th>Body</th>
+                  <th>Response</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>GET /auth.php?action=status</code></td>
+                  <td>None</td>
+                  <td><code>{ "authenticated": true }</code>
+                    or
+                    <code>false</code></td>
+                </tr>
+                <tr>
+                  <td><code>POST /auth.php?action=login</code></td>
+                  <td><code>{ "password": "..." }</code></td>
+                  <td>200 on success, 401 on a wrong password, 429 after too
+                    many failures</td>
+                </tr>
+                <tr>
+                  <td><code>POST /auth.php?action=logout</code></td>
+                  <td>None</td>
+                  <td>200, and the session is destroyed</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h6 class="mt-3"><strong>Session rules</strong></h6>
+          <ul class="small">
+            <li>The cookie is HttpOnly and SameSite=Lax. It is also Secure when
+              Tribe is served over HTTPS.</li>
+            <li>A session expires after 12 hours without use, or 7 days after
+              login.</li>
+            <li>After 10 wrong passwords from one IP address within 15 minutes,
+              login is refused for the rest of that window.</li>
+          </ul>
+
+          <h6 class="mt-3"><strong>Trusted origins</strong></h6>
+          <p class="small">Tribe accepts the session cookie, and answers
+            <code>auth.php</code>, only for requests from these origins:</p>
+          <ul class="small">
+            <li>The origin of
+              <code>JUNCTION_URL</code>.</li>
+            <li><code>http://localhost:JUNCTION_PORT</code>
+              and
+              <code>http://127.0.0.1:JUNCTION_PORT</code>.</li>
+          </ul>
+          <p class="small">This origin check is what protects the session from
+            cross-site request forgery.</p>
+
+          <div class="alert alert-info mb-0">
+            <strong>Same site required:</strong>
+            Junction and Tribe must be on the same site, such as two subdomains
+            of one domain, or two ports on
+            <code>localhost</code>. Browsers block the session cookie between
+            unrelated domains.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Junction session key apikey_record managed_by revoke logout password change"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">3</span>
+          <span class="step-title">The Junction Session Key</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>On the first login, Tribe creates an
+            <code>apikey_record</code>
+            titled
+            <strong>Junction session</strong>, with
+            <code>managed_by</code>
+            set to
+            <code>junction_session</code>. Every later login reuses this
+            record. Its key never leaves the server.</p>
+          <p class="mb-1">You can end Junction sessions in three ways:</p>
+          <div class="table-responsive">
+            <table class="table table-sm small mb-3">
+              <thead>
+                <tr>
+                  <th>Action</th>
+                  <th>Effect</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Change
+                    <code>JUNCTION_PASSWORD</code></td>
+                  <td>Every session ends. Users log in with the new
+                    password.</td>
+                </tr>
+                <tr>
+                  <td>Delete the Junction session record, or make it
+                    read-only</td>
+                  <td>Every session ends. The next login creates a new
+                    key.</td>
+                </tr>
+                <tr>
+                  <td>Log out from the 3 dots menu</td>
+                  <td>Only that browser's session ends.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="alert alert-warning mb-0">
+            <strong>Do not reuse this key.</strong>
+            The Junction session key has full access. Create a separate key for
+            every other app.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Frontend apps API key bearer read-only whitelisted domains devmode Junction API"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">4</span>
+          <span class="step-title">Frontend Apps (API Keys)</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>A frontend app that uses Tribe as its backend sends an API key as
+            a Bearer token:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('Authorization: Bearer your-read-only-key', this)"
+              type="button"
+            >Copy</button>
+            <code>Authorization: Bearer your-read-only-key</code>
+          </div>
+
+          <h6><strong>Create a key</strong></h6>
+          <ol class="small">
+            <li>Log in to Junction, open the 3 dots menu on the top right
+              corner, and choose
+              <strong>Junction API</strong>.</li>
+            <li>Create a new key and set
+              <strong>Read-only</strong>
+              to on.</li>
+            <li>Enter the app's domains in
+              <strong>Whitelisted domains</strong>, one per line.</li>
+            <li>Set the privacy to
+              <code>public</code>
+              or
+              <code>private</code>, then save and copy the key.</li>
+          </ol>
+
+          <h6 class="mt-3"><strong>Key settings</strong></h6>
+          <div class="table-responsive">
+            <table class="table table-sm small">
+              <thead>
+                <tr>
+                  <th>Setting</th>
+                  <th>Effect</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Read-only</strong></td>
+                  <td>On gives read access. Off gives full access.</td>
+                </tr>
+                <tr>
+                  <td><strong>Whitelisted domains</strong></td>
+                  <td>The key works only when the request's
+                    <code>Origin</code>
+                    host, or its
+                    <code>Referer</code>
+                    host when there is no Origin, matches a line.
+                    <code>*.example.com</code>
+                    matches every subdomain. An empty list means the key works
+                    from anywhere.</td>
+                </tr>
+                <tr>
+                  <td><strong>Dev mode</strong></td>
+                  <td>The key also works from
+                    <code>localhost</code>
+                    and
+                    <code>127.0.0.1</code>, even when they are not
+                    whitelisted.</td>
+                </tr>
+                <tr>
+                  <td><strong>Privacy</strong></td>
+                  <td>Only
+                    <code>public</code>
+                    and
+                    <code>private</code>
+                    keys work. A key in any other state, such as
+                    <code>draft</code>, is ignored.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="alert alert-warning">
+            <strong>Use only read-only keys in the browser.</strong>
+            Anyone can read a key that ships in frontend code, and anyone can
+            fake the
+            <code>Origin</code>
+            header outside a browser. A whitelist stops other websites from
+            using the key, but it does not keep the key secret.
+          </div>
+
+          <p class="mb-1">Private objects are returned only when the request
+            asks for them:</p>
+          <div class="command-block mb-3">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('GET /api.php/post?show_public_objects_only=false', this)"
+              type="button"
+            >Copy</button>
+            <code>GET /api.php/post?show_public_objects_only=false</code>
+          </div>
+
+          <div class="alert alert-info mb-0">
+            <strong>Ember setup:</strong>
+            See the
+            <LinkTo @route="frontend">Frontend</LinkTo>
+            page for how to put the key in an ember-tribe app.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Server-side apps full-access key dist-php PHP scripts env"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">5</span>
+          <span class="step-title">Server-side Apps (Full Access)</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>Code that runs on a server can hold a full-access key, because
+            visitors never see it. This includes PHP in
+            <code>dist-php</code>, scheduled jobs and other backends.</p>
+          <ol class="small">
+            <li>Create a key in
+              <strong>Junction API</strong>
+              with
+              <strong>Read-only</strong>
+              off.</li>
+            <li>Leave
+              <strong>Whitelisted domains</strong>
+              empty. Server-to-server requests usually send no
+              <code>Origin</code>
+              header, so a whitelisted key would be refused.</li>
+            <li>Store the key in that server's
+              <code>.env</code>, and send it as a Bearer token.</li>
+          </ol>
+          <div class="command-block mb-0">
+            <button
+              class="btn btn-sm copy-btn-block"
+              onclick="copyCmd('curl -H &quot;Authorization: Bearer $TRIBE_API_KEY&quot; https://tribe.domain.tld/api.php/post', this)"
+              type="button"
+            >Copy</button>
+            <code>curl -H "Authorization: Bearer $TRIBE_API_KEY"
+              https://tribe.domain.tld/api.php/post</code>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Anonymous access public objects public forms block_read_access_without_apikey webapp"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">6</span>
+          <span class="step-title">Anonymous Access &amp; Public Forms</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>A request without a valid key has no access level, and Tribe
+            applies these rules:</p>
+          <ul class="small">
+            <li>Lists and single objects return only objects with
+              <code>content_privacy</code>
+              set to
+              <code>public</code>.</li>
+            <li><code>GET /api.php/webapp</code>
+              returns a reduced blueprint, with only the
+              <code>webapp</code>
+              entry and the types whose public form is live. Object counts are
+              left out.</li>
+            <li>A POST is accepted only for a type whose public form is live.
+              Tribe saves it as
+              <code>private</code>
+              and removes reserved fields such as
+              <code>id</code>,
+              <code>user_id</code>
+              and
+              <code>role_slug</code>.</li>
+            <li>Anonymous POSTs to
+              <code>user</code>,
+              <code>apikey_record</code>
+              and
+              <code>blueprint_record</code>
+              are always refused.</li>
+          </ul>
+          <div class="alert alert-info mb-0">
+            <strong>Private installs:</strong>
+            Set
+            <code>block_read_access_without_apikey</code>
+            to
+            <code>true</code>
+            in the blueprint to refuse every anonymous read except the reduced
+            <code>webapp</code>
+            blueprint.
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="SQL queries uploads search endpoint rules full access"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">7</span>
+          <span class="step-title">SQL, Uploads &amp; Search</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6><strong>SQL queries</strong></h6>
+                  <p class="small">The
+                    <code>?sql=</code>
+                    parameter needs full access. Tribe accepts only one
+                    <code>SELECT</code>
+                    statement, with no comments, no
+                    <code>INTO</code>, no locking clauses and no sleep
+                    functions.</p>
+                  <p class="small mb-0">The query runs inside a read-only
+                    transaction, which is always rolled back.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6><strong>Uploads</strong></h6>
+                  <p class="small mb-0"><code>uploads.php</code>
+                    needs full access to upload files and to use the Dist
+                    Uploads actions. Files already uploaded are still served
+                    publicly from
+                    <code>/uploads/</code>.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card method-item h-100">
+                <div class="card-body">
+                  <h6><strong>Search</strong></h6>
+                  <p class="small mb-0"><code>search.php</code>
+                    returns only public objects by default. It returns private
+                    objects only when
+                    <code>TYPESENSE_SHOW_PUBLIC_OBJECTS_ONLY=false</code>
+                    and the request has a valid key.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Environment variables env JUNCTION_PASSWORD JUNCTION_URL JUNCTION_PORT ALLOW_ALL_CONNECTIONS_DANGEROUSLY CORS"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge">8</span>
+          <span class="step-title">Environment Settings</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <p>These settings in Tribe's
+            <code>.env</code>
+            control authentication:</p>
+          <div class="table-responsive">
+            <table class="table table-sm small">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>JUNCTION_PASSWORD</code></td>
+                  <td>The Junction login password. Login is refused while it
+                    is empty.</td>
+                </tr>
+                <tr>
+                  <td><code>JUNCTION_URL</code></td>
+                  <td>The exact address Junction is served from, including
+                    scheme and port. Its origin is trusted for sessions.</td>
+                </tr>
+                <tr>
+                  <td><code>JUNCTION_PORT</code></td>
+                  <td>Trusts
+                    <code>localhost</code>
+                    and
+                    <code>127.0.0.1</code>
+                    on this port for sessions.</td>
+                </tr>
+                <tr>
+                  <td><code>ALLOW_ALL_CONNECTIONS_DANGEROUSLY</code></td>
+                  <td>When
+                    <code>true</code>, every request gets full access. Keep it
+                    <code>false</code>
+                    on any server that others can reach.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small mb-0">Browsers on trusted origins get credentialed
+            CORS responses. Every other origin gets
+            <code>Access-Control-Allow-Origin: *</code>
+            without credentials, so Bearer keys work from anywhere but
+            cookies do not.</p>
+        </div>
+      </div>
+
+      <div
+        class="step-card"
+        data-step-name="Troubleshooting 403 401 429 forbidden login fails errors"
+      >
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-badge"><i
+              class="fa-solid fa-screwdriver-wrench"
+            ></i></span>
+          <span class="step-title">Troubleshooting</span>
+          <i class="fa-solid fa-chevron-down step-chevron"></i>
+        </div>
+        <div class="step-body">
+          <div class="table-responsive">
+            <table class="table table-sm small mb-0">
+              <thead>
+                <tr>
+                  <th>Symptom</th>
+                  <th>Likely cause</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Junction login returns 403</td>
+                  <td><code>JUNCTION_URL</code>
+                    does not match the address Junction is served from.</td>
+                </tr>
+                <tr>
+                  <td>Login succeeds, then Junction returns to the login
+                    page</td>
+                  <td>Junction and Tribe are on different sites, so the
+                    browser drops the cookie.</td>
+                </tr>
+                <tr>
+                  <td>Login returns 429</td>
+                  <td>Too many wrong passwords. Wait 15 minutes.</td>
+                </tr>
+                <tr>
+                  <td>A frontend app gets 403 or only public objects</td>
+                  <td>The domain is not whitelisted, or the key is not
+                    <code>public</code>
+                    or
+                    <code>private</code>, or the request did not send
+                    <code>show_public_objects_only=false</code>.</td>
+                </tr>
+                <tr>
+                  <td>A write returns 403</td>
+                  <td>The key is read-only.</td>
+                </tr>
+                <tr>
+                  <td><code>?sql=</code>
+                    returns 400</td>
+                  <td>The query is not a single read-only
+                    <code>SELECT</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <ManualFooter />
+
+  </div>
+</div>
+
+<ManualScripts />

@@ -58,12 +58,29 @@
               Env File Maker
             </LinkTo>
           </li>
+          <li><hr class="dropdown-divider" /></li>
           <li>
             <LinkTo
-              @route="metadata"
-              class="dropdown-item {{if (eq @activePage 'metadata') 'active'}}"
+              @route="auth"
+              class="dropdown-item {{if (eq @activePage 'auth') 'active'}}"
             >
-              Metadata Generator
+              Tribe Auth
+            </LinkTo>
+          </li>
+          <li>
+            <LinkTo
+              @route="loom"
+              class="dropdown-item {{if (eq @activePage 'loom') 'active'}}"
+            >
+              Loom: Multi Tribe
+            </LinkTo>
+          </li>
+          <li>
+            <LinkTo
+              @route="upgrade"
+              class="dropdown-item {{if (eq @activePage 'upgrade') 'active'}}"
+            >
+              Upgrade Tribe
             </LinkTo>
           </li>
           <li>
@@ -92,14 +109,6 @@
           </li>
           <li>
             <LinkTo
-              @route="loom"
-              class="dropdown-item {{if (eq @activePage 'loom') 'active'}}"
-            >
-              Loom: Multi Tribe
-            </LinkTo>
-          </li>
-          <li>
-            <LinkTo
               @route="backup"
               class="dropdown-item {{if (eq @activePage 'backup') 'active'}}"
             >
@@ -116,13 +125,21 @@
           </li>
           <li>
             <LinkTo
-              @route="upgrade"
-              class="dropdown-item {{if (eq @activePage 'upgrade') 'active'}}"
+              @route="cleanup"
+              class="dropdown-item {{if (eq @activePage 'cleanup') 'active'}}"
             >
-              Upgrade Tribe
+              Tribe Uninstall / Cleanup
             </LinkTo>
           </li>
           <li><hr class="dropdown-divider" /></li>
+          <li>
+            <LinkTo
+              @route="metadata"
+              class="dropdown-item {{if (eq @activePage 'metadata') 'active'}}"
+            >
+              Metadata Generator
+            </LinkTo>
+          </li>
           <li>
             <LinkTo
               @route="markdown-editor"

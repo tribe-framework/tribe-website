@@ -23,4 +23,6 @@ Router.map(function () {
   this.route('backup');
   this.route('markdown-editor');
   this.route('html-editor');
+  this.route('auth');
+  this.route('cleanup');
 });

@@ -10,8 +10,12 @@ function uuid() {
 }
 
 function password() {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  const chars =
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  return Array.from(
+    { length: 8 },
+    () => chars[Math.floor(Math.random() * chars.length)],
+  ).join('');
 }
 
 function base64Key(bytes) {
@@ -20,132 +24,331 @@ function base64Key(bytes) {
   return btoa(String.fromCharCode(...buf));
 }
 
+function isExample(placeholder) {
+  return /domain\.tld/.test(placeholder ?? '');
+}
+
 // derived(projectName, loomProjectName) → value
 const DERIVED = {
-  DB_NAME:   (p) => p ? `${p}_db`    : '',
-  DB_USER:   (p) => p ? `${p}_user`  : '',
-  DB_HOST:   (p, l) => l ? `${l}_mysql` : (p ? `${p}_mysql` : ''),
-  TIKA_HOST: (p, l) => l ? `${l}_tika`  : (p ? `${p}_tika`  : ''),
+  DB_NAME: (p) => (p ? `${p}_db` : ''),
+  DB_USER: (p) => (p ? `${p}_user` : ''),
+  DB_HOST: (p, l) => (l ? `${l}_mysql` : p ? `${p}_mysql` : ''),
+  TIKA_HOST: (p, l) => (l ? `${l}_tika` : p ? `${p}_tika` : ''),
 };
 
 // key → offset added to the user-supplied base port
 const PORT_OFFSETS = {
-  TRIBE_PORT:       0,
-  PHPMYADMIN_PORT:  1,
-  JUNCTION_PORT:    2,
-  DIST_PORT:        3,
-  DIST_PHP_PORT:    4,
-  PLAUSIBLE_PORT:   5,
-  TYPESENSE_PORT:   6,
-  CRONICLE_PORT:    7,
-  CENTRIFUGO_PORT:  8,
+  TRIBE_PORT: 0,
+  PHPMYADMIN_PORT: 1,
+  JUNCTION_PORT: 2,
+  DIST_PORT: 3,
+  DIST_PHP_PORT: 4,
+  PLAUSIBLE_PORT: 5,
+  TYPESENSE_PORT: 6,
+  CRONICLE_PORT: 7,
+  CENTRIFUGO_PORT: 8,
 };
 
 const PORT_FIELDS = [
-  { key: 'TRIBE_PORT',      label: 'Tribe Port',      hide: true, comment: 'Ports' },
+  { key: 'TRIBE_PORT', label: 'Tribe Port', hide: true, comment: 'Ports' },
   { key: 'PHPMYADMIN_PORT', label: 'phpMyAdmin Port', hide: true },
-  { key: 'JUNCTION_PORT',   label: 'Junction Port',   hide: true },
-  { key: 'DIST_PORT',       label: 'Dist Port',       hide: true },
-  { key: 'DIST_PHP_PORT',   label: 'Dist PHP Port',   hide: true },
-  { key: 'PLAUSIBLE_PORT',  label: 'Plausible Port',  hide: true },
-  { key: 'TYPESENSE_PORT',  label: 'Typesense Port',  hide: true },
-  { key: 'CRONICLE_PORT',   label: 'Cronicle Port',   hide: true },
+  { key: 'JUNCTION_PORT', label: 'Junction Port', hide: true },
+  { key: 'DIST_PORT', label: 'Dist Port', hide: true },
+  { key: 'DIST_PHP_PORT', label: 'Dist PHP Port', hide: true },
+  { key: 'PLAUSIBLE_PORT', label: 'Plausible Port', hide: true },
+  { key: 'TYPESENSE_PORT', label: 'Typesense Port', hide: true },
+  { key: 'CRONICLE_PORT', label: 'Cronicle Port', hide: true },
   { key: 'CENTRIFUGO_PORT', label: 'Centrifugo Port', hide: true },
 ];
 
 const APPLICATION_FIELDS = (url, email) => [
-  { key: 'BARE_URL',                          label: 'Bare URL',                   placeholder: url, comment: 'Application' },
-  { key: 'ALLOW_ALL_CONNECTIONS_DANGEROUSLY', label: 'Allow All Connections',      hide: true, placeholder: 'false' },
-  { key: 'DISPLAY_ERRORS',                    label: 'Display Errors',             hide: true, placeholder: 'false' },
-  { key: 'DEFAULT_TIMEZONE',                  label: 'Default Timezone',           hide: true, placeholder: 'Asia/Kolkata' },
-  { key: 'CONTACT_EMAIL',                     label: 'Contact Email',              placeholder: email },
-  { key: 'CACHE_WEBAPP_TOTAL_OBJECTS',        label: 'Cache Webapp Total Objects', hide: true, placeholder: 'false' },
+  {
+    key: 'BARE_URL',
+    label: 'Bare URL',
+    placeholder: url,
+    comment: 'Application',
+  },
+  {
+    key: 'BIND_ADDRESS',
+    label: 'Bind Address',
+    hide: true,
+    placeholder: '0.0.0.0',
+  },
+  {
+    key: 'ALLOW_ALL_CONNECTIONS_DANGEROUSLY',
+    label: 'Allow All Connections',
+    hide: true,
+    placeholder: 'false',
+  },
+  {
+    key: 'DISPLAY_ERRORS',
+    label: 'Display Errors',
+    hide: true,
+    placeholder: 'false',
+  },
+  {
+    key: 'DEFAULT_TIMEZONE',
+    label: 'Default Timezone',
+    hide: true,
+    placeholder: 'Asia/Kolkata',
+  },
+  { key: 'CONTACT_EMAIL', label: 'Contact Email', placeholder: email },
+  {
+    key: 'CACHE_WEBAPP_TOTAL_OBJECTS',
+    label: 'Cache Webapp Total Objects',
+    hide: true,
+    placeholder: 'false',
+  },
 ];
 
 const DATABASE_FIELDS = (rootGenerate) => [
-  { key: 'DB_ROOT_PASSWORD', label: 'DB Root Password', comment: 'Database', ...(rootGenerate ? { generate: password } : {}) },
-  { key: 'DB_NAME',          label: 'DB Name',          hide: true },
-  { key: 'DB_USER',          label: 'DB User',          hide: true },
-  { key: 'DB_PASS',          label: 'DB Password',      generate: password },
-  { key: 'DB_PORT',          label: 'DB Port',          hide: true, placeholder: '3306' },
-  { key: 'DB_HOST',          label: 'DB Host',          hide: true },
+  {
+    key: 'DB_ROOT_PASSWORD',
+    label: 'DB Root Password',
+    comment: 'Database',
+    ...(rootGenerate ? { generate: password } : {}),
+  },
+  { key: 'DB_NAME', label: 'DB Name', hide: true },
+  { key: 'DB_USER', label: 'DB User', hide: true },
+  { key: 'DB_PASS', label: 'DB Password', generate: password },
+  { key: 'DB_PORT', label: 'DB Port', hide: true, placeholder: '3306' },
+  { key: 'DB_HOST', label: 'DB Host', hide: true },
 ];
 
 const DIST_FIELDS = [
-  { key: 'DIST_URL',     label: 'Dist URL',     placeholder: 'https://domain.tld', comment: 'Dist' },
-  { key: 'DIST_PHP_URL', label: 'Dist PHP URL', placeholder: 'https://alt.domain.tld' },
+  {
+    key: 'DIST_URL',
+    label: 'Dist URL',
+    placeholder: 'https://domain.tld',
+    comment: 'Dist',
+  },
+  {
+    key: 'DIST_PHP_URL',
+    label: 'Dist PHP URL',
+    placeholder: 'https://alt.domain.tld',
+  },
 ];
 
 const JUNCTION_FIELDS = (apiUrl) => [
-  { key: 'JUNCTION_SLUG',             label: 'Junction Slug',             hide: true, placeholder: 'junction', comment: 'Junction' },
-  { key: 'JUNCTION_PASSWORD',         label: 'Junction Password',         generate: password },
-  { key: 'JUNCTION_URL',              label: 'Junction URL',              placeholder: 'https://junction.domain.tld' },
-  { key: 'PLAUSIBLE_EMBED_URL',       label: 'Plausible Embed URL',       hide: true, placeholder: '' },
-  { key: 'TRIBE_API_URL',             label: 'Tribe API URL',             placeholder: apiUrl },
-  { key: 'TRIBE_API_KEY',             label: 'Tribe API Key',             hide: true, placeholder: '' },
-  { key: 'HIDE_TRIBE_ATTRIBUTION', label: 'Hide Tribe Attribution', hide: true, placeholder: 'false' },
+  {
+    key: 'JUNCTION_SLUG',
+    label: 'Junction Slug',
+    hide: true,
+    placeholder: 'junction',
+    comment: 'Junction',
+  },
+  { key: 'JUNCTION_PASSWORD', label: 'Junction Password', generate: password },
+  {
+    key: 'JUNCTION_URL',
+    label: 'Junction URL',
+    placeholder: 'https://junction.domain.tld',
+  },
+  {
+    key: 'PLAUSIBLE_EMBED_URL',
+    label: 'Plausible Embed URL',
+    hide: true,
+    placeholder: '',
+  },
+  { key: 'TRIBE_API_URL', label: 'Tribe API URL', placeholder: apiUrl },
+  {
+    key: 'HIDE_TRIBE_ATTRIBUTION',
+    label: 'Hide Tribe Attribution',
+    hide: true,
+    placeholder: 'false',
+  },
 ];
 
 const PLAUSIBLE_FIELDS = [
-  { key: 'PLAUSIBLE_BASE_URL',             label: 'Plausible Base URL',             hide: true, placeholder: 'https://analytics.domain.tld', comment: 'Plausible Analytics (optional)' },
-  { key: 'PLAUSIBLE_SECRET_KEY_BASE',      label: 'Plausible Secret Key Base',      hide: true, generate: () => base64Key(64) },
-  { key: 'PLAUSIBLE_TOTP_VAULT_KEY',       label: 'Plausible TOTP Vault Key',       hide: true, generate: () => base64Key(32) },
-  { key: 'PLAUSIBLE_DB_PASSWORD',          label: 'Plausible DB Password',          hide: true, generate: password },
-  { key: 'PLAUSIBLE_DISABLE_REGISTRATION', label: 'Plausible Disable Registration', hide: true, placeholder: 'invite_only' },
+  {
+    key: 'PLAUSIBLE_BASE_URL',
+    label: 'Plausible Base URL',
+    hide: true,
+    placeholder: 'https://analytics.domain.tld',
+    comment: 'Plausible Analytics (optional)',
+  },
+  {
+    key: 'PLAUSIBLE_SECRET_KEY_BASE',
+    label: 'Plausible Secret Key Base',
+    hide: true,
+    generate: () => base64Key(64),
+  },
+  {
+    key: 'PLAUSIBLE_TOTP_VAULT_KEY',
+    label: 'Plausible TOTP Vault Key',
+    hide: true,
+    generate: () => base64Key(32),
+  },
+  {
+    key: 'PLAUSIBLE_DB_PASSWORD',
+    label: 'Plausible DB Password',
+    hide: true,
+    generate: password,
+  },
+  {
+    key: 'PLAUSIBLE_DISABLE_REGISTRATION',
+    label: 'Plausible Disable Registration',
+    hide: true,
+    placeholder: 'invite_only',
+  },
 ];
 
 const TIKA_FIELDS = (comment) => [
-  { key: 'TRANSCRIBE_FILE_RECORDS', label: 'Transcribe File Records', hide: true, placeholder: 'false', ...(comment ? { comment } : {}) },
-  { key: 'TIKA_HOST',               label: 'Tika Host',               hide: true },
-  { key: 'TIKA_PORT',               label: 'Tika Port',               hide: true, placeholder: '9998' },
+  {
+    key: 'TRANSCRIBE_FILE_RECORDS',
+    label: 'Transcribe File Records',
+    hide: true,
+    placeholder: 'false',
+    ...(comment ? { comment } : {}),
+  },
+  { key: 'TIKA_HOST', label: 'Tika Host', hide: true },
+  { key: 'TIKA_PORT', label: 'Tika Port', hide: true, placeholder: '9998' },
 ];
 
 const TAIL_FIELDS = [
-  { key: 'CRONICLE_SECRET_KEY',                     label: 'Cronicle Secret Key',       hide: true, generate: uuid, comment: 'Cronicle' },
-  { key: 'CRONICLE_LOG_KEEP_DAYS',                  label: 'Cronicle Log Keep Days',    hide: true, placeholder: '30' },
-  { key: 'CENTRIFUGO_CLIENT_TOKEN_HMAC_SECRET_KEY', label: 'Centrifugo HMAC Secret',    hide: true, generate: uuid, comment: 'Centrifugo' },
-  { key: 'CENTRIFUGO_HTTP_API_KEY',                 label: 'Centrifugo HTTP API Key',   hide: true, generate: uuid },
-  { key: 'CENTRIFUGO_ADMIN_PASSWORD',               label: 'Centrifugo Admin Password', generate: password },
-  { key: 'CENTRIFUGO_ADMIN_SECRET',                 label: 'Centrifugo Admin Secret',   hide: true, generate: uuid },
+  {
+    key: 'CRONICLE_SECRET_KEY',
+    label: 'Cronicle Secret Key',
+    hide: true,
+    generate: uuid,
+    comment: 'Cronicle',
+  },
+  {
+    key: 'CRONICLE_LOG_KEEP_DAYS',
+    label: 'Cronicle Log Keep Days',
+    hide: true,
+    placeholder: '30',
+  },
+  {
+    key: 'CENTRIFUGO_CLIENT_TOKEN_HMAC_SECRET_KEY',
+    label: 'Centrifugo HMAC Secret',
+    hide: true,
+    generate: uuid,
+    comment: 'Centrifugo',
+  },
+  {
+    key: 'CENTRIFUGO_HTTP_API_KEY',
+    label: 'Centrifugo HTTP API Key',
+    hide: true,
+    generate: uuid,
+  },
+  {
+    key: 'CENTRIFUGO_ADMIN_PASSWORD',
+    label: 'Centrifugo Admin Password',
+    generate: password,
+  },
+  {
+    key: 'CENTRIFUGO_ADMIN_SECRET',
+    label: 'Centrifugo Admin Secret',
+    hide: true,
+    generate: uuid,
+  },
 ];
 
 const SCHEMAS = {
   tribe: [
-    { key: 'PROJECT_NAME', label: 'Project Name', placeholder: 'tribe', comment: 'Project Identity' },
-    ...APPLICATION_FIELDS('tribe.example.com', 'tribe@example.com'),
+    {
+      key: 'PROJECT_NAME',
+      label: 'Project Name',
+      placeholder: 'tribe',
+      comment: 'Project Identity',
+    },
+    ...APPLICATION_FIELDS('tribe.domain.tld', 'tribe@domain.tld'),
     ...DATABASE_FIELDS(true),
     ...PORT_FIELDS,
     ...DIST_FIELDS,
-    ...JUNCTION_FIELDS('https://tribe.example.com'),
+    ...JUNCTION_FIELDS('https://tribe.domain.tld'),
     ...PLAUSIBLE_FIELDS,
-    { key: 'TYPESENSE_SHOW_PUBLIC_OBJECTS_ONLY', label: 'Typesense Public Only', hide: true, placeholder: 'true', comment: 'Typesense and Search' },
-    { key: 'TYPESENSE_API_KEY',                  label: 'Typesense API Key',     hide: true, placeholder: 'xyz' },
+    {
+      key: 'TYPESENSE_SHOW_PUBLIC_OBJECTS_ONLY',
+      label: 'Typesense Public Only',
+      hide: true,
+      placeholder: 'true',
+      comment: 'Typesense and Search',
+    },
+    {
+      key: 'TYPESENSE_API_KEY',
+      label: 'Typesense API Key',
+      hide: true,
+      placeholder: 'xyz',
+    },
     ...TIKA_FIELDS(null),
     ...TAIL_FIELDS,
   ],
   thread: [
-    { key: 'PROJECT_NAME',      label: 'Project Name',      placeholder: 'acme',  comment: 'Project Identity' },
-    { key: 'LOOM_PROJECT_NAME', label: 'Loom Project Name', placeholder: 'tribe' },
-    ...APPLICATION_FIELDS('acme.example.com', 'acme@example.com'),
+    {
+      key: 'PROJECT_NAME',
+      label: 'Project Name',
+      placeholder: 'thread',
+      comment: 'Project Identity',
+    },
+    {
+      key: 'LOOM_PROJECT_NAME',
+      label: 'Loom Project Name',
+      placeholder: 'tribe',
+    },
+    ...APPLICATION_FIELDS('thread.domain.tld', 'thread@domain.tld'),
     ...DATABASE_FIELDS(false),
     ...PORT_FIELDS,
     ...DIST_FIELDS,
-    ...JUNCTION_FIELDS('https://acme.example.com'),
+    ...JUNCTION_FIELDS('https://thread.domain.tld'),
     ...TIKA_FIELDS('Transcribe for Search'),
     ...TAIL_FIELDS,
   ],
   junction: [
-    { key: 'TRIBE_API_URL',             label: 'Tribe API URL',             placeholder: 'https://tribe.example.com' },
-    { key: 'TRIBE_API_KEY',             label: 'Tribe API Key',             placeholder: '' },
-    { key: 'JUNCTION_SLUG',             label: 'Junction Slug',             hide: true, placeholder: 'junction' },
-    { key: 'JUNCTION_PASSWORD',         label: 'Junction Password',         generate: password },
-    { key: 'JUNCTION_URL',              label: 'Junction URL',              placeholder: 'https://junction.domain.tld' },
-    { key: 'PLAUSIBLE_EMBED_URL',       label: 'Plausible Embed URL',       hide: true, placeholder: '' },
-    { key: 'HIDE_TRIBE_ATTRIBUTION', label: 'Hide Tribe Attribution', hide: true, placeholder: 'false' },
+    {
+      key: 'TRIBE_API_URL',
+      label: 'Tribe API URL',
+      placeholder: 'https://tribe.domain.tld',
+      hint: 'The local dev server address printed by npm start. Used only during development.',
+    },
+    {
+      key: 'TRIBE_LIVE_URL',
+      label: 'Live Tribe URL',
+      placeholder: 'https://tribe.domain.tld',
+      hint: 'The live Tribe that the dev server proxies to. Leave empty to develop against a local Tribe.',
+    },
+    {
+      key: 'JUNCTION_LIVE_URL',
+      label: 'Live Junction URL',
+      placeholder: 'https://junction.domain.tld',
+      hint: 'The JUNCTION_URL of the live server, exactly as set in its .env.',
+    },
+    {
+      key: 'JUNCTION_SLUG',
+      label: 'Junction Slug',
+      hide: true,
+      placeholder: 'junction',
+    },
+    {
+      key: 'JUNCTION_URL',
+      label: 'Junction URL',
+      placeholder: 'https://junction.domain.tld',
+    },
+    {
+      key: 'PLAUSIBLE_EMBED_URL',
+      label: 'Plausible Embed URL',
+      hide: true,
+      placeholder: '',
+    },
+    {
+      key: 'HIDE_TRIBE_ATTRIBUTION',
+      label: 'Hide Tribe Attribution',
+      hide: true,
+      placeholder: 'false',
+    },
   ],
   'ember-tribe': [
-    { key: 'TRIBE_API_URL', label: 'Tribe API URL', placeholder: 'https://tribe.example.com' },
-    { key: 'TRIBE_API_KEY', label: 'Tribe API Key', placeholder: '' },
+    {
+      key: 'TRIBE_API_URL',
+      label: 'Tribe API URL',
+      placeholder: 'https://tribe.domain.tld',
+    },
+    {
+      key: 'TRIBE_API_KEY',
+      label: 'Tribe API Key (read-only)',
+      placeholder: '',
+      hint: 'Create a read-only key in Junction from the 3 dots menu, under Junction API. Never use a full-access key in a frontend.',
+    },
   ],
 };
 
@@ -213,7 +416,9 @@ export default class EnvController extends Controller {
     for (const field of this.schema) {
       if (field.comment && field.comment !== lastComment) {
         if (lines.length) lines.push('');
-        lines.push(`# ─── ${field.comment} ${'─'.repeat(Math.max(0, 50 - field.comment.length))}─`);
+        lines.push(
+          `# ─── ${field.comment} ${'─'.repeat(Math.max(0, 50 - field.comment.length))}─`,
+        );
         lastComment = field.comment;
       }
 
@@ -224,7 +429,9 @@ export default class EnvController extends Controller {
         const base = parseInt(this.portBase, 10);
         val = Number.isNaN(base) ? '' : base + PORT_OFFSETS[field.key];
       } else {
-        val = this.values[field.key] ?? field.placeholder ?? '';
+        val =
+          this.values[field.key] ??
+          (isExample(field.placeholder) ? '' : (field.placeholder ?? ''));
       }
 
       lines.push(`${field.key}=${val}`);

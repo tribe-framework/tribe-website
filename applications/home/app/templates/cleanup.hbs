@@ -1,0 +1,377 @@
+<div class="tribe-manual">
+	<ManualHeader />
+
+	<ManualPageNav @activePage="cleanup" />
+
+	<div class="container pb-5">
+
+		<div class="alert alert-danger mb-4">
+			<strong>This cannot be undone.</strong>
+			These steps delete the database, every uploaded file and the deployed
+			sites of a Tribe installation. Run the commands from the Tribe folder, the
+			one that contains
+			<code>docker-compose.yml</code>
+			and
+			<code>.env</code>.
+		</div>
+
+		<div class="steps-container mb-5">
+
+			<div
+				class="step-card"
+				data-step-name="Back up backup restic mysqldump uploads before deleting"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">1</span>
+					<span class="step-title">Back Up</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>All runtime data lives in two places inside the Tribe folder:</p>
+					<ul class="small">
+						<li><code>uploads/</code>
+							holds the MySQL data, uploaded files, deployed sites, Cronicle,
+							Centrifugo, Plausible and Tor data.</li>
+						<li><code>.env</code>
+							holds the passwords and settings.</li>
+					</ul>
+					<p class="mb-1">Take a final copy of both if you may need them later.
+						With Restic set up, run a last backup:</p>
+					<div class="command-block mb-3">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('sudo systemctl start &quot;restic-backup@$(systemd-escape /path/to/tribe).service&quot;', this)"
+							type="button"
+						>Copy</button>
+						<code>sudo systemctl start "restic-backup@$(systemd-escape
+							/path/to/tribe).service"</code>
+					</div>
+					<p class="mb-1">Without Restic, copy the folder while the containers
+						are stopped:</p>
+					<div class="command-block mb-0">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('docker compose stop && sudo tar -czf ../tribe-final-backup.tar.gz uploads .env', this)"
+							type="button"
+						>Copy</button>
+						<code>docker compose stop &amp;&amp; sudo tar -czf
+							../tribe-final-backup.tar.gz uploads .env</code>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="Identify installation PROJECT_NAME docker compose ps containers"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">2</span>
+					<span class="step-title">Identify the Installation</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>Every container, volume and network of an installation is named
+						after
+						<code>PROJECT_NAME</code>
+						in
+						<code>.env</code>. Read it first:</p>
+					<div class="command-block mb-3">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('grep -E &quot;^(PROJECT_NAME|DB_HOST|DB_NAME|DB_USER)=&quot; .env', this)"
+							type="button"
+						>Copy</button>
+						<code>grep -E "^(PROJECT_NAME|DB_HOST|DB_NAME|DB_USER)=" .env</code>
+					</div>
+					<p class="mb-1">Then list what belongs to it, replacing
+						<code>tribe</code>
+						with your
+						<code>PROJECT_NAME</code>:</p>
+					<div class="command-block mb-3">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('docker ps -a --filter name=tribe_', this)"
+							type="button"
+						>Copy</button>
+						<code>docker ps -a --filter name=tribe_</code>
+					</div>
+					<div class="alert alert-info mb-0">
+						<strong>Which kind of installation is it?</strong>
+						A standard installation uses
+						<code>docker-compose.yml</code>. A Loom thread uses
+						<code>docker-compose.thread.yml</code>
+						and has
+						<code>LOOM_PROJECT_NAME</code>
+						in its
+						<code>.env</code>. A Tor installation also has
+						<code>docker-compose.tor.yml</code>
+						in its root. The next steps differ for each.
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="Remove domains nginx vhost uninstall certbot delete certificates"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">3</span>
+					<span class="step-title">Remove Domains (Nginx)</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>Skip this step if you never ran
+						<code>node vhost</code>
+						for this installation.</p>
+					<p class="mb-1">Remove the nginx site file of each domain. The script
+						asks for one domain at a time, so run it once for each of Tribe,
+						Junction, Dist, Dist PHP and Plausible:</p>
+					<div class="command-block mb-3">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('sudo node vhost uninstall', this)"
+							type="button"
+						>Copy</button>
+						<code>sudo node vhost uninstall</code>
+					</div>
+					<p class="mb-1">The script keeps certificates. Delete each one by
+						name:</p>
+					<div class="command-block mb-3">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('sudo certbot delete --cert-name junction.domain.tld', this)"
+							type="button"
+						>Copy</button>
+						<code>sudo certbot delete --cert-name junction.domain.tld</code>
+					</div>
+					<p class="mb-1">Check the remaining nginx configuration and reload it:</p>
+					<div class="command-block mb-0">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('sudo nginx -t && sudo systemctl reload nginx', this)"
+							type="button"
+						>Copy</button>
+						<code>sudo nginx -t &amp;&amp; sudo systemctl reload nginx</code>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="Stop and remove containers docker compose down volumes network thread tor"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">4</span>
+					<span class="step-title">Remove Containers, Volumes &amp; Network</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>This stops every container of the installation and removes the
+						containers, the Caddy volumes and the
+						<code>PROJECT_NAME_network</code>
+						network. Run the command that matches your installation:</p>
+
+					<div class="row g-3">
+						<div class="col-md-4">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6><strong>Standard</strong></h6>
+									<div class="command-block mb-0">
+										<button
+											class="btn btn-sm copy-btn-block"
+											onclick="copyCmd('docker compose down -v --remove-orphans', this)"
+											type="button"
+										>Copy</button>
+										<code>docker compose down -v --remove-orphans</code>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6><strong>Loom thread</strong></h6>
+									<div class="command-block mb-0">
+										<button
+											class="btn btn-sm copy-btn-block"
+											onclick="copyCmd('docker compose -f docker-compose.thread.yml down -v --remove-orphans', this)"
+											type="button"
+										>Copy</button>
+										<code>docker compose -f docker-compose.thread.yml down -v
+											--remove-orphans</code>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="card method-item h-100">
+								<div class="card-body">
+									<h6><strong>Tor</strong></h6>
+									<div class="command-block mb-0">
+										<button
+											class="btn btn-sm copy-btn-block"
+											onclick="copyCmd('docker compose -f docker-compose.yml -f docker-compose.tor.yml down -v --remove-orphans', this)"
+											type="button"
+										>Copy</button>
+										<code>docker compose -f docker-compose.yml -f
+											docker-compose.tor.yml down -v --remove-orphans</code>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="alert alert-warning mt-3 mb-0">
+						<strong>Removing a Loom:</strong>
+						Threads share the Loom's MySQL and network. Remove every thread of a
+						Loom before you remove the Loom itself.
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="Loom thread drop database user loom_mysql DROP DATABASE DROP USER"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">5</span>
+					<span class="step-title">Drop the Thread Database (Loom Only)</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>Skip this step for a standard or Tor installation. Its database
+						lives in
+						<code>uploads/mysql</code>
+						and is deleted in step 7.</p>
+					<p class="mb-1">A thread's database and user live inside the Loom's
+						MySQL container, so removing the thread leaves them behind. Drop
+						them with the values of
+						<code>DB_HOST</code>,
+						<code>DB_NAME</code>
+						and
+						<code>DB_USER</code>
+						from the thread's
+						<code>.env</code>. You will be asked for the Loom's MySQL root
+						password:</p>
+					<div class="command-block mb-0">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('docker exec -it loom_mysql mysql -u root -p -e &quot;DROP DATABASE IF EXISTS thread_db; DROP USER IF EXISTS \'thread_user\'@\'%\';&quot;', this)"
+							type="button"
+						>Copy</button>
+						<code>docker exec -it loom_mysql mysql -u root -p -e "DROP DATABASE
+							IF EXISTS thread_db; DROP USER IF EXISTS 'thread_user'@'%';"</code>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="Stop backups restic timers systemctl disable snapshots"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">6</span>
+					<span class="step-title">Stop Backups (Restic)</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>Skip this step if this installation was not backed up with Restic.</p>
+					<p class="mb-1">Disable the backup and prune timers for the path that
+						was backed up, so they stop failing once the folder is gone:</p>
+					<div class="command-block mb-3">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('sudo systemctl disable --now &quot;restic-backup@$(systemd-escape /path/to/tribe).timer&quot; &quot;restic-prune@$(systemd-escape /path/to/tribe).timer&quot;', this)"
+							type="button"
+						>Copy</button>
+						<code>sudo systemctl disable --now "restic-backup@$(systemd-escape
+							/path/to/tribe).timer" "restic-prune@$(systemd-escape
+							/path/to/tribe).timer"</code>
+					</div>
+					<div class="alert alert-info mb-0">
+						<strong>Snapshots stay.</strong>
+						Existing snapshots remain in the Restic repository. Delete them
+						there only when you are sure you will not need to restore this
+						installation.
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="Delete files folder rm uploads mysql sudo"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">7</span>
+					<span class="step-title">Delete the Files</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p>Move out of the Tribe folder and delete it. The command needs
+						<code>sudo</code>
+						because the containers own the files in
+						<code>uploads/mysql</code>
+						and other data folders.</p>
+					<div class="command-block mb-0">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('cd .. && sudo rm -rf /path/to/tribe', this)"
+							type="button"
+						>Copy</button>
+						<code>cd .. &amp;&amp; sudo rm -rf /path/to/tribe</code>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="step-card"
+				data-step-name="Verify docker ps volume ls network ls leftovers images prune"
+			>
+				<div class="step-header" onclick="toggleStep(this)">
+					<span class="step-badge">8</span>
+					<span class="step-title">Verify &amp; Free Disk Space</span>
+					<i class="fa-solid fa-chevron-down step-chevron"></i>
+				</div>
+				<div class="step-body">
+					<p class="mb-1">Each of these commands should print no rows other than
+						the header. Replace
+						<code>tribe</code>
+						with your
+						<code>PROJECT_NAME</code>:</p>
+					<div class="command-block mb-3">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('docker ps -a --filter name=tribe_; docker volume ls --filter name=tribe_; docker network ls --filter name=tribe_', this)"
+							type="button"
+						>Copy</button>
+						<code>docker ps -a --filter name=tribe_<br />docker volume ls
+							--filter name=tribe_<br />docker network ls --filter name=tribe_</code>
+					</div>
+					<p class="mb-1">Docker keeps the downloaded images. Remove the images
+						that no container uses any more:</p>
+					<div class="command-block mb-3">
+						<button
+							class="btn btn-sm copy-btn-block"
+							onclick="copyCmd('docker image prune -a', this)"
+							type="button"
+						>Copy</button>
+						<code>docker image prune -a</code>
+					</div>
+					<div class="alert alert-warning mb-0">
+						<strong>Other projects on the same server:</strong>
+						<code>docker image prune -a</code>
+						removes every image on the server that no container uses, not only
+						Tribe's. Images of existing containers, running or stopped, are
+						kept.
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<ManualFooter />
+
+	</div>
+</div>
+
+<ManualScripts />
