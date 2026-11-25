@@ -51,11 +51,11 @@
 					<div class="command-block mb-0">
 						<button
 							class="btn btn-sm copy-btn-block"
-							onclick="copyCmd('docker compose stop && sudo tar -czf ../tribe-final-backup.tar.gz uploads .env', this)"
+							onclick="copyCmd('docker compose stop && sudo tar -czf ../project-final-backup.tar.gz uploads .env', this)"
 							type="button"
 						>Copy</button>
 						<code>docker compose stop &amp;&amp; sudo tar -czf
-							../tribe-final-backup.tar.gz uploads .env</code>
+							../project-final-backup.tar.gz uploads .env</code>
 					</div>
 				</div>
 			</div>
@@ -93,13 +93,13 @@
 							onclick="copyCmd('docker ps -a --filter name=tribe_', this)"
 							type="button"
 						>Copy</button>
-						<code>docker ps -a --filter name=tribe_</code>
+						<code>docker ps -a --filter name=project_name_</code>
 					</div>
 					<div class="alert alert-info mb-0">
 						<strong>Which kind of installation is it?</strong>
 						A standard installation uses
-						<code>docker-compose.yml</code>. A Loom thread uses
-						<code>docker-compose.thread.yml</code>
+						<code>docker-compose.yml</code>. A Loom thread also uses
+						<code>docker-compose.yml</code>
 						and has
 						<code>LOOM_PROJECT_NAME</code>
 						in its
@@ -172,10 +172,10 @@
 						network. Run the command that matches your installation:</p>
 
 					<div class="row g-3">
-						<div class="col-md-4">
+						<div class="col-md-6">
 							<div class="card method-item h-100">
 								<div class="card-body">
-									<h6><strong>Standard</strong></h6>
+									<h6><strong>Standard or Loom thread</strong></h6>
 									<div class="command-block mb-0">
 										<button
 											class="btn btn-sm copy-btn-block"
@@ -187,23 +187,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<div class="card method-item h-100">
-								<div class="card-body">
-									<h6><strong>Loom thread</strong></h6>
-									<div class="command-block mb-0">
-										<button
-											class="btn btn-sm copy-btn-block"
-											onclick="copyCmd('docker compose -f docker-compose.thread.yml down -v --remove-orphans', this)"
-											type="button"
-										>Copy</button>
-										<code>docker compose -f docker-compose.thread.yml down -v
-											--remove-orphans</code>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4">
+						<div class="col-md-6">
 							<div class="card method-item h-100">
 								<div class="card-body">
 									<h6><strong>Tor</strong></h6>
@@ -256,11 +240,11 @@
 					<div class="command-block mb-0">
 						<button
 							class="btn btn-sm copy-btn-block"
-							onclick="copyCmd('docker exec -it loom_mysql mysql -u root -p -e &quot;DROP DATABASE IF EXISTS thread_db; DROP USER IF EXISTS \'thread_user\'@\'%\';&quot;', this)"
+							onclick="copyCmd('docker exec -it db_host mysql -u root -p -e &quot;DROP DATABASE IF EXISTS db_name; DROP USER IF EXISTS \'db_user\'@\'%\';&quot;', this)"
 							type="button"
 						>Copy</button>
-						<code>docker exec -it loom_mysql mysql -u root -p -e "DROP DATABASE
-							IF EXISTS thread_db; DROP USER IF EXISTS 'thread_user'@'%';"</code>
+						<code>docker exec -it db_host mysql -u root -p -e "DROP DATABASE
+							IF EXISTS db_name; DROP USER IF EXISTS 'db_user'@'%';"</code>
 					</div>
 				</div>
 			</div>

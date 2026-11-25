@@ -9,6 +9,8 @@
 /vendor
 /vendor/*
 /threads
+/applications/.versions
+/applications/junction/dist
 /threads/*
 /composer.phar
 *.code-workspace

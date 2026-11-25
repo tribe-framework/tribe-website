@@ -63,6 +63,43 @@ find /uploads -type f \
     -not -path "/uploads/mysql*" \
     -exec chmod 664 {} +
 
+mkdir -p /applications/.versions /applications/junction/dist
+
+if [ ! -f /applications/junction/dist/index.php ]; then
+    echo "📦 Installing latest Junction..."
+    JUNCTION_TMP=$(mktemp -d)
+    if ! curl -fsSL -o "$JUNCTION_TMP/dist.zip" https://github.com/tribe-framework/junction/raw/refs/heads/master/dist.zip; then
+        echo "⚠️  Could not download Junction's dist.zip from GitHub, skipping"
+    elif unzip -q "$JUNCTION_TMP/dist.zip" -d "$JUNCTION_TMP/extracted"; then
+        JUNCTION_TAG=$(sha256sum "$JUNCTION_TMP/dist.zip" | cut -c1-12)
+        JUNCTION_ROOT="$JUNCTION_TMP/extracted"
+        [ -f "$JUNCTION_ROOT/index.php" ] || JUNCTION_ROOT="$JUNCTION_TMP/extracted/dist"
+        if [ -f "$JUNCTION_ROOT/index.php" ]; then
+            cp -a "$JUNCTION_ROOT/." /applications/junction/dist/
+            mkdir -p /applications/.versions/junction
+            printf '{"tag":"%s","installed_at":%s}\n' "$JUNCTION_TAG" "$(date +%s)" > /applications/.versions/junction/installed.json
+            echo "✅ Junction $JUNCTION_TAG installed!"
+        else
+            echo "⚠️  Junction's dist.zip has no index.php, skipping"
+        fi
+    else
+        echo "⚠️  Could not unpack Junction's dist.zip, skipping"
+    fi
+    rm -rf "$JUNCTION_TMP"
+fi
+
+chown -R 33:33 /applications/.versions
+chown 33:33 /applications/tribe
+if [ -d /applications/tribe/vendor ]; then
+    chown -R 33:33 /applications/tribe/vendor
+fi
+if [ -f /applications/tribe/composer.lock ]; then
+    chown 33:33 /applications/tribe/composer.lock
+fi
+if [ -d /applications/junction/dist ]; then
+    find /applications/junction/dist -path /applications/junction/dist/uploads -prune -o -exec chown 33:33 {} +
+fi
+
 echo "✅ File permissions set!"
 
 # ── Validate database connection ───────────────────────────────────────────────

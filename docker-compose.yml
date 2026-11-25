@@ -35,8 +35,11 @@ services:
       - ./uploads:/var/www/html/uploads
       - ./logs:/var/log
       - ./applications/tribe/index.php:/var/www/html/index.php
+      - ./applications/junction/dist:/var/www/junction/dist
+      - ./applications/.versions:/var/www/versions
     command: >
       sh -c "composer install --no-interaction --optimize-autoloader &&
+           { chown -R 33:33 vendor composer.lock || true; } &&
            php-fpm
       "
     depends_on:
@@ -56,7 +59,8 @@ services:
       - ./uploads:/var/www/html/uploads
       - ./logs:/var/log
     command: >
-      sh -c "composer install --no-interaction --optimize-autoloader &&
+      sh -c "if [ -f composer.json ]; then composer install --no-interaction --optimize-autoloader &&
+           { chown -R 33:33 vendor composer.lock || true; }; fi &&
            php-fpm"
     depends_on:
       setup:

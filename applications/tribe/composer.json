@@ -3,7 +3,7 @@
     "description": "Tribe is a project management framework by Wildfire.",
     "license": "GPL-3.0-or-later",
     "require": {
-        "php": "^8.0",
+        "php": "^8.2",
         "tribe/core": "^5.2",
         "vlucas/phpdotenv": "^5.2",
         "alsvanzelf/jsonapi": "^2.4",
